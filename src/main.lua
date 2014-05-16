@@ -13,11 +13,6 @@ function love.load()
     cameraHandler.init()
     
     world = World()
-    
-    --local x, y = cameraHandler.convertScreenCoordinates(350, -720)
-    --local xn, yn = cameraHandler.convertWorldCoordinates(x, y)
-    --assert(x == xn and y == yn)
-    
     point = { x=0, y=0 }
 end
 
@@ -35,10 +30,10 @@ end
 
 
 function love.keypressed(key, isRepeat)
-    if key == "up" and not isRepeat then cameraHandler.shiftCamera(0, -1) end
-    if key == "down" and not isRepeat then cameraHandler.shiftCamera(0, 1) end
-    if key == "left" and not isRepeat then cameraHandler.shiftCamera(-1, 0) end
-    if key == "right" and not isRepeat then cameraHandler.shiftCamera(1, 0) end
+    if key == "up" and not isRepeat then cameraHandler.shiftCamera(-0.5, -0.5) end
+    if key == "down" and not isRepeat then cameraHandler.shiftCamera(0.5, 0.5) end
+    if key == "left" and not isRepeat then cameraHandler.shiftCamera(-0.5, 0.5) end
+    if key == "right" and not isRepeat then cameraHandler.shiftCamera(0.5, -0.5) end
 end
 
 

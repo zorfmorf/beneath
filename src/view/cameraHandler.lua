@@ -7,6 +7,12 @@ local scale = 6
 
 local cameraShiftValue = 50
 
+local function rotatePoint(x, y, angle)
+    local nx = math.cos(angle) * x - math.sin(angle) * y
+    local ny = math.sin(angle) * x + math.cos(angle) * y
+    return nx, ny
+end
+
 cameraHandler = {}
 
 function cameraHandler.init()
@@ -36,6 +42,8 @@ end
 
 -- returns world coordinates
 function cameraHandler.convertScreenCoordinates(x, y)
-    return ((x - love.graphics.getWidth() / 2) / scaleValues[scale] - xshift) / tilesize + 1, 
-           ((y - love.graphics.getHeight() / 2) / scaleValues[scale] - yshift) / tilesize + 1
+    local xt, yt = rotatePoint(x - love.graphics.getWidth() / 2, y - love.graphics.getHeight() / 2, -math.pi / 4)
+    local xt2 = (xt / scaleValues[scale] - xshift) * 0.7
+    local yt2 = (yt / scaleValues[scale] - yshift) * 1.3
+    return xt2 / tilesize + 1 , yt2 / tilesize + 1
 end

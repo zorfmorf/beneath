@@ -2,8 +2,7 @@ function love.conf(t)
     t.identity = "beneath"             -- The name of the save directory (string)
     t.version = "0.9.1"                -- The LÖVE version this game was made for (string)
     t.console = false                  -- Attach a console (boolean, Windows only)
-
-    t.window.title = "Beneath"         -- The window title (string)
+    t.window.title = "Beneath 0.0.2"   -- The window title (string)
     t.window.icon = nil                -- Filepath to an image to use as the window's icon (string)
     t.window.width = 1024              -- The window width (number)
     t.window.height = 600              -- The window height (number)
@@ -18,7 +17,6 @@ function love.conf(t)
     t.window.display = 2               -- Index of the monitor to show the window in (number)
     t.window.highdpi = false           -- Enable high-dpi mode for the window on a Retina display (boolean). Added in 0.9.1
     t.window.srgb = false              -- Enable sRGB gamma correction when drawing to the screen (boolean). Added in 0.9.1
-
     t.modules.audio = true             -- Enable the audio module (boolean)
     t.modules.event = true             -- Enable the event module (boolean)
     t.modules.graphics = true          -- Enable the graphics module (boolean)

@@ -4,10 +4,11 @@ drawHandler = {}
 function drawHandler.drawTerrain()
 
     love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+    love.graphics.rotate(math.pi / 4)
     local scale = cameraHandler.getZoom()
     love.graphics.scale(scale, scale)
-    
     love.graphics.translate( cameraHandler.getShifts() )
+    love.graphics.shear(-0.3, -0.3)
     
     for y,row in pairs(world.tiles) do
         
