@@ -34,6 +34,7 @@ function love.keypressed(key, isRepeat)
     if key == "down" and not isRepeat then cameraHandler.shiftCamera(0.5, 0.5) end
     if key == "left" and not isRepeat then cameraHandler.shiftCamera(-0.5, 0.5) end
     if key == "right" and not isRepeat then cameraHandler.shiftCamera(0.5, -0.5) end
+    if key == "escape" then love.event.push("quit") end
 end
 
 
@@ -51,4 +52,3 @@ function love.mousepressed(x, y, button)
     if button == "wu" then cameraHandler.zoomIn() end
     if button == "wd" then cameraHandler.zoomOut() end
 end
-

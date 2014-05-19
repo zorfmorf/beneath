@@ -43,7 +43,18 @@ end
 -- returns world coordinates
 function cameraHandler.convertScreenCoordinates(x, y)
     local xt, yt = rotatePoint(x - love.graphics.getWidth() / 2, y - love.graphics.getHeight() / 2, -math.pi / 4)
-    local xt2 = (xt / scaleValues[scale] - xshift) * 0.7
-    local yt2 = (yt / scaleValues[scale] - yshift) * 1.3
-    return xt2 / tilesize + 1 , yt2 / tilesize + 1
+    local xt2 = (xt / scaleValues[scale] - xshift)
+    local yt2 = (yt / scaleValues[scale] - yshift)
+    local xt3 = xt2--(xt2 - yt2 * sheark) / (1 - sheark * sheark)
+    local yt3 = yt2--(yt2 - xt2 * sheark) / (1 - sheark * sheark)
+    return xt3 / tilesize + 1, yt3 / tilesize + 1
+end
+
+function cameraHandler.convertWorldCoordinates(x, y)
+    local xt, yt = rotatePoint(x + love.graphics.getWidth() / 2, y + love.graphics.getHeight() / 2, math.pi / 4)
+    local xt2 = (xt * scaleValues[scale] + xshift)
+    local yt2 = (yt * scaleValues[scale] + yshift)
+    local xt3 = xt2--(xt2 + yt2 * sheark)
+    local yt3 = yt2--(yt2 + xt2 * sheark)
+    return xt3 * tilesize - 1, yt3 * tilesize - 1
 end

@@ -20,4 +20,9 @@ function tilesetParser.loadTerrain()
     terrain["grass3"] = parseTile(source, 2, 11)
     terrain["grass4"] = parseTile(source, 3, 11)
     
+    local source = love.image.newImageData("ressource/terrain_atlas.png")
+    local imgData = love.image.newImageData(tilesize * 2, tilesize * 3)
+    imgData:paste(source, 0, 0, 15 * tilesize, 12 * tilesize, tilesize * 3, tilesize * 3)
+    hut = love.graphics.newImage(imgData)
+    
 end
