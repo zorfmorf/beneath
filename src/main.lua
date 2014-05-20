@@ -2,6 +2,7 @@ class = require 'lib/30logclean'
 require 'lib/misc'
 
 require 'control/inputHandler'
+require 'model/object'
 require 'model/world'
 require 'view/cameraHandler'
 require 'view/drawHandler'

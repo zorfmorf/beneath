@@ -8,9 +8,9 @@ function World:__init()
     for i=1,20 do
         self.tiles[i] = {}
         for j=1,20 do
-            self.tiles[i][j] = "grass"..math.random(1,4)
+            self.tiles[i][j] = { texture = "grass"..math.random(1,4), object = nil }
         end
     end
     self.objects = {}
-    table.insert(self.objects, hut)
+    table.insert(self.objects, Object:new())
 end
