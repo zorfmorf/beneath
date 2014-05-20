@@ -11,4 +11,6 @@ function World:__init()
             self.tiles[i][j] = "grass"..math.random(1,4)
         end
     end
+    self.objects = {}
+    table.insert(self.objects, hut)
 end

@@ -5,11 +5,9 @@ drawHandler = {}
 function drawHandler.drawTerrain()
 
     love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
-    love.graphics.rotate(math.pi / 4)
     local scale = cameraHandler.getZoom()
     love.graphics.scale(scale, scale)
     love.graphics.translate( cameraHandler.getShifts() )
-    --love.graphics.shear(sheark, sheark)
     
     for y,row in pairs(world.tiles) do
         
@@ -21,16 +19,17 @@ function drawHandler.drawTerrain()
                 love.graphics.setColor(255, 255, 255, 255)
             end
             
-            love.graphics.draw(terrain[tile], (x - 1) * tilesize, (y - 1) * tilesize)
+            love.graphics.draw(terrain[tile], x * tilesize, y * tilesize)
             
         end
         
     end
     
-    love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.circle("fill", (point.x - 1) * tilesize, (point.y - 1) * tilesize, 5, 20)
+    for i,object in pairs(world.objects) do
+        love.graphics.draw(object, point.x * tilesize, point.y * tilesize, 0, 1, 1, tilesize, tilesize * 2)
+    end
     
-    love.graphics.origin()
-    local xt, yt = cameraHandler.convertWorldCoordinates(10, 10)
-    love.graphics.draw(hut,(xt - 1) / tilesize, (yt - 1) / tilesize)
+    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.circle("fill", point.x * tilesize, point.y * tilesize, 5, 20)
+    
 end

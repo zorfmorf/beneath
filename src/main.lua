@@ -30,10 +30,10 @@ end
 
 
 function love.keypressed(key, isRepeat)
-    if key == "up" and not isRepeat then cameraHandler.shiftCamera(-0.5, -0.5) end
-    if key == "down" and not isRepeat then cameraHandler.shiftCamera(0.5, 0.5) end
-    if key == "left" and not isRepeat then cameraHandler.shiftCamera(-0.5, 0.5) end
-    if key == "right" and not isRepeat then cameraHandler.shiftCamera(0.5, -0.5) end
+    if key == "up" and not isRepeat then cameraHandler.shiftCamera(0, -1) end
+    if key == "down" and not isRepeat then cameraHandler.shiftCamera(0, 1) end
+    if key == "left" and not isRepeat then cameraHandler.shiftCamera(-1, 0) end
+    if key == "right" and not isRepeat then cameraHandler.shiftCamera(1, 0) end
     if key == "escape" then love.event.push("quit") end
 end
 
