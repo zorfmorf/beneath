@@ -72,16 +72,15 @@ function hudHandler.draw()
     local mx, my = love.mouse.getPosition()
     
     -- draw buildables
-    if active then
-        if mx > love.graphics.getWidth() - tilesize * 2 and my < tilesize * 3 then
-            love.graphics.setColor(230, 150, 150, 255)
-        end
-        
-        love.graphics.draw(objects["default"], love.graphics.getWidth() - tilesize * 2, 10)
+    if mx > xpos and my < tilesize * 3 then
+        love.graphics.setColor(230, 150, 150, 255)
     end
     
+    love.graphics.draw(objects["default"], xpos, 10)
+    
     love.graphics.setColor(255, 255, 255, 255)
+    local scale = cameraHandler.getZoom()
     if not love.mouse.isVisible() then
-        love.graphics.draw(cursor, mx, my, 0, 1, 1, cursor:getWidth() / 2, cursor:getHeight() / 2)
+        love.graphics.draw(cursor, mx, my, 0, scale, scale, 0, cursor:getHeight() * 0.4)
     end
 end
