@@ -1,4 +1,7 @@
 
+local mouseState = "free"
+local buildCandidate = nil
+
 logicHandler = {}
 
 function logicHandler.init()
@@ -30,10 +33,31 @@ function logicHandler.placeObject(object)
     return true
 end
 
+function logicHandler.switchToBuildMode(object)
+    mouseState = "build"
+    buildCandidate = object
+end
+
+function logicHandler.deselect()
+    mouseState = "free"
+    hudHandler.activate()
+end
 
 function logicHandler.tileSelect(x, y)
-    local tile = world:getTile(x, y)
-    if tile ~= nil then
-        local result = logicHandler.placeObject(Object:new(x, y))
+    
+    if mouseState ~= "free" then
+        
+        local tile = world:getTile(x, y)
+        if tile ~= nil then
+            buildCandidate.x = x
+            buildCandidate.y = y
+            local result = logicHandler.placeObject(buildCandidate)
+            if result then
+                mouseState = "free"
+                hudHandler.activate()
+            end
+        end
+        
     end
+    
 end

@@ -8,7 +8,7 @@ function World:__init()
     for i=1,20 do
         self.tiles[i] = {}
         for j=1,20 do
-            self.tiles[i][j] = { texture = "grass"..math.random(1,4), object = nil }
+            self.tiles[i][j] = { texture = "grass"..math.random(1,3), object = nil }
         end
     end
     self.objects = {}

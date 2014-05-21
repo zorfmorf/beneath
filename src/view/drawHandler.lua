@@ -25,6 +25,7 @@ function drawHandler.drawTerrain()
         
     end
     
+    love.graphics.setColor(255, 255, 255, 255)
     for i,object in pairs(world.objects) do
         love.graphics.draw(objects[object.image], object.x * tilesize, object.y * tilesize, 0, 1, 1, 0, tilesize * 1.2)
     end

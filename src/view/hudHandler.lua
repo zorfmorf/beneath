@@ -1,0 +1,87 @@
+
+hudHandler = {}
+
+local sidebarseed = {} -- randomseed for sidebar so that it looks always the same
+local active = false -- if not active, sidebar is deactivaed
+local sidebarslidespeed = 200
+local sideshift = 0 -- current sidebar shift
+local width = 0 -- max sidebar width
+local cursor = nil -- current cursor icon
+
+function hudHandler.init()
+    
+    active = true
+    width = tilesize * 2
+    sideshift = width
+    
+    for i=1,500 do
+        sidebarseed[i] = math.random(1, 8)
+        if sidebarseed[i] > 5 then sidebarseed[i] = 1 end
+    end
+end
+
+-- make hud visible again
+function hudHandler.activate()
+    active = true
+    love.mouse.setVisible(true)
+end
+
+function hudHandler.update(dt)
+    
+    if active and sideshift < width then
+        sideshift = math.min(sideshift + dt * sidebarslidespeed, width)
+    end
+    
+    if not active and sideshift > 0 then
+        sideshift = math.max(sideshift - dt * sidebarslidespeed, 0)
+    end
+end
+
+-- returns true if the mouse is hovering over hud items
+function hudHandler.catchMouseClick(x, y)
+    if active and x > love.graphics.getWidth() - (sideshift + tilesize) then
+        if x > love.graphics.getWidth() - sideshift and y < tilesize * 3 then
+            active = false
+            love.mouse.setVisible(false)
+            local object = Object:new()
+            cursor = objects[object.image]
+            logicHandler.switchToBuildMode(object)
+        end
+        return true
+    end
+    return false
+end
+
+function hudHandler.draw()
+    love.graphics.origin()
+    
+    local xpos = love.graphics.getWidth() - sideshift
+    love.graphics.setColor(255, 255, 255, 255)
+    
+    local y = 0
+    local seedIndex = 1
+    while y * tilesize < love.graphics.getHeight() do
+        for i=1,3 do
+            love.graphics.draw(terrain["stone"..math.max(sidebarseed[seedIndex + i] % 5, 1)], xpos + (i - 1.5) * tilesize, y * tilesize)
+        end
+        love.graphics.draw(terrain["col_mid"..sidebarseed[seedIndex]], xpos - tilesize, y * tilesize)
+        y = y + 1
+        seedIndex = seedIndex + 4
+    end
+    
+    local mx, my = love.mouse.getPosition()
+    
+    -- draw buildables
+    if active then
+        if mx > love.graphics.getWidth() - tilesize * 2 and my < tilesize * 3 then
+            love.graphics.setColor(230, 150, 150, 255)
+        end
+        
+        love.graphics.draw(objects["default"], love.graphics.getWidth() - tilesize * 2, 10)
+    end
+    
+    love.graphics.setColor(255, 255, 255, 255)
+    if not love.mouse.isVisible() then
+        love.graphics.draw(cursor, mx, my, 0, 1, 1, cursor:getWidth() / 2, cursor:getHeight() / 2)
+    end
+end
