@@ -13,7 +13,7 @@ function drawHandler.drawTerrain()
         
         for x,tile in pairs(row) do
             
-            if x == math.floor(point.x) and y == math.floor(point.y) then
+            if tile.object ~= nil then
                 love.graphics.setColor(255, 200, 200, 255)
             else
                 love.graphics.setColor(255, 255, 255, 255)
@@ -26,10 +26,7 @@ function drawHandler.drawTerrain()
     end
     
     for i,object in pairs(world.objects) do
-        love.graphics.draw(objects[object.image], 1 * tilesize, 1 * tilesize, 0, 1, 1, tilesize, tilesize * 2.3)
+        love.graphics.draw(objects[object.image], object.x * tilesize, object.y * tilesize, 0, 1, 1, 0, tilesize * 1.2)
     end
-    
-    love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.circle("fill", point.x * tilesize, point.y * tilesize, 5, 20)
     
 end

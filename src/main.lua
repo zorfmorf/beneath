@@ -2,6 +2,7 @@ class = require 'lib/30logclean'
 require 'lib/misc'
 
 require 'control/inputHandler'
+require 'control/logicHandler'
 require 'model/object'
 require 'model/world'
 require 'view/cameraHandler'
@@ -14,7 +15,6 @@ function love.load()
     cameraHandler.init()
     
     world = World()
-    point = { x=0, y=0 }
 end
 
 
@@ -47,8 +47,7 @@ end
 function love.mousepressed(x, y, button)
     if button == "l" then
         local xc, yc = cameraHandler.convertScreenCoordinates(x, y)
-        point.x = xc
-        point.y = yc 
+        logicHandler.tileSelect(xc, yc)
     end
     if button == "wu" then cameraHandler.zoomIn() end
     if button == "wd" then cameraHandler.zoomOut() end

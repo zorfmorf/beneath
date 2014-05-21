@@ -12,5 +12,16 @@ function World:__init()
         end
     end
     self.objects = {}
-    table.insert(self.objects, Object:new())
+end
+
+function World:getTile(tx, ty)
+    
+    local x = math.floor(tx)
+    local y = math.floor(ty)
+    
+    if self.tiles[y] ~= nil and self.tiles[y][x] ~= nil then
+        return self.tiles[y][x]
+    end
+    return nil
+    
 end
