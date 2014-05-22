@@ -39,8 +39,8 @@ function world.addObject(object)
     objects[object.id] = object
     
     -- mark tiles as used so that no other building can be placed there
-    for i=0,object.xsize do
-        for j=0,object.ysize do
+    for i=0,object.xsize-1 do
+        for j=0,object.ysize-1 do
             tiles[math.floor(object.y + j)][math.floor(object.x + i)].object = object
         end
     end

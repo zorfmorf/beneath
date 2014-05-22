@@ -7,12 +7,12 @@ local sidebarslidespeed = 200
 local sideshift = 0 -- current sidebar shift
 local width = 0 -- max sidebar width
 local cursor = nil -- current cursor icon
-
+            active = false
 function hudHandler.init()
     
-    active = true
+    active = false
     width = tilesize * 2
-    sideshift = width
+    sideshift = 0
     
     for i=1,500 do
         sidebarseed[i] = math.random(1, 8)
@@ -22,7 +22,6 @@ end
 
 -- make hud visible again
 function hudHandler.activate()
-    active = true
     love.mouse.setVisible(true)
 end
 
@@ -35,17 +34,43 @@ function hudHandler.update(dt)
     if not active and sideshift > 0 then
         sideshift = math.max(sideshift - dt * sidebarslidespeed, 0)
     end
+    
+    local x = love.mouse.getX()
+    if logicHandler.isInFreeMode() and x > love.graphics.getWidth() - (sideshift + tilesize) then
+        active = true
+    else
+        active = false
+    end
+    
 end
 
 -- returns true if the mouse is hovering over hud items
 function hudHandler.catchMouseClick(x, y)
     if active and x > love.graphics.getWidth() - (sideshift + tilesize) then
-        if x > love.graphics.getWidth() - sideshift and y < tilesize * 3 then
-            active = false
-            love.mouse.setVisible(false)
-            local object = Object:new()
-            cursor = objects[object.image]
-            logicHandler.switchToBuildMode(object)
+        if x > love.graphics.getWidth() - sideshift then
+            
+            local builditems = logicHandler.getBuildItems()
+            local yshift = 0
+            for i,builditem in pairs(builditems) do
+                
+                local item = objects[builditem]
+                
+                local yvalue = i * 5 + yshift
+                
+                if y > yvalue and y < yvalue + item:getHeight() then
+                    love.mouse.setVisible(false)
+                    
+                    local object = Object:new()
+                    
+                    if builditem == "tree" then object = Tree:new() end
+                   
+                    cursor = objects[object.image]
+                    logicHandler.switchToBuildMode(object)
+                    
+                    return
+                end
+                yshift = item:getHeight()
+            end
         end
         return true
     end
@@ -58,6 +83,19 @@ function hudHandler.draw()
     local xpos = love.graphics.getWidth() - sideshift
     love.graphics.setColor(255, 255, 255, 255)
     
+    -- draw sidebar
+    local y = 0
+    local seedIndex = 1
+    while y * tilesize < love.graphics.getHeight() do
+        for i=1,3 do
+            love.graphics.draw(terrain["stone"..math.max(sidebarseed[seedIndex + i] % 5, 1)], 
+                xpos + (i - 1.5) * tilesize, y * tilesize)
+        end
+        love.graphics.draw(terrain["col_mid"..sidebarseed[seedIndex]], xpos - tilesize, y * tilesize)
+        y = y + 1
+        seedIndex = seedIndex + 4
+    end
+    
     -- draw mouse build icon
     local mx, my = love.mouse.getPosition()
     local scale = cameraHandler.getZoom()
@@ -65,25 +103,23 @@ function hudHandler.draw()
         love.graphics.draw(cursor, mx, my, 0, scale, scale, 0, cursor:getHeight() * 0.4)
     end
     
-    -- draw sidebar
-    local y = 0
-    local seedIndex = 1
-    while y * tilesize < love.graphics.getHeight() do
-        for i=1,3 do
-            love.graphics.draw(terrain["stone"..math.max(sidebarseed[seedIndex + i] % 5, 1)], xpos + (i - 1.5) * tilesize, y * tilesize)
+    -- draw buildables    
+    local builditems = logicHandler.getBuildItems()
+    local yshift = 0
+    for i,item in pairs(builditems) do
+        
+        local image = objects[item]
+        
+        local yvalue = i * 5 + yshift
+        
+        if mx > xpos and my > yvalue and my < yvalue + image:getHeight() then
+            love.graphics.setColor(230, 150, 150, 255)
+        else
+            love.graphics.setColor(255, 255, 255, 255)
         end
-        love.graphics.draw(terrain["col_mid"..sidebarseed[seedIndex]], xpos - tilesize, y * tilesize)
-        y = y + 1
-        seedIndex = seedIndex + 4
+        
+        love.graphics.draw(image, xpos, yvalue)
+        yshift = image:getHeight()
     end
-    
-    
-    
-    -- draw buildables
-    if mx > xpos and my < tilesize * 3 then
-        love.graphics.setColor(230, 150, 150, 255)
-    end
-    
-    love.graphics.draw(objects["default"], xpos, 10)
     
 end

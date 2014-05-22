@@ -21,6 +21,7 @@ function love.load()
     tilesetParser.loadTerrain()
     cameraHandler.init()
     hudHandler.init()
+    logicHandler.init()
     
     world.init()
 end

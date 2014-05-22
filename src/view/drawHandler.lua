@@ -28,7 +28,7 @@ function drawHandler.drawTerrain()
     love.graphics.setColor(255, 255, 255, 255)
     for i,id in pairs(world.getDrawOrder()) do
         local object = world.getObject(id)
-        love.graphics.draw(objects[object.image], object.x * tilesize, object.y * tilesize, 0, 1, 1, 0, tilesize * 1.2)
+        love.graphics.draw(objects[object.image], object.x * tilesize, object.y * tilesize, 0, 1, 1, 0, objects[object.image]:getHeight() - object.ysize * tilesize)
     end
     
 end
