@@ -58,6 +58,14 @@ function hudHandler.draw()
     local xpos = love.graphics.getWidth() - sideshift
     love.graphics.setColor(255, 255, 255, 255)
     
+    -- draw mouse build icon
+    local mx, my = love.mouse.getPosition()
+    local scale = cameraHandler.getZoom()
+    if not love.mouse.isVisible() then
+        love.graphics.draw(cursor, mx, my, 0, scale, scale, 0, cursor:getHeight() * 0.4)
+    end
+    
+    -- draw sidebar
     local y = 0
     local seedIndex = 1
     while y * tilesize < love.graphics.getHeight() do
@@ -69,7 +77,7 @@ function hudHandler.draw()
         seedIndex = seedIndex + 4
     end
     
-    local mx, my = love.mouse.getPosition()
+    
     
     -- draw buildables
     if mx > xpos and my < tilesize * 3 then
@@ -78,9 +86,4 @@ function hudHandler.draw()
     
     love.graphics.draw(objects["default"], xpos, 10)
     
-    love.graphics.setColor(255, 255, 255, 255)
-    local scale = cameraHandler.getZoom()
-    if not love.mouse.isVisible() then
-        love.graphics.draw(cursor, mx, my, 0, scale, scale, 0, cursor:getHeight() * 0.4)
-    end
 end
