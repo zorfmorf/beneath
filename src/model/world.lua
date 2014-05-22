@@ -6,6 +6,7 @@ local objects = nil -- objects can be placed on tiles
 local drawOrder = nil -- draw order for objects
 
 
+-- creates a new world. placeholder
 function world.init()
     tiles = {}
     for i=1,20 do
@@ -20,15 +21,20 @@ function world.init()
 end
 
 
+-- returns all tiles
 function world.getTiles()
     return tiles
 end
 
 
+-- returns list of object ids that determines order in which objects need to
+-- be drawn
 function world.getDrawOrder()
     return drawOrder
 end
 
+
+-- add object to world. marks tiles as built and calculates draw order
 function world.addObject(object)
     objects[object.id] = object
     
@@ -47,10 +53,14 @@ function world.addObject(object)
     table.insert(drawOrder, i, object.id)
 end
 
+
+-- returns object with given id
 function world.getObject(id)
     return objects[id]
 end
 
+
+-- return tile at given position or nil
 function world.getTile(tx, ty)
     
     local x = math.floor(tx)

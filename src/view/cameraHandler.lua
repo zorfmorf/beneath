@@ -35,9 +35,16 @@ function cameraHandler.zoomOut()
     if scale > 1 then scale = scale - 1 end
 end
 
-function cameraHandler.shiftCamera(xv, yv)
+-- shift camera by fixed value (keypress)
+function cameraHandler.keyShiftCamera(xv, yv)
     if xv then xshift = xshift - (cameraShiftValue / scaleValues[scale]) * xv end
     if yv then yshift = yshift - (cameraShiftValue / scaleValues[scale]) * yv end
+end
+
+-- shift camera by relative value (mouse drag)
+function cameraHandler.dragShiftCamera(xv, yv)
+    xshift = xshift + xv / scaleValues[scale]
+    yshift = yshift + yv / scaleValues[scale]
 end
 
 -- returns world coordinates

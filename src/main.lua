@@ -28,6 +28,7 @@ end
 
 function love.update(dt)
     hudHandler.update(dt)
+    gameInputHandler.update(dt)
 end
 
 
@@ -53,4 +54,9 @@ end
 
 function love.mousepressed(x, y, button)
     gameInputHandler.mousepressed(x, y, button)
+end
+
+
+function love.mousereleased(x, y, button)
+    gameInputHandler.mousereleased(x, y, button)
 end
