@@ -18,6 +18,12 @@ function world.init()
     
     objects = {}
     drawOrder = {}
+    
+    for i=1,200 do
+        local x = math.random() * 20
+        local y = math.random() * 20
+        world.addObject(Tree:new(x, y))
+    end
 end
 
 
@@ -36,13 +42,26 @@ end
 
 -- add object to world. marks tiles as built and calculates draw order
 function world.addObject(object)
+    
+    local tileselection = {}
+    
+    -- first validate that object can be placed
+    for i=object.x - object.xsize / 2, object.x + object.xsize / 2, 0.5 do
+        for j=object.y - object.ysize / 2, object.y + object.ysize / 2, 0.5 do
+            local tile = world.getTile(i, j)
+            if tile == nil or tile.object ~= nil then
+                return false
+            else
+                table.insert(tileselection, tile)
+            end
+        end
+    end
+    
     objects[object.id] = object
     
     -- mark tiles as used so that no other building can be placed there
-    for i=0,object.xsize-1 do
-        for j=0,object.ysize-1 do
-            tiles[math.floor(object.y + j)][math.floor(object.x + i)].object = object
-        end
+    for i,tile in pairs(tileselection) do
+        tile.object = object
     end
     
     -- add object to draw order
@@ -51,6 +70,7 @@ function world.addObject(object)
         i = i + 1       
     end
     table.insert(drawOrder, i, object.id)
+    return true
 end
 
 

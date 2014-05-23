@@ -62,7 +62,7 @@ function hudHandler.catchMouseClick(x, y)
                     
                     local object = Object:new()
                     
-                    if builditem == "tree" then object = Tree:new() end
+                    if builditem == "tree_leaf" then object = Tree:new() end
                    
                     cursor = objects[object.image]
                     logicHandler.switchToBuildMode(object)
@@ -100,7 +100,7 @@ function hudHandler.draw()
     local mx, my = love.mouse.getPosition()
     local scale = cameraHandler.getZoom()
     if not love.mouse.isVisible() then
-        love.graphics.draw(cursor, mx, my, 0, scale, scale, 0, cursor:getHeight() * 0.4)
+        love.graphics.draw(cursor, mx, my, 0, scale, scale, cursor:getWidth() / 2, cursor:getHeight() - tilesize)
     end
     
     -- draw buildables    

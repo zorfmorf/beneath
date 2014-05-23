@@ -39,8 +39,19 @@ function tilesetParser.loadTerrain()
     imgData:paste(source, 0, 0, 15 * tilesize, 12 * tilesize, tilesize * 3, tilesize * 3)
     objects["default"] = love.graphics.newImage(imgData)
     
+    -- large tree
     imgData = love.image.newImageData(tilesize * 2, tilesize * 5)
     imgData:paste(source, 0, 0, 30 * tilesize, 0 * tilesize, tilesize * 2, tilesize * 5)
-    objects["tree"] = love.graphics.newImage(imgData)
+    objects["tree_large"] = love.graphics.newImage(imgData)
+    
+    -- leaf tree
+    imgData = love.image.newImageData(tilesize * 3, tilesize * 4)
+    imgData:paste(source, 0, 0, 29 * tilesize, 28 * tilesize, tilesize * 3, tilesize * 4)
+    objects["tree_leaf"] = love.graphics.newImage(imgData)
+    
+    -- small tree
+    imgData = love.image.newImageData(tilesize * 2, tilesize * 3)
+    imgData:paste(source, 0, 0, 27 * tilesize, 29 * tilesize, tilesize * 2, tilesize * 3)
+    objects["tree_small"] = love.graphics.newImage(imgData)
     
 end

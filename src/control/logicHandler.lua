@@ -8,28 +8,15 @@ logicHandler = {}
 
 function logicHandler.init()
     table.insert(builditems, "default")
-    table.insert(builditems, "tree")
+    table.insert(builditems, "tree_leaf")
 end
 
 function logicHandler.getBuildItems()
     return builditems
 end
 
-function logicHandler.placeObject(object)
-    
-    -- first validate that object can be placed
-    for i=0,object.xsize-1 do
-        for j=0,object.ysize-1 do
-            local tile = world.getTile(object.x + i, object.y + j)
-            if tile == nil or tile.object ~= nil then
-                return false
-            end
-        end
-    end
-    
-    -- place object
-    world.addObject(object)
-    return true
+function logicHandler.placeObject(object)    
+    return world.addObject(object)
 end
 
 function logicHandler.switchToBuildMode(object)
