@@ -8,7 +8,7 @@ logicHandler = {}
 
 function logicHandler.init()
     table.insert(builditems, "default")
-    table.insert(builditems, "tree_leaf")
+    table.insert(builditems, "tree_small")
 end
 
 function logicHandler.getBuildItems()

@@ -3,14 +3,15 @@ require 'lib/misc'
 
 require 'control/gameInputHandler'
 require 'control/logicHandler'
+require 'misc/charsetParser'
+require 'misc/tilesetParser'
+require 'model/char'
 require 'model/object'
 require 'model/world'
 require 'view/cameraHandler'
 require 'view/consoleHandler'
 require 'view/drawHandler'
 require 'view/hudHandler'
-require 'view/tilesetParser'
-
 
 function love.load()
     
@@ -19,6 +20,7 @@ function love.load()
     console = true
     
     tilesetParser.loadTerrain()
+    charsetParser.parseCharset()
     cameraHandler.init()
     hudHandler.init()
     logicHandler.init()
@@ -28,6 +30,7 @@ end
 
 
 function love.update(dt)
+    char:update(dt)
     hudHandler.update(dt)
     gameInputHandler.update(dt)
 end

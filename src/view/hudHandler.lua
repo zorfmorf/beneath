@@ -62,7 +62,7 @@ function hudHandler.catchMouseClick(x, y)
                     
                     local object = Object:new()
                     
-                    if builditem == "tree_leaf" then object = Tree:new() end
+                    if builditem == "tree_small" then object = Tree:new() end
                    
                     cursor = objects[object.image]
                     logicHandler.switchToBuildMode(object)

@@ -13,7 +13,7 @@ function drawHandler.drawTerrain()
         
         for x,tile in pairs(row) do
             
-            if tile.object ~= nil then
+            if tile.object ~= nil and console then
                 love.graphics.setColor(255, 200, 200, 255)
             else
                 love.graphics.setColor(255, 255, 255, 255)
@@ -31,5 +31,7 @@ function drawHandler.drawTerrain()
         local image = objects[object.image]
         love.graphics.draw(image, object.x * tilesize, object.y * tilesize, 0, 1, 1, image:getWidth() / 2, image:getHeight())
     end
+    
+    love.graphics.draw(charset, anim_quad[char:getAnimation()], char.x * tilesize, char.y * tilesize, 0, 1, 1, 32, 64)
     
 end

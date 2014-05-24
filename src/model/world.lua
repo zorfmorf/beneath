@@ -24,6 +24,8 @@ function world.init()
         local y = math.random() * 20
         world.addObject(Tree:new(x, y))
     end
+    
+    char = Char:new(5.5, 20.5)
 end
 
 
