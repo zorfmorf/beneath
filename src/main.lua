@@ -30,7 +30,7 @@ end
 
 
 function love.update(dt)
-    char:update(dt)
+    world.update(dt)
     hudHandler.update(dt)
     gameInputHandler.update(dt)
 end

@@ -1,9 +1,9 @@
-
 world = {}
 
 local tiles = nil -- the floor
 local objects = nil -- objects can be placed on tiles
-local drawOrder = nil -- draw order for objects
+local objectDrawOrder = nil -- draw order for objects
+local charDrawOrder = nil -- draw order for chars
 
 
 -- creates a new world. placeholder
@@ -17,15 +17,22 @@ function world.init()
     end
     
     objects = {}
-    drawOrder = {}
+    objectDrawOrder = {}
     
     for i=1,400 do
-        local x = math.random() * 20
-        local y = math.random() * 20
+        local x = math.random() * 21
+        local y = math.random() * 21
         world.addObject(Tree:new(x, y))
     end
     
-    char = Char:new(5.5, 20.5)
+    characters = {}
+    charDrawOrder = {}
+    
+    for i=1,20 do
+        local char = Char:new(math.random() * 20 + 1, math.random() * 20 + 1)
+        char.animcycle = math.random() * 5 + 1
+        world.addChar(char)
+    end
 end
 
 
@@ -35,10 +42,20 @@ function world.getTiles()
 end
 
 
--- returns list of object ids that determines order in which objects need to
--- be drawn
-function world.getDrawOrder()
-    return drawOrder
+-- returns list of ids for chars and objects in the order they need to be drawn
+function world.getDrawOrders()
+    return objectDrawOrder, charDrawOrder
+end
+
+
+-- add char to char list and update draw order
+function world.addChar(char)
+    characters[char.id] = char
+    local i = 1
+    while charDrawOrder[i] ~= nil and characters[charDrawOrder[i]].y < char.y do
+        i = i + 1       
+    end
+    table.insert(charDrawOrder, i, char.id)
 end
 
 
@@ -68,17 +85,31 @@ function world.addObject(object)
     
     -- add object to draw order
     local i = 1
-    while drawOrder[i] ~= nil and objects[drawOrder[i]].y < object.y do
+    while objectDrawOrder[i] ~= nil and objects[objectDrawOrder[i]].y < object.y do
         i = i + 1       
     end
-    table.insert(drawOrder, i, object.id)
+    table.insert(objectDrawOrder, i, object.id)
     return true
+end
+
+
+function world.update(dt)
+    for i,char in pairs(characters) do
+        char:update(dt)
+    end
 end
 
 
 -- returns object with given id
 function world.getObject(id)
+    if id == nil then return nil end
     return objects[id]
+end
+
+-- returns char with given id
+function world.getChar(id)
+    if id == nil then return nil end
+    return characters[id]
 end
 
 

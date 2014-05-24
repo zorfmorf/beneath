@@ -26,12 +26,25 @@ function drawHandler.drawTerrain()
     end
     
     love.graphics.setColor(255, 255, 255, 255)
-    for i,id in pairs(world.getDrawOrder()) do
-        local object = world.getObject(id)
-        local image = objects[object.image]
-        love.graphics.draw(image, object.x * tilesize, object.y * tilesize, 0, 1, 1, image:getWidth() / 2, image:getHeight())
+    
+    local objOrder, charOrder = world.getDrawOrders()
+    local i = 1
+    local j = 1
+    while objOrder[i] ~= nil or charOrder[j] ~= nil do
+        
+        local obj = world.getObject(objOrder[i])
+        local char = world.getChar(charOrder[j])
+        
+        if char == nil or (obj ~= nil and char.y > obj.y) then
+            local image = objects[obj.image]
+            love.graphics.draw(image, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, image:getWidth() / 2, image:getHeight())
+            i = i + 1
+        else
+            love.graphics.draw(charset, anim_quad[char:getAnimation()], char.x * tilesize, char.y * tilesize, 0, 1, 1, 32, 64)
+            j = j + 1
+        end
+
     end
     
-    love.graphics.draw(charset, anim_quad[char:getAnimation()], char.x * tilesize, char.y * tilesize, 0, 1, 1, 32, 64)
     
 end

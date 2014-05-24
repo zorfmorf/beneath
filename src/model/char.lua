@@ -1,4 +1,6 @@
 
+CHAR_ID = 1
+
 local animspeed = 10
 
 Char = class()
@@ -11,6 +13,8 @@ function Char:__init(x, y)
     self.anim = "walk"
     self.direction = "d"
     self.animcycle = 1
+    self.id = CHAR_ID
+    CHAR_ID = CHAR_ID + 1
 end
 
 function Char:update(dt)
