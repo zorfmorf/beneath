@@ -25,6 +25,12 @@ end
 -- Returns a path or nil if none exists
 function astar.calculate(map, start, goal)
     
+    print( "Running A*")
+    
+    if not map or not start or not goal then return nil end
+    
+    print( "From:", start.x, start.y, "To:", goal.x, goal.y)
+    
     local openset = {}
     local nodes = {}
     local path = {}
@@ -33,7 +39,7 @@ function astar.calculate(map, start, goal)
     for y,row in pairs(map) do
         nodes[y] = {}
         for x,entry in pairs(row) do
-            nodes[y][x] = { visited=false, x=x, y=y }
+            nodes[y][x] = { visited=(not entry.object == nil), x=x, y=y }
         end
     end
     
@@ -52,6 +58,7 @@ function astar.calculate(map, start, goal)
         local current = table.remove(openset, checkIndex)
         
         if current.x == goal.x and current.y == goal.y then
+            print( "Found a path!" )
             return retracePath(path, current)
         end
         
@@ -72,5 +79,6 @@ function astar.calculate(map, start, goal)
         end
     end
     
+    print( "Astar could not find a path" )
     return nil
 end

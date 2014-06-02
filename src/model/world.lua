@@ -19,7 +19,7 @@ function world.init()
     objects = {}
     objectDrawOrder = {}
     
-    for i=1,400 do
+    for i=1,50 do
         local x = math.random() * 21
         local y = math.random() * 21
         world.addObject(Tree:new(x, y))
@@ -28,8 +28,8 @@ function world.init()
     characters = {}
     charDrawOrder = {}
     
-    for i=1,20 do
-        local char = Char:new(math.random() * 20 + 1, math.random() * 20 + 1)
+    for i=1,1 do
+        local char = Char:new(9, 20.5)
         char.animcycle = math.random() * 5 + 1
         world.addChar(char)
     end
