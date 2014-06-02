@@ -3,6 +3,8 @@
     Implementation of the A* pathfinding algorithm
     Based on the wikipedia article on A*
     http://en.wikipedia.org/wiki/A*
+    
+    Not a general solution but optimized towards beneath
 
 ]]--
 
@@ -18,18 +20,17 @@ end
 -- Returns a path by retracing visited nodes from goal
 local function retracePath(path, node)
     if node.parent then retracePath(path, node.parent) end
-    return table.insert(path, node)
+    node.x = node.x + 0.5
+    node.y = node.y + 0.5
+    table.insert(path, node)
+    return path
 end
 
 
 -- Returns a path or nil if none exists
 function astar.calculate(map, start, goal)
     
-    print( "Running A*")
-    
     if not map or not start or not goal then return nil end
-    
-    print( "From:", start.x, start.y, "To:", goal.x, goal.y)
     
     local openset = {}
     local nodes = {}
@@ -39,7 +40,7 @@ function astar.calculate(map, start, goal)
     for y,row in pairs(map) do
         nodes[y] = {}
         for x,entry in pairs(row) do
-            nodes[y][x] = { visited=(not entry.object == nil), x=x, y=y }
+            nodes[y][x] = { visited=(not (entry.object == nil)), x=x, y=y }
         end
     end
     
@@ -58,13 +59,14 @@ function astar.calculate(map, start, goal)
         local current = table.remove(openset, checkIndex)
         
         if current.x == goal.x and current.y == goal.y then
-            print( "Found a path!" )
             return retracePath(path, current)
         end
         
-        for k = -1,1,2 do
-            for l = -1,1,2 do
-                if nodes[current.y + k]
+        for k = -1,1 do
+            for l = -1,1 do
+                if not (k == l) -- sady there is no xor in lua
+                   and (k == 0 or l == 0)
+                   and nodes[current.y + k]
                    and nodes[current.y + k][current.x + l]
                    and not nodes[current.y + k][current.x + l].visited then
                     
@@ -79,6 +81,5 @@ function astar.calculate(map, start, goal)
         end
     end
     
-    print( "Astar could not find a path" )
     return nil
 end

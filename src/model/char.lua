@@ -23,7 +23,7 @@ end
 
 function Char:update(dt)
     self.animcycle = self.animcycle + dt * ANIM_SPEED
-    if self.animcycle >= 9 then 
+    if self.animcycle >= 9 or self.state == "idle" then 
         self.animcycle = 1
     end
     
@@ -53,8 +53,10 @@ function Char:update(dt)
             local tile = world.getTile(self.x, self.y)
             self.path = astar.calculate(world.getTiles(), {x=math.floor(self.x), y=math.floor(self.y)}, self.target)
             if self.path then
+                print( "Now walking to target" )
                 self.state = "walk"
             else
+                print( "Could not find path to target" )
                 self.target = nil
             end
         end
