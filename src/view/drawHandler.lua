@@ -25,7 +25,14 @@ function drawHandler.drawTerrain()
         
     end
     
+    
     love.graphics.setColor(255, 255, 255, 255)
+    
+    if console and world.getChar(1).path then
+        for i,entry in pairs(world.getChar(1).path) do
+            love.graphics.circle("fill", entry.x * tilesize, entry.y * tilesize, tilesize / 4, 20)
+        end
+    end
     
     local objOrder, charOrder = world.getDrawOrders()
     local i = 1

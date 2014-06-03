@@ -33,6 +33,12 @@ function logicHandler.deselect()
     hudHandler.activate()
 end
 
+function logicHandler.recalculatePaths()
+    for i,char in pairs(world.getChars()) do
+        char.path = nil
+    end
+end
+
 function logicHandler.tileSelect(x, y)
     
     if mouseState ~= "free" then
@@ -45,6 +51,7 @@ function logicHandler.tileSelect(x, y)
             if result then
                 mouseState = "free"
                 hudHandler.activate()
+                logicHandler.recalculatePaths()
             end
         end
         

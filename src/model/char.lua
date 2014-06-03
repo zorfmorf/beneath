@@ -2,7 +2,7 @@
 CHAR_ID = 1
 
 local ANIM_SPEED = 10
-local WALK_SPEED = 5
+local WALK_SPEED = 1.5
 
 Char = class()
 
@@ -29,6 +29,11 @@ function Char:update(dt)
     
     if self.state == "walk" then
         
+        if self.path == nil then
+            self.state = "idle"
+            return
+        end
+        
         local target = self.path[1]
         
         if self.y < target.y then self.y = math.min(target.y, self.y + WALK_SPEED * dt) self.direction = "d" end
@@ -53,10 +58,8 @@ function Char:update(dt)
             local tile = world.getTile(self.x, self.y)
             self.path = astar.calculate(world.getTiles(), {x=math.floor(self.x), y=math.floor(self.y)}, self.target)
             if self.path then
-                print( "Now walking to target" )
                 self.state = "walk"
             else
-                print( "Could not find path to target" )
                 self.target = nil
             end
         end

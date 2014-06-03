@@ -42,6 +42,12 @@ function world.getTiles()
 end
 
 
+-- returns all chars
+function world.getChars()
+    return characters
+end
+
+
 -- returns list of ids for chars and objects in the order they need to be drawn
 function world.getDrawOrders()
     return objectDrawOrder, charDrawOrder
