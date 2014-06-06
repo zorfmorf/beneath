@@ -71,8 +71,8 @@ function world.addObject(object)
     local tileselection = {}
     
     -- first validate that object can be placed
-    for i=object.x - object.xsize / 2, object.x + object.xsize / 2, 0.5 do
-        for j=object.y - object.ysize, object.y, 0.5 do
+    for i=object.x - object.xsize / 4, object.x + object.xsize / 4, 0.25 do
+        for j=object.y - object.ysize / 4, object.y + object.ysize / 4, 0.25 do
             local tile = world.getTile(i, j)
             if tile == nil or tile.object ~= nil then
                 return false

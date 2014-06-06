@@ -44,10 +44,10 @@ function drawHandler.drawTerrain()
         
         if char == nil or (obj ~= nil and char.y > obj.y) then
             local image = objects[obj.image]
-            love.graphics.draw(image, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, image:getWidth() / 2, image:getHeight())
+            love.graphics.draw(image, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, image:getWidth() / 2, image:getHeight() - obj.ysize * tilesize / 2)
             i = i + 1
         else
-            love.graphics.draw(charset, anim_quad[char:getAnimation()], char.x * tilesize, char.y * tilesize, 0, 1, 1, 32, 64)
+            love.graphics.draw(charset, anim_quad[char:getAnimation()], char.x * tilesize, char.y * tilesize, 0, 1, 1, 32, 58)
             j = j + 1
         end
 

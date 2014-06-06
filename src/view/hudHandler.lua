@@ -53,7 +53,7 @@ function hudHandler.catchMouseClick(x, y)
             local yshift = 0
             for i,builditem in pairs(builditems) do
                 
-                local item = objects[builditem]
+                local item = objects[builditem.image]
                 
                 local yvalue = i * 5 + yshift
                 
@@ -62,9 +62,8 @@ function hudHandler.catchMouseClick(x, y)
                     
                     local object = Object:new()
                     
-                    if builditem == "tree_small" then object = Tree:new() end
-                   
-                    cursor = objects[object.image]
+                    if builditem.__name == "tree_small" then object = Tree:new() end
+                    cursor = object
                     logicHandler.switchToBuildMode(object)
                     
                     return
@@ -100,7 +99,8 @@ function hudHandler.draw()
     local mx, my = love.mouse.getPosition()
     local scale = cameraHandler.getZoom()
     if not love.mouse.isVisible() then
-        love.graphics.draw(cursor, mx, my, 0, scale, scale, cursor:getWidth() / 2, cursor:getHeight())
+        local img = objects[cursor.image]
+        love.graphics.draw(img, mx, my, 0, scale, scale, img:getWidth() / 2, img:getHeight()- cursor.ysize * tilesize / 2)
     end
     
     -- draw buildables    
@@ -108,7 +108,7 @@ function hudHandler.draw()
     local yshift = 0
     for i,item in pairs(builditems) do
         
-        local image = objects[item]
+        local image = objects[item.image]
         
         local yvalue = i * 5 + yshift
         

@@ -7,8 +7,8 @@ local builditems = {}
 logicHandler = {}
 
 function logicHandler.init()
-    table.insert(builditems, "default")
-    table.insert(builditems, "tree_small")
+    table.insert(builditems, Object:new(0, 0))
+    table.insert(builditems, Tree:new(0, 0, 3))
 end
 
 function logicHandler.getBuildItems()
