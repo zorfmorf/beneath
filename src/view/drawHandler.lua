@@ -1,6 +1,12 @@
 sheark = -0.3
 
+local nameFont = nil
+
 drawHandler = {}
+
+function drawHandler.init()
+    nameFont = love.graphics.newFont(14)
+end
 
 function drawHandler.drawTerrain()
 
@@ -47,6 +53,8 @@ function drawHandler.drawTerrain()
             love.graphics.draw(image, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, image:getWidth() / 2, image:getHeight() - obj.ysize * tilesize / 2)
             i = i + 1
         else
+            love.graphics.setFont(nameFont)
+            love.graphics.print(char.name, char.x * tilesize, char.y * tilesize, 0, 1, 1, nameFont:getWidth(char.name) / 2, 64)
             love.graphics.draw(charset, anim_quad[char:getAnimation()], char.x * tilesize, char.y * tilesize, 0, 1, 1, 32, 58)
             j = j + 1
         end

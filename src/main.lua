@@ -25,6 +25,7 @@ function love.load()
     cameraHandler.init()
     hudHandler.init()
     logicHandler.init()
+    drawHandler.init()
     
     world.init()
 end

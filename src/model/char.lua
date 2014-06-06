@@ -13,6 +13,7 @@ function Char:__init(x, y)
     self.y = y
     self.state = "idle"
     self.anim = "walk"
+    self.name = "Lysa Thorne"
     self.direction = "d"
     self.animcycle = 1
     self.id = CHAR_ID
