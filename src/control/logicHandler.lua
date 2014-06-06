@@ -9,6 +9,7 @@ logicHandler = {}
 function logicHandler.init()
     table.insert(builditems, Object:new(0, 0))
     table.insert(builditems, Tree:new(0, 0, 3))
+    table.insert(builditems, Tent:new(0, 0))
 end
 
 function logicHandler.getBuildItems()

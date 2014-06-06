@@ -17,6 +17,21 @@ function Object:__init(x, y)
     OBJECT_ID = OBJECT_ID + 1
 end
 
+
+----------- TENT
+
+Tent = Object:extends()
+
+function Tent:__init(x, y)
+    Tent.super.__init(self, x, y)
+    self.__name = "tent"
+    self.image = "tent"
+    self.xsize = 4
+    self.ysize = 5
+end
+
+----------- TREE
+
 Tree = Object:extends()
 
 Tree.__name = "tree"

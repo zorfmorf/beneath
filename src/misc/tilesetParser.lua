@@ -54,4 +54,13 @@ function tilesetParser.loadTerrain()
     imgData:paste(source, 0, 0, 27 * tilesize, 29 * tilesize, tilesize * 2, tilesize * 3)
     objects["tree_small"] = love.graphics.newImage(imgData)
     
+    
+    -- buildings
+    source = love.image.newImageData("ressource/terrain_atlas2.png")
+    
+    -- tent
+    imgData = love.image.newImageData(tilesize * 4, tilesize * 5)
+    imgData:paste(source, 0, 0, 13 * tilesize, 16 * tilesize, tilesize * 4, tilesize * 5)
+    objects["tent"] = love.graphics.newImage(imgData)
+    
 end
