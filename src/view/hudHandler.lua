@@ -101,7 +101,7 @@ function hudHandler.draw()
     local scale = cameraHandler.getZoom()
     if not love.mouse.isVisible() then
         local img = objects[cursor.image]
-        love.graphics.draw(img, mx, my, 0, scale, scale, img:getWidth() / 2, img:getHeight()- cursor.ysize * tilesize / 2)
+        love.graphics.draw(img, mx, my, 0, scale, scale, img:getWidth() / 2, img:getHeight() - (cursor.ysize / 2) * tilesize)
     end
     
     -- draw buildables    

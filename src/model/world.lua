@@ -19,7 +19,9 @@ function world.init()
     objects = {}
     objectDrawOrder = {}
     
-    for i=1,50 do
+    world.addObject(Tent:new(10, 10))
+    
+    for i=1,100 do
         local x = math.random() * 21
         local y = math.random() * 21
         world.addObject(Tree:new(x, y))
@@ -71,8 +73,8 @@ function world.addObject(object)
     local tileselection = {}
     
     -- first validate that object can be placed
-    for i=object.x - object.xsize / 4, object.x + object.xsize / 4, 0.25 do
-        for j=object.y - object.ysize / 4, object.y + object.ysize / 4, 0.25 do
+    for i=object.x - object.xsize / 2 + 0.25, object.x + object.xsize / 2 - 0.25, 0.25 do
+        for j=object.y - object.ysize / 2 + 0.25, object.y + object.ysize / 2 - 0.25, 0.25 do
             local tile = world.getTile(i, j)
             if tile == nil or tile.object ~= nil then
                 return false

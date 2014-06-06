@@ -27,7 +27,7 @@ function Tent:__init(x, y)
     self.__name = "tent"
     self.image = "tent"
     self.xsize = 4
-    self.ysize = 5
+    self.ysize = 4
 end
 
 ----------- TREE

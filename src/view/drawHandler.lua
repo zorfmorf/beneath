@@ -50,7 +50,8 @@ function drawHandler.drawTerrain()
         
         if char == nil or (obj ~= nil and char.y > obj.y) then
             local image = objects[obj.image]
-            love.graphics.draw(image, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, image:getWidth() / 2, image:getHeight() - obj.ysize * tilesize / 2)
+            love.graphics.draw(image, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, image:getWidth() / 2, image:getHeight() - (obj.ysize / 2) * tilesize)
+            if console then love.graphics.circle("fill", obj.x * tilesize, obj.y * tilesize, 10, 20) end
             i = i + 1
         else
             love.graphics.setFont(nameFont)
