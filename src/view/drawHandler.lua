@@ -15,17 +15,16 @@ function drawHandler.drawTerrain()
     love.graphics.scale(scale, scale)
     love.graphics.translate( cameraHandler.getShifts() )
     
+    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.draw(world.getTerrainCanvas(), tilesize, tilesize)
+    
+    love.graphics.setColor(100, 0, 0, 100)
     for y,row in pairs(world.getTiles()) do
-        
         for x,tile in pairs(row) do
             
             if tile.object ~= nil and console then
-                love.graphics.setColor(255, 200, 200, 255)
-            else
-                love.graphics.setColor(255, 255, 255, 255)
+                love.graphics.rectangle("fill", x * tilesize, y * tilesize, tilesize, tilesize)
             end
-            
-            love.graphics.draw(terrain[tile.texture], x * tilesize, y * tilesize)
             
         end
         

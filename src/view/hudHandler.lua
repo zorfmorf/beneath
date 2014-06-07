@@ -7,7 +7,8 @@ local sidebarslidespeed = 200
 local sideshift = 0 -- current sidebar shift
 local width = 0 -- max sidebar width
 local cursor = nil -- current cursor icon
-            active = false
+local cursor_color = {255, 255, 255, 255}
+
 function hudHandler.init()
     
     active = false
@@ -22,6 +23,7 @@ end
 
 -- make hud visible again
 function hudHandler.activate()
+    cursor = nil
     love.mouse.setVisible(true)
 end
 
@@ -40,6 +42,18 @@ function hudHandler.update(dt)
         active = true
     else
         active = false
+    end
+    
+    -- if in placemode check if placable
+    if cursor then
+        local x, y = cameraHandler.convertScreenCoordinates( love.mouse.getPosition() )
+        cursor.x = x
+        cursor.y = y
+        if world.isPlacable(cursor) then
+            cursor_color = {120, 255, 120, 255}
+        else
+            cursor_color = {255, 120, 120, 255}
+        end
     end
     
 end
@@ -101,6 +115,7 @@ function hudHandler.draw()
     local scale = cameraHandler.getZoom()
     if not love.mouse.isVisible() then
         local img = objects[cursor.image]
+        love.graphics.setColor(cursor_color)
         love.graphics.draw(img, mx, my, 0, scale, scale, img:getWidth() / 2, img:getHeight() - (cursor.ysize / 2) * tilesize)
     end
     
@@ -111,6 +126,8 @@ function hudHandler.draw()
         
         local image = objects[item.image]
         
+        local scale = (tilesize * 2) / image:getWidth()
+        
         local yvalue = i * 5 + yshift
         
         if mx > xpos and my > yvalue and my < yvalue + image:getHeight() then
@@ -119,8 +136,8 @@ function hudHandler.draw()
             love.graphics.setColor(255, 255, 255, 255)
         end
         
-        love.graphics.draw(image, xpos, yvalue)
-        yshift = image:getHeight()
+        love.graphics.draw(image, xpos, yvalue, 0, scale, scale)
+        yshift = yshift + image:getHeight() * scale
     end
     
 end

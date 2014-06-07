@@ -1,6 +1,6 @@
 
-local xshift = 0
-local yshift = 0
+local xshift = -love.graphics.getWidth() / 2
+local yshift = -love.graphics.getHeight() / 2
 
 local scaleValues = { 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.4, 1.6, 1.8, 2 }
 local scale = 6

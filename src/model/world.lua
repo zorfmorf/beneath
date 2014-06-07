@@ -4,24 +4,37 @@ local tiles = nil -- the floor
 local objects = nil -- objects can be placed on tiles
 local objectDrawOrder = nil -- draw order for objects
 local charDrawOrder = nil -- draw order for chars
-
+local worldCanvas = nil
+local size = 50
 
 -- creates a new world. placeholder
 function world.init()
     tiles = {}
-    for i=1,20 do
+    
+    for i=1,size do
         tiles[i] = {}
-        for j=1,20 do
+        for j=1,size do
             tiles[i][j] = { texture = "grass"..math.random(1,3), object = nil }
         end
     end
     
+    -- draw terrain to canvas to improve fps
+    worldCanvas = love.graphics.newCanvas(size * tilesize, size * tilesize)
+    love.graphics.setCanvas(worldCanvas)
+    for y,row in pairs(tiles) do
+        for x,tile in pairs(row) do
+            love.graphics.draw(terrain[tile.texture], (y - 1) * tilesize, (x - 1) * tilesize)
+        end
+    end
+    love.graphics.setCanvas()
+    
+    -- now create objects
     objects = {}
     objectDrawOrder = {}
     
     world.addObject(Tent:new(10, 10))
     
-    for i=1,100 do
+    for i=1,10 do
         local x = math.random() * 21
         local y = math.random() * 21
         world.addObject(Tree:new(x, y))
@@ -35,6 +48,11 @@ function world.init()
         char.animcycle = math.random() * 5 + 1
         world.addChar(char)
     end
+end
+
+
+function world.getTerrainCanvas()
+    return worldCanvas
 end
 
 
@@ -67,9 +85,8 @@ function world.addChar(char)
 end
 
 
--- add object to world. marks tiles as built and calculates draw order
-function world.addObject(object)
-    
+-- returns a tileselection or nil
+function world.isPlacable(object)
     local tileselection = {}
     
     -- first validate that object can be placed
@@ -77,12 +94,22 @@ function world.addObject(object)
         for j=object.y - object.ysize / 2 + 0.25, object.y + object.ysize / 2 - 0.25, 0.25 do
             local tile = world.getTile(i, j)
             if tile == nil or tile.object ~= nil then
-                return false
+                return nil
             else
                 table.insert(tileselection, tile)
             end
         end
     end
+    return tileselection
+end
+
+
+-- add object to world. marks tiles as built and calculates draw order
+function world.addObject(object)
+    
+    local tileselection = world.isPlacable(object)
+    
+    if tileselection == nil then return false end
     
     objects[object.id] = object
     

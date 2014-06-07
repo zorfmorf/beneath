@@ -49,6 +49,7 @@ function logicHandler.tileSelect(x, y)
             buildCandidate.x = x
             buildCandidate.y = y
             local result = logicHandler.placeObject(buildCandidate)
+            print( "Result was: ", result)
             if result then
                 mouseState = "free"
                 hudHandler.activate()
