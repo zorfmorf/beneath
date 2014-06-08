@@ -25,12 +25,20 @@ end
 
 function Char:update(dt)
     self.animcycle = self.animcycle + dt * ANIM_SPEED
-    if self.animcycle >= 9 or self.state == "idle" then 
+    if self.animcycle >= 9 or self.state == "idle" 
+        or (self.state == "work" and self.animcycle >= 6) then 
         self.animcycle = 1
     end
     
     if self.state == "work" then
-        
+        self.target.workleft = self.target.workleft - dt
+        self.target:work()
+        if self.target.workleft < 0 then
+            self.target.selected = false
+            self.target = nil
+            self.state = "idle"
+            self.anim = "walk"
+        end
     end
     
     if self.state == "walk" then
@@ -53,9 +61,18 @@ function Char:update(dt)
         
         if #self.path == 0 then
             self.path = nil
-            self.target = nil
-            self.state = "idle"
-            --TODO: hook up working here
+            self.state = "work"
+            self.anim = "work"
+            self.animcycle = 1
+            local xdif = self.x - self.target.x
+            local ydif = self.y - self.target.y
+            if math.abs(ydif) > math.abs(xdif) then
+                self.direction = "d"
+                if ydif > 0 then self.direction = "u" end
+            else
+                self.direction = "r"
+                if xdif > 0 then self.direction = "l" end
+            end
         end
         
     end

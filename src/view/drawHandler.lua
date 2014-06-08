@@ -48,11 +48,16 @@ function drawHandler.drawTerrain()
         local char = world.getChar(charOrder[j])
         
         if char == nil or (obj ~= nil and char.y > obj.y) then
+            
+            love.graphics.setColor(255, 255, 255, 255)
+            if obj.selected then love.graphics.setColor(255, 150, 150, 255) end
+            
             local image = objects[obj.image]
-            love.graphics.draw(image, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, image:getWidth() / 2, image:getHeight() - (obj.ysize / 2) * tilesize)
+            love.graphics.draw(image, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, obj.xshift * tilesize, image:getHeight() - tilesize)
             if console then love.graphics.circle("fill", obj.x * tilesize, obj.y * tilesize, 10, 20) end
             i = i + 1
         else
+            love.graphics.setColor(255, 255, 255, 255)
             love.graphics.setFont(nameFont)
             love.graphics.print(char.name, char.x * tilesize, char.y * tilesize, 0, 1, 1, nameFont:getWidth(char.name) / 2, 64)
             love.graphics.draw(charset, anim_quad[char:getAnimation()], char.x * tilesize, char.y * tilesize, 0, 1, 1, 32, 58)

@@ -18,5 +18,12 @@ function charsetParser.parseCharset()
         anim_quad["walk_r"..(i + 1)] = love.graphics.newQuad(i * charsize, 11 * charsize, charsize, charsize, refW, refH)
     end
     
+    for i = 0,5 do
+        anim_quad["work_u"..(i + 1)] = love.graphics.newQuad(i * charsize, 12 * charsize, charsize, charsize, refW, refH)
+        anim_quad["work_l"..(i + 1)] = love.graphics.newQuad(i * charsize, 13 * charsize, charsize, charsize, refW, refH)
+        anim_quad["work_d"..(i + 1)] = love.graphics.newQuad(i * charsize, 14 * charsize, charsize, charsize, refW, refH)
+        anim_quad["work_r"..(i + 1)] = love.graphics.newQuad(i * charsize, 15 * charsize, charsize, charsize, refW, refH)
+    end
+    
 end
     

@@ -47,7 +47,9 @@ function logicHandler.tileSelect(x, y)
     if mouseState == "free" then
         
         if tile.object then
-            taskHandler.createTask(tile.object)
+            local obj = world.getObject(tile.object)
+            obj.selected = true
+            taskHandler.createTask(obj)
         end
         
     else

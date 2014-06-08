@@ -89,9 +89,14 @@ end
 function world.isPlacable(object)
     local tileselection = {}
     
+    local x = math.floor(object.x)
+    local y = math.floor(object.y)
+    
+    local xmod = object.xsize - 1
+    
     -- first validate that object can be placed
-    for i=object.x - object.xsize / 2 + 0.25, object.x + object.xsize / 2 - 0.25, 0.25 do
-        for j=object.y - object.ysize / 2 + 0.25, object.y + object.ysize / 2 - 0.25, 0.25 do
+    for i=x, x + xmod do
+        for j=y, y - (object.ysize - 1),-1 do
             local tile = world.getTile(i, j)
             if tile == nil or tile.object ~= nil then
                 return nil
@@ -111,11 +116,14 @@ function world.addObject(object)
     
     if tileselection == nil then return false end
     
+    object.x = math.floor(object.x)
+    object.y = math.floor(object.y)
+    
     objects[object.id] = object
     
     -- mark tiles as used so that no other building can be placed there
     for i,tile in pairs(tileselection) do
-        tile.object = object
+        tile.object = object.id
     end
     
     -- add object to draw order
@@ -147,6 +155,22 @@ function world.getChar(id)
     return characters[id]
 end
 
+function world.removeObject(id)
+    for y,row in pairs(tiles) do
+        for x,tile in pairs(row) do
+            if tile.object == id then tile.object = nil end
+        end
+    end
+    objects[id] = nil
+    local i = 1
+    while i <= #objectDrawOrder do
+        if objectDrawOrder[i] == id then
+            table.remove(objectDrawOrder, i)
+            return
+        end
+        i = i + 1
+    end
+end
 
 -- return tile at given position or nil
 function world.getTile(tx, ty)
