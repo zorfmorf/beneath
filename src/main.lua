@@ -3,6 +3,7 @@ require 'lib/misc'
 
 require 'control/gameInputHandler'
 require 'control/logicHandler'
+require 'control/taskHandler'
 require 'misc/charsetParser'
 require 'misc/tilesetParser'
 require 'misc/astar'
@@ -26,6 +27,7 @@ function love.load()
     hudHandler.init()
     logicHandler.init()
     drawHandler.init()
+    taskHandler.init()
     
     world.init()
 end

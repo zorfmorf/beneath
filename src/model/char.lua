@@ -16,6 +16,7 @@ function Char:__init(x, y)
     self.name = "Lysa Thorne"
     self.direction = "d"
     self.animcycle = 1
+    self.idletime = 0
     self.id = CHAR_ID
     CHAR_ID = CHAR_ID + 1
     self.target = nil
@@ -26,6 +27,10 @@ function Char:update(dt)
     self.animcycle = self.animcycle + dt * ANIM_SPEED
     if self.animcycle >= 9 or self.state == "idle" then 
         self.animcycle = 1
+    end
+    
+    if self.state == "work" then
+        
     end
     
     if self.state == "walk" then
@@ -50,18 +55,39 @@ function Char:update(dt)
             self.path = nil
             self.target = nil
             self.state = "idle"
+            --TODO: hook up working here
         end
         
     end
     
     if self.state == "idle" then
+        
         if self.target then
             local tile = world.getTile(self.x, self.y)
-            self.path = astar.calculate(world.getTiles(), {x=math.floor(self.x), y=math.floor(self.y)}, self.target)
+            self.path = astar.calculate(
+                    world.getTiles(), 
+                    {
+                        x=math.floor(self.x), 
+                        y=math.floor(self.y)
+                    }, 
+                    {
+                        x=math.floor(self.target.x), 
+                        y=math.floor(self.target.y)
+                    }
+                )
             if self.path then
                 self.state = "walk"
             else
+                print( "Path not creatable" )
                 self.target = nil
+            end
+        else
+            self.idletime = self.idletime - dt
+            if self.idletime <= 0 then
+                self.target = taskHandler.getTask()
+                if self.target == nil then
+                    self.idletime = math.random() * 3
+                end
             end
         end
     end

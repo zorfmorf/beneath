@@ -40,7 +40,7 @@ function astar.calculate(map, start, goal)
     for y,row in pairs(map) do
         nodes[y] = {}
         for x,entry in pairs(row) do
-            nodes[y][x] = { visited=(not (entry.object == nil)), x=x, y=y }
+            nodes[y][x] = { visited=false, x=x, y=y, walkable=(map[y][x].object == nil)  }
         end
     end
     
@@ -71,11 +71,19 @@ function astar.calculate(map, start, goal)
                    and not nodes[current.y + k][current.x + l].visited then
                     
                     local node = nodes[current.y + k][current.x + l]
-                    node.visited = true
-                    node.parent = current
-                    node.gcost = current.gcost + 1
-                    node.fcost = node.gcost + cost_estimate(node, goal)
-                    table.insert(openset, node)
+                    
+                    if node.x == goal.x and node.y == goal.y then
+                        node.visited = true
+                        return retracePath(path, current)
+                    end
+                    
+                    if node.walkable then
+                        node.visited = true
+                        node.parent = current
+                        node.gcost = current.gcost + 1
+                        node.fcost = node.gcost + cost_estimate(node, goal)
+                        table.insert(openset, node)
+                    end
                 end
             end
         end

@@ -75,9 +75,9 @@ function gameInputHandler.mousepressed(x, y, button)
         local tx, ty = cameraHandler.convertScreenCoordinates(x, y)
         local tile = world.getTile(tx, ty)
         if tile then
-            local char = world.getChar(1)
-            char.state = "idle"
-            char.target = {x=math.floor(tx), y=math.floor(ty)}
+            --local char = world.getChar(1)
+            --char.state = "idle"
+            --char.target = {x=math.floor(tx), y=math.floor(ty)}
         end
     end
     

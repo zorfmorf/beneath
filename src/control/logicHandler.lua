@@ -42,14 +42,20 @@ end
 
 function logicHandler.tileSelect(x, y)
     
-    if mouseState ~= "free" then
+    local tile = world.getTile(x, y)
+    
+    if mouseState == "free" then
         
-        local tile = world.getTile(x, y)
+        if tile.object then
+            taskHandler.createTask(tile.object)
+        end
+        
+    else
+        
         if tile ~= nil then
             buildCandidate.x = x
             buildCandidate.y = y
             local result = logicHandler.placeObject(buildCandidate)
-            print( "Result was: ", result)
             if result then
                 mouseState = "free"
                 hudHandler.activate()
