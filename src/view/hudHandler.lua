@@ -81,7 +81,7 @@ function hudHandler.catchMouseClick(x, y)
                     cursor = object
                     logicHandler.switchToBuildMode(object)
                     
-                    return
+                    return true
                 end
                 yshift = item:getHeight()
             end
