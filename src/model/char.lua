@@ -96,6 +96,7 @@ function Char:update(dt)
                 self.state = "walk"
             else
                 print( "Path not creatable" )
+                self.target.selected = false
                 self.target = nil
             end
         else

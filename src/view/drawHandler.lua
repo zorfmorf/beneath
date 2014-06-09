@@ -54,7 +54,7 @@ function drawHandler.drawTerrain()
             
             local image = objects[obj.image]
             love.graphics.draw(image, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, obj.xshift * tilesize, image:getHeight() - tilesize)
-            if console then love.graphics.circle("fill", obj.x * tilesize, obj.y * tilesize, 10, 20) end
+            if console then love.graphics.rectangle("line", obj.x * tilesize, obj.y * tilesize, tilesize, tilesize) end
             i = i + 1
         else
             love.graphics.setColor(255, 255, 255, 255)
