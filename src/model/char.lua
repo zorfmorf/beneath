@@ -40,8 +40,7 @@ function Char:update(dt)
             self.direction = "r"
             self.anim = "work"
             
-            self.target.workleft = self.target.workleft - dt
-            self.target:work()
+            self.target:work(dt)
             if self.target.workleft < 0 then
                 self.target.selected = false
                 self.target = nil
@@ -87,6 +86,7 @@ function Char:update(dt)
             self.path = nil
             self.animcycle = 1
             self.state = "work"
+            self.target.selected = false
             local xdif = self.x - self.target.x
             local ydif = self.y - self.target.y
             if math.abs(ydif) > math.abs(xdif) then

@@ -52,8 +52,15 @@ function drawHandler.drawTerrain()
             love.graphics.setColor(255, 255, 255, 255)
             if obj.selected then love.graphics.setColor(255, 150, 150, 255) end
             
-            local image = objects[obj.image]
-            love.graphics.draw(image, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, obj.xshift * tilesize, image:getHeight() - tilesize * (1 - obj.yshift))
+            if obj.image then
+                local image = objects[obj.image]
+                love.graphics.draw(image, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, obj.xshift * tilesize, image:getHeight() - tilesize * (1 - obj.yshift))
+            end
+            if obj.ressources then
+                for i,res in pairs(obj.ressources) do
+                    love.graphics.draw(objects[i..res], obj.x * tilesize, obj.y * tilesize)
+                end
+            end
             if console then love.graphics.rectangle("line", obj.x * tilesize, obj.y * tilesize, tilesize, tilesize) end
             i = i + 1
         else
@@ -63,8 +70,17 @@ function drawHandler.drawTerrain()
             love.graphics.draw(charset, anim_quad[char:getAnimation()], char.x * tilesize, char.y * tilesize, 0, 1, 1, 32, 58)
             j = j + 1
         end
-
     end
     
+    local mx, my = love.mouse.getPosition()
+    if not love.mouse.isVisible() then
+        local tx, ty = cameraHandler.convertScreenCoordinates(mx, my)
+        tx = math.floor(tx)
+        ty = math.floor(ty)
+        local cursor = hudHandler.getCursor()
+        local img = objects[cursor.image]
+        love.graphics.setColor(hudHandler.getCursorColor())
+        love.graphics.draw(img, tx * tilesize, ty * tilesize, 0, 1, 1, cursor.xshift * tilesize, img:getHeight() - tilesize * (1 - cursor.yshift))
+    end
     
 end

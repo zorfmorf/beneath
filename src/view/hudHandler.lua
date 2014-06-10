@@ -91,6 +91,14 @@ function hudHandler.catchMouseClick(x, y)
     return false
 end
 
+function hudHandler.getCursor()
+    return cursor
+end
+
+function hudHandler.getCursorColor()
+    return cursor_color
+end
+
 function hudHandler.draw()
     love.graphics.origin()
     
@@ -113,13 +121,6 @@ function hudHandler.draw()
     -- draw mouse build icon
     local mx, my = love.mouse.getPosition()
     local scale = cameraHandler.getZoom()
-    if not love.mouse.isVisible() then
-        local tx, ty = cameraHandler.convertScreenCoordinates(mx, my)
-        local t2x, t2y = cameraHandler.convertWorldCoordinates(math.floor(tx), math.floor(ty))
-        local img = objects[cursor.image]
-        love.graphics.setColor(cursor_color)
-        love.graphics.draw(img, t2x, t2y, 0, scale, scale, cursor.xshift * tilesize, img:getHeight() - tilesize * (1 - cursor.yshift))
-    end
     
     -- draw buildables    
     local builditems = logicHandler.getBuildItems()

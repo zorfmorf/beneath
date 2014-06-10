@@ -34,7 +34,7 @@ function world.init()
     
     world.addObject(Tent:new(10, 10))
     
-    for i=1,10 do
+    for i=1,100 do
         local x = math.random() * 21
         local y = math.random() * 21
         world.addObject(Tree:new(x, y))

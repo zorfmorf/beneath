@@ -10,7 +10,8 @@ function Object:__init(x, y)
     self.y = y
     self.image = "default"
     self.selected = false
-    self.workleft = 0
+    self.ressources = nil
+    self.workleft = -1
     self.xsize = 2
     self.ysize = 1.5
     self.xshift = 0
@@ -20,8 +21,21 @@ function Object:__init(x, y)
 end
 
 -- called whenever a worker worked a little bit on this object
-function Object:work()
+function Object:work(dt)
     -- do nothing
+end
+
+----------- Ressource
+
+Ressource = Object:extends()
+
+function Ressource:__init(x, y, restable)
+    Ressource.super.__init(self, x, y)
+    self.__name = "ressource"
+    self.ressources = restable
+    self.image = nil
+    self.xsize = 1
+    self.ysize = 1
 end
 
 
@@ -45,37 +59,76 @@ Tree.__name = "tree"
 
 function Tree:__init(x, y, tree_type)
     Tree.super.__init(self, x, y)
-    self.workleft = 5
     
     if not tree_type then tree_type = math.random(1, 3) end
     if tree_type == 3 then 
         self.__name = "tree_small"
         self.image = "tree_small"
+        self.workleft = 5
         self.ysize = 1
         self.xsize = 1
         self.xshift = 0.5
         self.yshift = 0.3
     end
     if tree_type == 2 then
-        self.__name = "tree_large"
-        self.image = "tree_large"
-        self.ysize = 1
-        self.xsize = 2
-    end
-    if tree_type == 1 then
         self.__name = "tree_leaf"
-        self.image = "tree_leaf"
-        self.ysize = 1
+        self.image = "tree_large1"
+        self.workleft = 11
+        self.ysize = 2
         self.xsize = 2
         self.xshift = 0.5
-        self.yshift = 0
+        self.yshift = -0.2
+    end
+    if tree_type == 1 then
+        self.__name = "tree_needle"
+        self.image = "tree_large2"
+        self.workleft = 11
+        self.ysize = 2
+        self.xsize = 2
+        self.xshift = 0.5
+        self.yshift = -0.2
     end
 end
 
-function Tree:work()
-    if self.workleft < 0 then
-        world.removeObject(self.id)
+function Tree:work(dt)
+    
+    local wnew = self.workleft - dt
+    
+    if self.__name == "tree_small" and self.workleft > 0 and wnew <= 0 then
+        self.image = nil
+        self.ressources = { wood=2 }
     end
+    
+    if not (self.__name == "tree_small") then
+        
+        if math.floor(self.workleft) % 2 == 0 and
+            not (math.floor(wnew) == math.floor(self.workleft)) then
+            if self.ressources == nil then self.ressources = { wood=0 } end
+            self.ressources.wood = self.ressources.wood + 1
+        end
+        
+        if self.workleft > 6 and wnew <= 6 then
+            
+            self.image = "tree_stump1"
+            self.xshift = -0.5
+            self.yshift = 0.5
+        end
+        
+        if self.workleft > 3 and wnew <= 3 then
+            
+            self.image = "tree_stump2"
+            self.xshift = -0.5
+            self.yshift = 0.5
+        end
+        
+        if self.workleft > 0 and wnew <= 0 then
+            self.image = nil
+            world.removeObject(self.id)
+            world.addObject(Ressource:new(self.x, self.y, self.ressources))
+        end
+    end
+    
+    self.workleft = wnew
 end
 
 
