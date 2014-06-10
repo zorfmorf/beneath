@@ -14,6 +14,7 @@ function Object:__init(x, y)
     self.xsize = 2
     self.ysize = 1.5
     self.xshift = 0
+    self.yshift = 0
     self.id = OBJECT_ID
     OBJECT_ID = OBJECT_ID + 1
 end
@@ -53,6 +54,7 @@ function Tree:__init(x, y, tree_type)
         self.ysize = 1
         self.xsize = 1
         self.xshift = 0.5
+        self.yshift = 0.3
     end
     if tree_type == 2 then
         self.__name = "tree_large"
@@ -66,6 +68,7 @@ function Tree:__init(x, y, tree_type)
         self.ysize = 1
         self.xsize = 2
         self.xshift = 0.5
+        self.yshift = 0
     end
 end
 

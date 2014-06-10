@@ -53,7 +53,7 @@ function drawHandler.drawTerrain()
             if obj.selected then love.graphics.setColor(255, 150, 150, 255) end
             
             local image = objects[obj.image]
-            love.graphics.draw(image, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, obj.xshift * tilesize, image:getHeight() - tilesize)
+            love.graphics.draw(image, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, obj.xshift * tilesize, image:getHeight() - tilesize * (1 - obj.yshift))
             if console then love.graphics.rectangle("line", obj.x * tilesize, obj.y * tilesize, tilesize, tilesize) end
             i = i + 1
         else

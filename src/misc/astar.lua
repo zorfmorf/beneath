@@ -72,7 +72,7 @@ function astar.calculate(map, start, goal)
                     
                     local node = nodes[current.y + k][current.x + l]
                     
-                    if node.x == goal.x and node.y == goal.y then
+                    if (k == -1 or l == 1) and node.x == goal.x and node.y == goal.y then
                         node.visited = true
                         return retracePath(path, current)
                     end

@@ -31,13 +31,37 @@ function Char:update(dt)
     end
     
     if self.state == "work" then
-        self.target.workleft = self.target.workleft - dt
-        self.target:work()
-        if self.target.workleft < 0 then
-            self.target.selected = false
-            self.target = nil
-            self.state = "idle"
-            self.anim = "walk"
+        
+        local tx = self.target.x
+        local ty = self.target.y + 0.5
+        
+        if self.x == tx and self.y == ty then
+            
+            self.direction = "r"
+            self.anim = "work"
+            
+            self.target.workleft = self.target.workleft - dt
+            self.target:work()
+            if self.target.workleft < 0 then
+                self.target.selected = false
+                self.target = nil
+                self.state = "idle"
+                self.anim = "walk"
+            end
+            
+        else
+            
+            if self.y > ty then
+                self.y = self.y - math.min(dt, self.y - ty)
+            end
+            
+            if self.x < tx then
+                self.x = self.x + math.min(dt, tx - self.x)
+            end
+            
+            if self.x > tx then
+                self.x = self.x - math.min(dt, self.x - tx)
+            end
         end
     end
     
@@ -61,9 +85,8 @@ function Char:update(dt)
         
         if #self.path == 0 then
             self.path = nil
-            self.state = "work"
-            self.anim = "work"
             self.animcycle = 1
+            self.state = "work"
             local xdif = self.x - self.target.x
             local ydif = self.y - self.target.y
             if math.abs(ydif) > math.abs(xdif) then
