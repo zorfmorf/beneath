@@ -63,6 +63,7 @@ function logicHandler.tileClick(x, y)
                 mouseState = "free"
                 hudHandler.activate()
                 logicHandler.recalculatePaths()
+                if buildCandidate.mesh then taskHandler.createTask(buildCandidate) end
             end
         end
         

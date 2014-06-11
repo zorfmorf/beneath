@@ -52,10 +52,14 @@ function drawHandler.drawTerrain()
             love.graphics.setColor(255, 255, 255, 255)
             if obj.selected then love.graphics.setColor(255, 150, 150, 255) end
             
-            if obj.image then
-                local image = objects[obj.image]
-                love.graphics.draw(image, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, obj.xshift * tilesize, image:getHeight() - tilesize * (1 - obj.yshift))
+            if obj.mesh then
+                love.graphics.draw(obj.mesh, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, obj.xshift * tilesize, obj.mesh:getImage():getHeight() - tilesize * (1 - obj.yshift))
+            else if obj.image then
+                    local image = objects[obj.image]
+                    love.graphics.draw(image, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, obj.xshift * tilesize, image:getHeight() - tilesize * (1 - obj.yshift))
+                end
             end
+            
             if obj.ressources then
                 for i,res in pairs(obj.ressources) do
                     love.graphics.draw(objects[i..res], obj.x * tilesize, obj.y * tilesize)

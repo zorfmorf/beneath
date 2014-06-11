@@ -34,8 +34,6 @@ function world.init()
     objects = {}
     objectDrawOrder = {}
     
-    world.addObject(Tent:new(10, 10))
-    
     for i=1,100 do
         local x = math.random() * (WORLD_SIZE + 1)
         local y = math.random() * (WORLD_SIZE + 1)

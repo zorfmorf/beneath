@@ -39,6 +39,34 @@ function Ressource:__init(x, y, restable)
 end
 
 
+----------- BUILDINGS
+
+local function generateMesh(image)
+    local xs = image:getWidth()
+    local ys = image:getHeight()
+    local vertices = {
+        {0, ys, 0, 1, 255, 255, 255},
+        {xs, ys, 1, 1, 255, 255, 255},
+        {xs, ys, 1, 1, 255, 255, 255},
+        {0, ys, 0, 1, 255, 255, 255},
+    }
+    return love.graphics.newMesh(vertices, image, "fan")
+end
+
+-- dt needs to be value from 0 (started) to 1 (finished)
+local function updateMesh(mesh, dt)
+    local xs = mesh:getImage():getWidth()
+    local ys = mesh:getImage():getHeight()
+    local ts = ys * dt
+    local vertices = {
+        {0, ts, 0, dt, 255, 255, 255},
+        {xs, ts, 1, dt, 255, 255, 255},
+        {xs, ys, 1, 1, 255, 255, 255},
+        {0, ys, 0, 1, 255, 255, 255},
+    }
+    mesh:setVertices(vertices)
+end
+
 ----------- TENT
 
 Tent = Object:extends()
@@ -49,6 +77,14 @@ function Tent:__init(x, y)
     self.image = "tent"
     self.xsize = 4
     self.ysize = 3
+    self.mesh = generateMesh(objects[self.image])
+    self.workMax = 10
+    self.workleft = 10
+end
+
+function Tent:work(dt)
+    self.workleft = self.workleft - dt
+    updateMesh(self.mesh, self.workleft / self.workMax)
 end
 
 ----------- TREE
