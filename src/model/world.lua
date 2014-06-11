@@ -43,9 +43,8 @@ function world.init()
     characters = {}
     charDrawOrder = {}
     
-    for i=1,1 do
-        local char = Char:new(9, 20.5)
-        char.animcycle = math.random() * 5 + 1
+    for i=1,10 do
+        local char = Char:new(math.random() * (WORLD_SIZE + 1), math.random() * (WORLD_SIZE + 1))
         world.addChar(char)
     end
 end
@@ -190,7 +189,7 @@ function world.getClickedObject(x, y)
                 
                 if object and
                    object.x + object.xsize >= x and
-                   object.y - object.ysize <= y then
+                   object.y - (object.ysize + 1) <= y then
                     
                     candidate = object
                     
