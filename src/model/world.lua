@@ -1,25 +1,27 @@
 world = {}
 
+local MAX_OBJECT_SIZE = 5 --needed to correctly select objects on click
+local WORLD_SIZE = 30
+
 local tiles = nil -- the floor
 local objects = nil -- objects can be placed on tiles
 local objectDrawOrder = nil -- draw order for objects
 local charDrawOrder = nil -- draw order for chars
 local worldCanvas = nil
-local size = 50
 
 -- creates a new world. placeholder
 function world.init()
     tiles = {}
     
-    for i=1,size do
+    for i=1,WORLD_SIZE do
         tiles[i] = {}
-        for j=1,size do
+        for j=1,WORLD_SIZE do
             tiles[i][j] = { texture = "grass"..math.random(1,3), object = nil }
         end
     end
     
     -- draw terrain to canvas to improve fps
-    worldCanvas = love.graphics.newCanvas(size * tilesize, size * tilesize)
+    worldCanvas = love.graphics.newCanvas(WORLD_SIZE * tilesize, WORLD_SIZE * tilesize)
     love.graphics.setCanvas(worldCanvas)
     for y,row in pairs(tiles) do
         for x,tile in pairs(row) do
@@ -35,8 +37,8 @@ function world.init()
     world.addObject(Tent:new(10, 10))
     
     for i=1,100 do
-        local x = math.random() * 21
-        local y = math.random() * 21
+        local x = math.random() * (WORLD_SIZE + 1)
+        local y = math.random() * (WORLD_SIZE + 1)
         world.addObject(Tree:new(x, y))
     end
     
@@ -171,6 +173,38 @@ function world.removeObject(id)
         i = i + 1
     end
 end
+
+
+-- Get object based on clicked tile
+function world.getClickedObject(x, y)
+    
+    local candidate = nil
+    
+    for i = 0,MAX_OBJECT_SIZE do
+        for j = 0,MAX_OBJECT_SIZE do
+            
+            local xc = math.floor(x-j)
+            local yc = math.floor(y+i)
+            
+            if tiles[yc] and tiles[yc][xc] and tiles[yc][xc].object then
+                
+                local object = objects[tiles[yc][xc].object]
+                
+                if object and
+                   object.x + object.xsize >= x and
+                   object.y - object.ysize <= y then
+                    
+                    candidate = object
+                    
+                end
+                
+            end
+        end
+    end
+    
+    return candidate
+end
+
 
 -- return tile at given position or nil
 function world.getTile(tx, ty)

@@ -40,19 +40,20 @@ function logicHandler.recalculatePaths()
     end
 end
 
-function logicHandler.tileSelect(x, y)
-    
-    local tile = world.getTile(x, y)
+function logicHandler.tileClick(x, y)
     
     if mouseState == "free" then
         
-        if tile.object then
-            local obj = world.getObject(tile.object)
-            obj.selected = true
-            taskHandler.createTask(obj)
+        local object = world.getClickedObject(x, y)
+        
+        if object and not object.selected and object.workleft >= 0 then
+            object.selected = true
+            taskHandler.createTask(object)
         end
         
     else
+        
+        local tile = world.getTile(x, y)
         
         if tile ~= nil then
             buildCandidate.x = x

@@ -48,7 +48,7 @@ function gameInputHandler.mousereleased(x, y, button)
         if mousePressedTime < MOUSE_CLICK_TIMEOUT then
             if not hudHandler.catchMouseClick(x, y) then
                 local xc, yc = cameraHandler.convertScreenCoordinates(x, y)
-                logicHandler.tileSelect(xc, yc)
+                logicHandler.tileClick(xc, yc)
             end
         end
         
