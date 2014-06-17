@@ -19,7 +19,7 @@ function love.load()
     
     math.randomseed(os.time())
     
-    console = true
+    console = true -- while true display debug information
     
     tilesetParser.loadTerrain()
     charsetParser.parseCharset()
@@ -28,7 +28,6 @@ function love.load()
     logicHandler.init()
     drawHandler.init()
     taskHandler.init()
-    
     world.init()
 end
 
