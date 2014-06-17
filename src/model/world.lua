@@ -21,14 +21,16 @@ function world.init()
     end
     
     -- draw terrain to canvas to improve fps
-    worldCanvas = love.graphics.newCanvas(WORLD_SIZE * tilesize, WORLD_SIZE * tilesize)
-    love.graphics.setCanvas(worldCanvas)
-    for y,row in pairs(tiles) do
-        for x,tile in pairs(row) do
-            love.graphics.draw(terrain[tile.texture], (y - 1) * tilesize, (x - 1) * tilesize)
+    if love.graphics then
+        worldCanvas = love.graphics.newCanvas(WORLD_SIZE * tilesize, WORLD_SIZE * tilesize)
+        love.graphics.setCanvas(worldCanvas)
+        for y,row in pairs(tiles) do
+            for x,tile in pairs(row) do
+                love.graphics.draw(terrain[tile.texture], (y - 1) * tilesize, (x - 1) * tilesize)
+            end
         end
+        love.graphics.setCanvas()
     end
-    love.graphics.setCanvas()
     
     -- now create objects
     objects = {}

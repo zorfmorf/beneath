@@ -77,14 +77,18 @@ function Tent:__init(x, y)
     self.image = "tent"
     self.xsize = 4
     self.ysize = 3
-    self.mesh = generateMesh(objects[self.image])
     self.workMax = 10
     self.workleft = 10
+    if love.graphics then
+       self.mesh = generateMesh(objects[self.image]) 
+    end
 end
 
 function Tent:work(dt)
     self.workleft = self.workleft - dt
-    updateMesh(self.mesh, self.workleft / self.workMax)
+    if love.graphics then
+        updateMesh(self.mesh, self.workleft / self.workMax)
+    end
 end
 
 ----------- TREE

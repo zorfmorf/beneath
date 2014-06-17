@@ -10,6 +10,7 @@ require 'misc/astar'
 require 'model/char'
 require 'model/object'
 require 'model/world'
+require 'networking/client'
 require 'view/cameraHandler'
 require 'view/consoleHandler'
 require 'view/drawHandler'
@@ -29,6 +30,11 @@ function love.load()
     drawHandler.init()
     taskHandler.init()
     world.init()
+    
+    -- networking
+    main_server = love.thread.newThread( "main_server.lua" )
+    main_server:start()
+    client.init()
 end
 
 
@@ -36,6 +42,8 @@ function love.update(dt)
     world.update(dt)
     hudHandler.update(dt)
     gameInputHandler.update(dt)
+    
+    client.service()
 end
 
 
