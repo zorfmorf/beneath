@@ -12,7 +12,7 @@ function client.init()
 end
 
 function client.service()
-    local event = host:service(100)
+    local event = host:service(0)
     if event then
         if event.type == "connect" then
             print("Connected to", event.peer)

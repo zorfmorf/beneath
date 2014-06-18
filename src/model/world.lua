@@ -9,9 +9,29 @@ local objectDrawOrder = nil -- draw order for objects
 local charDrawOrder = nil -- draw order for chars
 local worldCanvas = nil
 
--- creates a new world. placeholder
+
 function world.init()
+    
     tiles = {}
+    if love.graphics then
+        worldCanvas = love.graphics.newCanvas(tilesize, tilesize)
+        love.graphics.setCanvas(worldCanvas)
+        love.graphics.setColor(200,100,100,255)
+        love.graphics.rectangle("fill", 0, 0, tilesize, tilesize)
+        love.graphics.setCanvas()
+    end
+    
+    objects = {}
+    objectDrawOrder = {}
+    
+    characters = {}
+    charDrawOrder = {}
+    
+end
+
+
+-- generates a new world. should be done on server
+function world.generate()
     
     for i=1,WORLD_SIZE do
         tiles[i] = {}
@@ -20,7 +40,21 @@ function world.init()
         end
     end
     
-    -- draw terrain to canvas to improve fps
+    for i=1,100 do
+        local x = math.random() * (WORLD_SIZE + 1)
+        local y = math.random() * (WORLD_SIZE + 1)
+        world.addObject(Tree:new(x, y))
+    end
+    
+    for i=1,10 do
+        local char = Char:new(math.random() * (WORLD_SIZE + 1), math.random() * (WORLD_SIZE + 1))
+        world.addChar(char)
+    end
+end
+
+
+-- should be called whenever the terrain changes
+function world.updateCanvas()
     if love.graphics then
         worldCanvas = love.graphics.newCanvas(WORLD_SIZE * tilesize, WORLD_SIZE * tilesize)
         love.graphics.setCanvas(worldCanvas)
@@ -30,25 +64,7 @@ function world.init()
             end
         end
         love.graphics.setCanvas()
-    end
-    
-    -- now create objects
-    objects = {}
-    objectDrawOrder = {}
-    
-    for i=1,100 do
-        local x = math.random() * (WORLD_SIZE + 1)
-        local y = math.random() * (WORLD_SIZE + 1)
-        world.addObject(Tree:new(x, y))
-    end
-    
-    characters = {}
-    charDrawOrder = {}
-    
-    for i=1,10 do
-        local char = Char:new(math.random() * (WORLD_SIZE + 1), math.random() * (WORLD_SIZE + 1))
-        world.addChar(char)
-    end
+    end 
 end
 
 

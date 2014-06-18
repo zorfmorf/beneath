@@ -41,6 +41,7 @@ function main()
     logicHandler.init()
     taskHandler.init()
     world.init()
+    world.generate()
     server.init()
 
     logfile:write("Inits finished\n")
@@ -56,7 +57,7 @@ function main()
         time = timeN
         
         update(dt)
-        if testMessage and os.time() - starttime > 20 then
+        if testMessage and os.time() - starttime > 10 then
             logfile:write( "AUSTRALIA ACTIVATED\n" )
             server.insult()
             testMessage = nil

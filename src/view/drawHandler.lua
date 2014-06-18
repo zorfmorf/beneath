@@ -33,7 +33,8 @@ function drawHandler.drawTerrain()
     
     love.graphics.setColor(255, 255, 255, 255)
     
-    if console and world.getChar(1).path then
+    local char = world.getChar(1)
+    if console and char and char.path then
         for i,entry in pairs(world.getChar(1).path) do
             love.graphics.circle("fill", entry.x * tilesize, entry.y * tilesize, tilesize / 4, 20)
         end

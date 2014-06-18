@@ -4,24 +4,24 @@ require "enet"
 server = {}
 
 local host = nil
-local insult = false -- TODO REMOVE
+local clients = nil
 
 function server.init()
     host = enet.host_create"localhost:44631"
-    print("host state:", host)
+    clients = {}
 end
 
 
 function server.service()
     local event = host:service(0)
     while event do
+        
+        if event.type == "connect" then
+            logfile:write( "Client connected:", event.peer:index(), event.peer:connect_id(), "\n" )
+        end
+        
         if event.type == "receive" then
-            print("Got message: ", event.data, event.peer)
             event.peer:send(event.data)
-            if insult then
-                event.peer:send("U WOT M8")
-                insult = false
-            end
         end
         event = host:service(0)
     end
@@ -29,5 +29,11 @@ end
 
 
 function server.insult()
-    insult = true
+    for i=1,host:peer_count() do
+        local peer = host:get_peer(i)
+        if peer and peer:state() == "connected" then
+            peer:send("U WOT M8")
+            logfile:write("Insult deployed\n")
+        end
+    end
 end
