@@ -18,7 +18,12 @@ function client.service()
             print("Connected to", event.peer)
             event.peer:send("hello world")
         elseif event.type == "receive" then
-            print("Got message: ", event.data, event.peer)
+            if event.data:sub(1, 6) == "tiles " then
+                print( "Received tile data" )
+                world.updateTiles(event.data:sub(7,event.data:len()))
+            else
+                print("Got message: ", event.data, event.peer)
+            end
         end
     end
 end

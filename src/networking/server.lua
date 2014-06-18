@@ -18,6 +18,7 @@ function server.service()
         
         if event.type == "connect" then
             logfile:write( "Client connected:", event.peer:index(), event.peer:connect_id(), "\n" )
+            server.sendInitialGameState(event.peer)
         end
         
         if event.type == "receive" then
@@ -36,4 +37,17 @@ function server.insult()
             logfile:write("Insult deployed\n")
         end
     end
+end
+
+
+function server.sendInitialGameState(peer)
+    local tiles = ""
+    for i,row in pairs(world.getTiles()) do
+        for j,tile in pairs(row) do
+            tiles = tiles..tile.texture
+            if j < #row then tiles = tiles .. "," end
+        end
+        tiles = tiles..";"
+    end
+    peer:send("tiles "..tiles)
 end

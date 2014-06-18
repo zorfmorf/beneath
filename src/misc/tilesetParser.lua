@@ -14,10 +14,10 @@ function tilesetParser.loadTerrain()
         
     terrain = {}
     local source = love.image.newImageData("ressource/terrain.png")
-    terrain["grass1"] = parseTile(source, 0, 11)
-    terrain["grass2"] = parseTile(source, 1, 11)
-    terrain["grass3"] = parseTile(source, 2, 11)
-    terrain["grass4"] = parseTile(source, 3, 11)
+    terrain["g1"] = parseTile(source, 0, 11)
+    terrain["g2"] = parseTile(source, 1, 11)
+    terrain["g3"] = parseTile(source, 2, 11)
+    terrain["g4"] = parseTile(source, 3, 11)
     
     source = love.image.newImageData("ressource/terrain_atlas.png")
     terrain["col_bot1"] = parseTile(source, 14, 14)

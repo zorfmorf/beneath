@@ -36,7 +36,7 @@ function world.generate()
     for i=1,WORLD_SIZE do
         tiles[i] = {}
         for j=1,WORLD_SIZE do
-            tiles[i][j] = { texture = "grass"..math.random(1,3), object = nil }
+            tiles[i][j] = { texture = "g"..math.random(1,3), object = nil }
         end
     end
     
@@ -50,6 +50,18 @@ function world.generate()
         local char = Char:new(math.random() * (WORLD_SIZE + 1), math.random() * (WORLD_SIZE + 1))
         world.addChar(char)
     end
+end
+
+
+function world.updateTiles(newTiles)
+    tiles = {}
+    for row in string.gmatch(newTiles, '[^;]+') do
+        tiles[#tiles + 1] = {}
+        for tile in string.gmatch(row, '[^,]+') do
+            tiles[#tiles][#tiles[#tiles] + 1] = { texture = tile, object = nil }
+        end
+    end
+    world.updateCanvas()
 end
 
 
