@@ -178,6 +178,13 @@ function world.getObject(id)
     return objects[id]
 end
 
+
+-- returns all objects. used for networking
+function world.getObjects()
+    return objects
+end
+
+
 -- returns char with given id
 function world.getChar(id)
     if id == nil then return nil end

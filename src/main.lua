@@ -18,6 +18,10 @@ require 'view/hudHandler'
 
 function love.load()
     
+    -- networking
+    main_server = love.thread.newThread( "main_server.lua" )
+    main_server:start()
+    
     math.randomseed(os.time())
     
     console = true -- while true display debug information
@@ -31,9 +35,6 @@ function love.load()
     taskHandler.init()
     world.init()
     
-    -- networking
-    main_server = love.thread.newThread( "main_server.lua" )
-    main_server:start()
     client.init()
 end
 

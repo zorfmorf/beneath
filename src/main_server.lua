@@ -4,6 +4,10 @@
     or as internal server for single player.
     Avoids having to implement any functionality twice.
     
+    Can be run standalone from console. However, system
+    needs a working copy of the lua enet library compiled
+    for lua 5.1
+    
 ]]--
 
 systime = os.time()
@@ -35,7 +39,6 @@ end
 function main()
     
     local server_active = true
-    local testMessage = true -- TODO remove
     local SERVER = true
 
     logicHandler.init()
@@ -57,11 +60,6 @@ function main()
         time = timeN
         
         update(dt)
-        if testMessage and os.time() - starttime > 10 then
-            logfile:write( "AUSTRALIA ACTIVATED\n" )
-            server.insult()
-            testMessage = nil
-        end
         server.service()
         
     end

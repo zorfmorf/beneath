@@ -1,3 +1,10 @@
+--[[
+    
+    Objects are things that are placed on the terrain
+    
+    Ressources, trees, buildings, etc
+    
+]]--
 
 OBJECT_ID = 1
 
