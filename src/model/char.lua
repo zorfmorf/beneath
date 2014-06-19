@@ -73,6 +73,14 @@ function Char:update(dt)
         
         local target = self.path[1]
         
+        -- check if we need to recalculate paths
+        if #self.path > 0 then
+            if world.getTile(target.x, target.y).object then
+                self.path = nil
+                return
+            end
+        end
+        
         if self.y < target.y then self.y = math.min(target.y, self.y + WALK_SPEED * dt) self.direction = "d" end
         if self.y > target.y then self.y = math.max(target.y, self.y - WALK_SPEED * dt) self.direction = "u" end
         if self.x < target.x then self.x = math.min(target.x, self.x + WALK_SPEED * dt) self.direction = "r" end
@@ -116,6 +124,11 @@ function Char:update(dt)
                     }
                 )
             if self.path then
+                if self.path[1] then
+                    if world.getTile(self.path[1].x, self.path[1].y).object then
+                        table.remove(self.path, 1)
+                    end
+                end
                 self.state = "walk"
             else
                 print( "Path not creatable" )
