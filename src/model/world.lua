@@ -106,11 +106,7 @@ end
 -- add char to char list and update draw order
 function world.addChar(char)
     characters[char.id] = char
-    local i = 1
-    while charDrawOrder[i] ~= nil and characters[charDrawOrder[i]].y < char.y do
-        i = i + 1       
-    end
-    table.insert(charDrawOrder, i, char.id)
+    table.insert(charDrawOrder, char.id)
 end
 
 
@@ -156,11 +152,7 @@ function world.addObject(object)
     end
     
     -- add object to draw order
-    local i = 1
-    while objectDrawOrder[i] ~= nil and objects[objectDrawOrder[i]].y < object.y do
-        i = i + 1       
-    end
-    table.insert(objectDrawOrder, i, object.id)
+    table.insert(objectDrawOrder, object.id)
     
     return true
 end
@@ -169,6 +161,13 @@ end
 function world.update(dt)
     for i,char in pairs(characters) do
         char:update(dt)
+    end
+    
+    if not server then
+        table.sort(charDrawOrder, 
+            function(a, b) return characters[a].y < characters[b].y end )
+        table.sort(objectDrawOrder, 
+            function(a, b) return objects[a].y < objects[b].y end )
     end
 end
 
