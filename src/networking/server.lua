@@ -28,10 +28,36 @@ function server.service()
         end
         
         if event.type == "receive" then
-            logfile:write( "Client", event.peer:index(), ":,", event.data, "\n" )
-            event.peer:send(event.data)
+            logfile:write( "Client ", event.peer:index(), ": ", event.data, "\n" )
+            
+            if event.data:sub(1, 6) == "build " then
+                server.parseBuild( event.data:sub(7) )
+            end
         end
         event = host:service(0)
+    end
+end
+
+
+-- parse a list of planned builds from client
+-- try to build them and update client if it worked out
+function server.parseBuild(string)
+    for i,object in pairs( parser.parseObjects(string) ) do        
+        local result = world.addObject(object)
+        if result then
+            server.sendToPeers("plobj "..parser.parseObjectsToString( { object } ))
+        end
+    end
+end
+
+
+-- send the given message to all peers
+function server.sendToPeers(message)
+    for i=1,host:peer_count() do
+        local peer = host:get_peer(i)
+        if peer:state() == "connected" then
+            peer:send(message)
+        end
     end
 end
 
@@ -60,11 +86,7 @@ end
 
 -- send all objects
 function server.sendObjects(peer)
-    local objstr = "plobj "
-    for i,object in pairs(world.getObjects()) do
-        objstr = objstr..object.__name..","..object.id..","..object.x..","..object.y..";"
-    end
-    peer:send(objstr)
+    peer:send( "plobj "..parser.parseObjectsToString( world.getObjects() ) )
 end
 
 

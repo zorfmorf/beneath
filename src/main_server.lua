@@ -29,6 +29,7 @@ require 'misc/astar'
 require 'model/char'
 require 'model/object'
 require 'model/world'
+require 'networking/parser'
 require 'networking/server'
 
 logfile:write("Loaded requires \n")

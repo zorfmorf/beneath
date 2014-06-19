@@ -16,10 +16,6 @@ function logicHandler.getBuildItems()
     return builditems
 end
 
-function logicHandler.placeObject(object)    
-    return world.addObject(object)
-end
-
 function logicHandler.switchToBuildMode(object)
     mouseState = "build"
     buildCandidate = object
@@ -58,12 +54,13 @@ function logicHandler.tileClick(x, y)
         if tile ~= nil then
             buildCandidate.x = x
             buildCandidate.y = y
-            local result = logicHandler.placeObject(buildCandidate)
+            local result = world.isPlacable(buildCandidate)
             if result then
                 mouseState = "free"
                 hudHandler.activate()
-                logicHandler.recalculatePaths()
-                if buildCandidate.mesh then taskHandler.createTask(buildCandidate) end
+                client.sendBuild(buildCandidate)
+                --logicHandler.recalculatePaths()
+                --if buildCandidate.mesh then taskHandler.createTask(buildCandidate) end
             end
         end
         
