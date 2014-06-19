@@ -39,7 +39,7 @@ function parser.parseObjects(string)
                 if value == "tree_needle" then newobj = Tree:new(0, 0, 1) end
             end
             
-            if i == 2 and tonumber(value) > 0 then newobj.id = tonumber(value) end
+            if i == 2 and not server then newobj.id = tonumber(value) end
             if i == 3 then newobj.x = tonumber(value) end
             if i == 4 then newobj.y = tonumber(value) end
             
@@ -73,4 +73,18 @@ function parser.parseChars(string)
     end
     
     return chars
+end
+
+
+-- parse task
+function parser.parseTask(string)
+    local i = 1
+    local charid = -1
+    local taskid = -1
+    for value in string.gmatch(string, '[^,]+') do
+        if i == 1 then charid = tonumber(value) end
+        if i == 2 then taskid = tonumber(value) end
+        i = i + 1
+    end
+    return charid, taskid
 end

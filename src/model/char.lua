@@ -125,7 +125,12 @@ function Char:update(dt)
         else
             self.idletime = self.idletime - dt
             if self.idletime <= 0 then
-                self.target = taskHandler.getTask()
+                if server then 
+                    self.target = taskHandler.getTask() 
+                    if self.target then
+                        server.sendNewCharTask(self)
+                    end
+                end
                 if self.target == nil then
                     self.idletime = math.random() * 3
                 end

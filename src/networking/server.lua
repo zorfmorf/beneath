@@ -33,6 +33,11 @@ function server.service()
             if event.data:sub(1, 6) == "build " then
                 server.parseBuild( event.data:sub(7) )
             end
+            
+            if event.data:sub(1, 6) == "taskw " then
+                server.parseTask( event.data:sub(7) )
+            end
+            
         end
         event = host:service(0)
     end
@@ -45,8 +50,18 @@ function server.parseBuild(string)
     for i,object in pairs( parser.parseObjects(string) ) do        
         local result = world.addObject(object)
         if result then
+            if object.buildable then taskHandler.createTask(object) end
             server.sendToPeers("plobj "..parser.parseObjectsToString( { object } ))
         end
+    end
+end
+
+
+-- try to grant a task wish
+function server.parseTask( string )
+    local target = world.getObject( tonumber(string) )
+    if target then
+        taskHandler.createTask(target)
     end
 end
 
@@ -58,6 +73,14 @@ function server.sendToPeers(message)
         if peer:state() == "connected" then
             peer:send(message)
         end
+    end
+end
+
+
+-- inform about new char task
+function server.sendNewCharTask(char)
+    if char and char.target then
+        server.sendToPeers("taskc "..char.id..","..char.target.id)
     end
 end
 

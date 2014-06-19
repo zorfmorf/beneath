@@ -86,6 +86,7 @@ function Tent:__init(x, y)
     self.ysize = 3
     self.workMax = 10
     self.workleft = 10
+    self.buildable = true
     if love.graphics then
        self.mesh = generateMesh(objects[self.image]) 
     end

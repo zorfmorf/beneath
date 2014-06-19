@@ -71,14 +71,6 @@ function gameInputHandler.mousepressed(x, y, button)
     
     if button == "r" then
         logicHandler.deselect()
-        
-        local tx, ty = cameraHandler.convertScreenCoordinates(x, y)
-        local tile = world.getTile(tx, ty)
-        if tile then
-            --local char = world.getChar(1)
-            --char.state = "idle"
-            --char.target = {x=math.floor(tx), y=math.floor(ty)}
-        end
     end
     
     if button == "wu" then cameraHandler.zoomIn() end

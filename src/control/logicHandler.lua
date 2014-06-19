@@ -44,7 +44,7 @@ function logicHandler.tileClick(x, y)
         
         if object and not object.selected and object.workleft >= 0 then
             object.selected = true
-            taskHandler.createTask(object)
+            client.sendTask(object)
         end
         
     else
@@ -59,8 +59,6 @@ function logicHandler.tileClick(x, y)
                 mouseState = "free"
                 hudHandler.activate()
                 client.sendBuild(buildCandidate)
-                --logicHandler.recalculatePaths()
-                --if buildCandidate.mesh then taskHandler.createTask(buildCandidate) end
             end
         end
         

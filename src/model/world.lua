@@ -161,6 +161,7 @@ function world.addObject(object)
         i = i + 1       
     end
     table.insert(objectDrawOrder, i, object.id)
+    
     return true
 end
 

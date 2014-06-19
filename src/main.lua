@@ -3,7 +3,6 @@ require 'lib/misc'
 
 require 'control/gameInputHandler'
 require 'control/logicHandler'
-require 'control/taskHandler'
 require 'misc/charsetParser'
 require 'misc/tilesetParser'
 require 'misc/astar'
@@ -19,9 +18,12 @@ require 'view/hudHandler'
 
 function love.load()
     
-    -- networking
-    main_server = love.thread.newThread( "main_server.lua" )
-    main_server:start()
+    ONLINE_GAME = false
+    
+    if not ONLINE_GAME then
+        main_server = love.thread.newThread( "main_server.lua" )
+        main_server:start()
+    end
     
     math.randomseed(os.time())
     
@@ -33,7 +35,6 @@ function love.load()
     hudHandler.init()
     logicHandler.init()
     drawHandler.init()
-    taskHandler.init()
     world.init()
     
     client.init()

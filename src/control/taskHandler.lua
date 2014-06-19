@@ -1,5 +1,7 @@
 --[[--
     
+    Only used on server
+    
     Creates and manages tasks
     
     Tasks are created based on player actions
