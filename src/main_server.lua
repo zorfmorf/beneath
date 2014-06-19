@@ -31,12 +31,16 @@ require 'model/object'
 require 'model/world'
 require 'networking/server'
 
+logfile:write("Loaded requires \n")
+
 -- equivalent for love.update(dt)
 function update(dt)
-    
+    world.update(dt)
 end
 
 function main()
+    
+    logfile:write( "Activating server\n" )
     
     local server_active = true
     local SERVER = true
@@ -52,7 +56,7 @@ function main()
     local time = os.time()
     local starttime = os.time()
 
-    logfile:write( "Activating server\n" )
+    logfile:write( "Ready for incoming connections\n" )
     while server_active do
         
         local timeN = os.time()

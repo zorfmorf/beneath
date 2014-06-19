@@ -62,7 +62,7 @@ end
 function server.sendObjects(peer)
     local objstr = "plobj "
     for i,object in pairs(world.getObjects()) do
-        objstr = objstr..object.id..","..object.__name..","..object.x..","object.y..";"
+        objstr = objstr..object.__name..","..object.id..","..object.x..","..object.y..";"
     end
     peer:send(objstr)
 end
@@ -70,5 +70,9 @@ end
 
 -- send all chars
 function server.sendChars(peer)
-    
+    local charstr = "chars "
+    for i,char in pairs(world.getChars()) do
+        charstr = charstr..char.name..","..char.id..","..char.x..","..char.y..";"
+    end
+    peer:send(charstr)
 end
