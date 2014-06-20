@@ -128,6 +128,22 @@ function Char:update(dt)
                     if world.getTile(self.path[1].x, self.path[1].y).object then
                         table.remove(self.path, 1)
                     end
+                    
+                    -- fix villager "spazzing" on start
+                    if #self.path >= 2 then
+                        local a = self.path[1]
+                        local b = self.path[2]
+                        if a.y == b.y and 
+                            a.x < self.x and self.x < b.x or
+                            b.x < self.x and self.x < b.x then 
+                            table.remove(self.path, 1)
+                        end
+                        if a.x == b.x and
+                            a.y < self.y and self.y < b.y or
+                            b.y < self.y and self.y < b.y then 
+                            table.remove(self.path, 1)
+                        end 
+                    end
                 end
                 self.state = "walk"
             else

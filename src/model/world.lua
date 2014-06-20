@@ -137,6 +137,11 @@ end
 -- add object to world. marks tiles as built and calculates draw order
 function world.addObject(object)
     
+    if objects[object.id] then
+        print( "Error: duplicate object id: ", object.id, object.__name)
+        return false
+    end
+    
     local tileselection = world.isPlacable(object)
     
     if tileselection == nil then return false end
@@ -152,7 +157,11 @@ function world.addObject(object)
     end
     
     -- add object to draw order
-    table.insert(objectDrawOrder, object.id)
+    if not server then
+        table.insert(objectDrawOrder, object.id)
+        table.sort(objectDrawOrder, 
+            function(a, b) return objects[a].y < objects[b].y end )
+    end
     
     return true
 end
@@ -166,8 +175,6 @@ function world.update(dt)
     if not server then
         table.sort(charDrawOrder, 
             function(a, b) return characters[a].y < characters[b].y end )
-        table.sort(objectDrawOrder, 
-            function(a, b) return objects[a].y < objects[b].y end )
     end
 end
 
@@ -197,15 +204,14 @@ function world.removeObject(id)
             if tile.object == id then tile.object = nil end
         end
     end
-    objects[id] = nil
-    local i = 1
-    while i <= #objectDrawOrder do
+    local i = #objectDrawOrder
+    while i > 0 do
         if objectDrawOrder[i] == id then
             table.remove(objectDrawOrder, i)
-            return
         end
-        i = i + 1
+        i = i - 1
     end
+    objects[id] = nil
 end
 
 
