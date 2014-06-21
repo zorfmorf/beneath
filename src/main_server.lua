@@ -10,14 +10,8 @@
     
 ]]--
 
-systime = os.time()
-
-function getCurrentTime()
-    return os.time() - systime
-end
-
 logfile = io.open("log.txt", "w")
-logfile:write("Server started at ", getCurrentTime(), " \n")
+logfile:write("Server started \n")
 
 class = require 'lib/30logclean'
 require 'lib/misc'
@@ -32,11 +26,14 @@ require 'model/world'
 require 'networking/parser'
 require 'networking/server'
 
+require "socket" -- for time measuring purposes
+
 logfile:write("Loaded requires \n")
 
 -- equivalent for love.update(dt)
-function update(dt)
+local function update(dt)
     world.update(dt)
+    server.service()
 end
 
 function main()
@@ -52,20 +49,18 @@ function main()
     world.generate()
     server.init()
 
-    logfile:write("Inits finished\n")
-
-    local time = os.time()
-    local starttime = os.time()
-
     logfile:write( "Ready for incoming connections\n" )
+
+    local time = socket.gettime()
+    local starttime = time
+
     while server_active do
         
-        local timeN = os.time()
+        local timeN = socket.gettime()
         local dt = timeN - time
         time = timeN
         
         update(dt)
-        server.service()
         
     end
 end

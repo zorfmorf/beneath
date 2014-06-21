@@ -169,6 +169,7 @@ function world.addObject(object)
 end
 
 
+-- update elements in world
 function world.update(dt)
     for i,char in pairs(characters) do
         char:update(dt)
