@@ -145,16 +145,14 @@ function Tree:work(dt)
     if self.__name == "tree_small" and self.workleft > 0 and wnew <= 0 then
         self.image = nil
         self.ressources = { wood=2 }
+        if server then
+            world.removeObject(self.id)
+            world.addObject(Ressource:new(self.x, self.y, self.ressources))
+        end
     end
     
     if not (self.__name == "tree_small") then
-        
-        if math.floor(self.workleft) % 2 == 0 and
-            not (math.floor(wnew) == math.floor(self.workleft)) then
-            if self.ressources == nil then self.ressources = { wood=0 } end
-            self.ressources.wood = self.ressources.wood + 1
-        end
-        
+                
         if self.workleft > 6 and wnew <= 6 then
             
             self.image = "tree_stump1"
@@ -169,11 +167,22 @@ function Tree:work(dt)
             self.yshift = 0.5
         end
         
+        if server then
+            if math.floor(self.workleft) % 2 == 0 and
+                not (math.floor(wnew) == math.floor(self.workleft)) then
+                if self.ressources == nil then self.ressources = { wood=0 } end
+                self.ressources.wood = self.ressources.wood + 1
+            end
+        end
+        
         if self.workleft > 0 and wnew <= 0 then
             self.image = nil
-            world.removeObject(self.id)
-            world.addObject(Ressource:new(self.x, self.y, self.ressources))
+            if server then
+                world.removeObject(self.id)
+                world.addObject(Ressource:new(self.x, self.y, self.ressources))
+            end
         end
+        
     end
     
     self.workleft = wnew

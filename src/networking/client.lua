@@ -24,7 +24,7 @@ end
 
 function client.service()
     local event = host:service(0)
-    if event then
+    while event do
         
         if event.type == "connect" then
             
@@ -52,6 +52,11 @@ function client.service()
                 print( "Received new char task" )
                 client.parseTask( event.data:sub(7) )
                 
+            elseif event.data:sub(1, 6) == "remob " then
+                
+                print( "Received remove object" )
+                client.parseRemoveObject( event.data:sub(7) )
+                
             else
                 
                 print("Got message: ", event.data, event.peer)
@@ -59,6 +64,9 @@ function client.service()
             end
             
         end
+        
+        event = host:service(0)
+        
     end
 end
 
@@ -66,6 +74,15 @@ end
 -- send build wish
 function client.sendBuild(build)
     server:send("build "..build.__name..","..(-1)..","..build.x..","..build.y)
+end
+
+
+-- try to remove given object
+function client.parseRemoveObject(string)
+    local id = tonumber(string)
+    if id and world.getObject(id) then
+        world.removeObject(id)
+    end
 end
 
 

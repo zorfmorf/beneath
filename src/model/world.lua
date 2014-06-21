@@ -163,6 +163,8 @@ function world.addObject(object)
             function(a, b) return objects[a].y < objects[b].y end )
     end
     
+    if server then server.sendAddObject(object) end
+    
     return true
 end
 
@@ -199,19 +201,24 @@ function world.getChar(id)
 end
 
 function world.removeObject(id)
-    for y,row in pairs(tiles) do
-        for x,tile in pairs(row) do
-            if tile.object == id then tile.object = nil end
+    if objects[id] then
+        for y,row in pairs(tiles) do
+            for x,tile in pairs(row) do
+                if tile.object == id then tile.object = nil end
+            end
         end
-    end
-    local i = #objectDrawOrder
-    while i > 0 do
-        if objectDrawOrder[i] == id then
-            table.remove(objectDrawOrder, i)
+        local i = #objectDrawOrder
+        while i > 0 do
+            if objectDrawOrder[i] == id then
+                table.remove(objectDrawOrder, i)
+            end
+            i = i - 1
         end
-        i = i - 1
+        objects[id] = nil
+        if server then server.sendRemoveObject(id) end
+        return true
     end
-    objects[id] = nil
+    return false
 end
 
 

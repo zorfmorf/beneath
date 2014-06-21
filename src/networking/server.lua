@@ -13,7 +13,8 @@ local host = nil
 
 -- bind to port and be ready to recieve connections
 function server.init()
-    host = enet.host_create"localhost:44631"
+    host = enet.host_create("localhost:44631")
+    logfile:write( "host: state", tostring(host), "\n" )
 end
 
 
@@ -51,11 +52,9 @@ function server.parseBuild(string)
         local result = world.addObject(object)
         if result then
             if object.buildable then taskHandler.createTask(object) end
-            server.sendToPeers("plobj "..parser.parseObjectsToString( { object } ))
         end
     end
 end
-
 
 -- try to grant a task wish
 function server.parseTask( string )
@@ -68,10 +67,14 @@ end
 
 -- send the given message to all peers
 function server.sendToPeers(message)
-    for i=1,host:peer_count() do
-        local peer = host:get_peer(i)
-        if peer:state() == "connected" then
-            peer:send(message)
+    -- if host is not set we are in startup phase and there are no
+    -- clients to send things to
+    if host then
+        for i=1,host:peer_count() do
+            local peer = host:get_peer(i)
+            if peer:state() == "connected" then
+                peer:send(message)
+            end
         end
     end
 end
@@ -82,6 +85,18 @@ function server.sendNewCharTask(char)
     if char and char.target then
         server.sendToPeers("taskc "..char.id..","..char.target.id)
     end
+end
+
+
+-- inform clients to remove object with given id
+function server.sendRemoveObject(id)
+    server.sendToPeers("remob "..id)
+end
+
+
+-- inform clients to add given object
+function server.sendAddObject(object)
+    server.sendToPeers("plobj "..parser.parseObjectsToString( { object } ) )
 end
 
 
