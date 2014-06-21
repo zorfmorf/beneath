@@ -17,6 +17,7 @@ function Object:__init(x, y)
     self.y = y
     self.image = "default"
     self.selected = false
+    self.selectable = false
     self.ressources = nil
     self.workleft = -1
     self.xsize = 2
@@ -107,6 +108,7 @@ Tree.__name = "tree"
 
 function Tree:__init(x, y, tree_type)
     Tree.super.__init(self, x, y)
+    self.selectable = true
     
     if not tree_type then tree_type = math.random(1, 3) end
     if tree_type == 3 then 

@@ -106,6 +106,7 @@ function client.parseTask(string)
     local char = world.getChar(charid)
     local object = world.getObject(taskid)
     if char and object then
+        object.selectable = false
         char.state = "idle"
         char.path = nil
         char.target = object

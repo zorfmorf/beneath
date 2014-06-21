@@ -147,8 +147,9 @@ function Char:update(dt)
                 end
                 self.state = "walk"
             else
-                print( "Path not creatable" )
+                print( "Path not createable" )
                 self.target.selected = false
+                if server then taskHandler.createTask(self.target) end
                 self.target = nil
             end
         else

@@ -59,7 +59,8 @@ end
 -- try to grant a task wish
 function server.parseTask( string )
     local target = world.getObject( tonumber(string) )
-    if target then
+    if target and target.selectable then
+        target.selectable = false
         taskHandler.createTask(target)
     end
 end
