@@ -144,7 +144,7 @@ function Tree:work(dt)
     
     local wnew = self.workleft - dt
     
-    if self.__name == "tree_small" and self.workleft > 0 and wnew <= 0 then
+    if self.__name == "tree_small" and self.workleft >= 0 and wnew < 0 then
         self.image = nil
         self.ressources = { wood=2 }
         if server then
@@ -177,7 +177,7 @@ function Tree:work(dt)
             end
         end
         
-        if self.workleft > 0 and wnew <= 0 then
+        if self.workleft >= 0 and wnew < 0 then
             self.image = nil
             if server then
                 world.removeObject(self.id)

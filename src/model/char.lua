@@ -23,6 +23,14 @@ function Char:__init(x, y)
     self.path = nil
 end
 
+function Char:addTask(target)
+    self.state = "idle"
+    self.anim = "walk"
+    self.animcycle = 1
+    self.path = nil
+    self.target = target
+end
+
 function Char:update(dt)
     self.animcycle = self.animcycle + dt * ANIM_SPEED
     if self.animcycle >= 9 or self.state == "idle" 
@@ -43,9 +51,7 @@ function Char:update(dt)
             self.target:work(dt)
             if self.target.workleft < 0 then
                 self.target.selected = false
-                self.target = nil
-                self.state = "idle"
-                self.anim = "walk"
+                self:addTask(nil)
             end
             
         else
@@ -77,6 +83,13 @@ function Char:update(dt)
         if #self.path > 0 then
             if world.getTile(target.x, target.y).object then
                 self.path = nil
+                if world.getTile(self.x, self.y).object and
+                   world.getTile(self.x + 1, self.y).object and
+                   world.getTile(self.x - 1, self.y).object and
+                   world.getTile(self.x, self.y + 1).object and
+                   world.getTile(self.x, self.y - 1).object then
+                    self.state = "blocked"
+                end
                 return
             end
         end
@@ -170,5 +183,6 @@ function Char:update(dt)
 end
 
 function Char:getAnimation()
+    if self.state == "blocked" then return "walk_d1" end
     return self.anim.."_"..self.direction..math.floor(self.animcycle)
 end

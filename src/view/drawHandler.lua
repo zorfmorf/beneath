@@ -72,7 +72,11 @@ function drawHandler.drawTerrain()
             love.graphics.setColor(255, 255, 255, 255)
             love.graphics.setFont(nameFont)
             love.graphics.print(char.name, char.x * tilesize, char.y * tilesize, 0, 1, 1, nameFont:getWidth(char.name) / 2, 64)
-            love.graphics.draw(charset, anim_quad[char:getAnimation()], char.x * tilesize, char.y * tilesize, 0, 1, 1, 32, 58)
+            if anim_quad[char:getAnimation()] then
+                love.graphics.draw(charset, anim_quad[char:getAnimation()], char.x * tilesize, char.y * tilesize, 0, 1, 1, 32, 58)
+            else
+                print("Anim missing:", char:getAnimation(), char.state, char.anim, char.animcycle)
+            end
             j = j + 1
         end
     end
