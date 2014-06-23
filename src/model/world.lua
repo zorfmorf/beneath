@@ -203,11 +203,15 @@ end
 
 function world.removeObject(id)
     if objects[id] then
+        
+        -- free up tiles so that other things can be placed there
         for y,row in pairs(tiles) do
             for x,tile in pairs(row) do
                 if tile.object == id then tile.object = nil end
             end
         end
+        
+        -- remove object from draworder
         local i = #objectDrawOrder
         while i > 0 do
             if objectDrawOrder[i] == id then
@@ -215,6 +219,11 @@ function world.removeObject(id)
             end
             i = i - 1
         end
+        
+        -- make sure that no chars keep on working on this
+        objects[id].workleft = -1
+        
+        -- actually delete object
         objects[id] = nil
         if server then server.sendRemoveObject(id) end
         return true

@@ -89,6 +89,14 @@ function server.sendNewCharTask(char)
 end
 
 
+-- inform about finished building
+function server.sendBuildFinished(object)
+    if id then
+        server.sendToPeers("built "..object.id)
+    end
+end
+
+
 -- inform clients to remove object with given id
 function server.sendRemoveObject(id)
     server.sendToPeers("remob "..id)

@@ -33,6 +33,13 @@ function Object:work(dt)
     -- do nothing
 end
 
+-- we need to calculate different if on client
+local function calculateWork(workleft, dt)
+    local wnew = workleft - dt
+    if not server and wnew < 0 then return 0 end
+    return wnew
+end
+
 ----------- Ressource
 
 Ressource = Object:extends()
@@ -86,7 +93,7 @@ function Tent:__init(x, y)
     self.xsize = 4
     self.ysize = 3
     self.workMax = 10
-    self.workleft = 10
+    self.workleft = self.workMax
     self.buildable = true
     if love.graphics then
        self.mesh = generateMesh(objects[self.image]) 
@@ -94,9 +101,12 @@ function Tent:__init(x, y)
 end
 
 function Tent:work(dt)
-    self.workleft = self.workleft - dt
-    if love.graphics then
-        updateMesh(self.mesh, self.workleft / self.workMax)
+    if self.workleft >= 0 then
+        self.workleft = calculateWork(self.workleft, dt)
+        if server and self.workleft < 0 then server.sendBuildFinished(self) end
+        if love.graphics then
+            updateMesh(self.mesh, math.max(0, self.workleft / self.workMax) )
+        end
     end
 end
 
@@ -142,7 +152,7 @@ end
 
 function Tree:work(dt)
     
-    local wnew = self.workleft - dt
+    local wnew = calculateWork(self.workleft, dt)
     
     if self.__name == "tree_small" and self.workleft >= 0 and wnew < 0 then
         self.image = nil

@@ -57,6 +57,11 @@ function client.service()
                 print( "Received remove object" )
                 client.parseRemoveObject( event.data:sub(7) )
                 
+            elseif event.data:sub(1, 6) == "built " then
+                
+                print( "Received build finished object" )
+                client.parseFinishBuild( event.data:sub(7) )
+                
             else
                 
                 print("Got message: ", event.data, event.peer)
@@ -83,6 +88,18 @@ function client.parseRemoveObject(string)
     if id and world.getObject(id) then
         world.removeObject(id)
     end
+end
+
+
+-- try to finish given building/object
+function client.parseFinishBuild(string)
+    local id = tonumber(string)
+    if id and world.getObject(id) then
+        local build = world.getObject(id)
+        build.workleft = -1
+        build:work(0.1)
+    end
+    print( "Error: No building with id", id)
 end
 
 
