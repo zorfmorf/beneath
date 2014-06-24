@@ -164,6 +164,7 @@ function Char:update(dt)
                 self.target.selected = false
                 if server then taskHandler.createTask(self.target) end
                 self.target = nil
+                self.idletime = 5
             end
         else
             self.idletime = self.idletime - dt
@@ -175,7 +176,7 @@ function Char:update(dt)
                     end
                 end
                 if self.target == nil then
-                    self.idletime = math.random() * 3
+                    self.idletime = 2
                 end
             end
         end
