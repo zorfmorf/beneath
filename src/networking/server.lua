@@ -84,7 +84,7 @@ end
 -- inform about new char task
 function server.sendNewCharTask(char)
     if char and char.target then
-        server.sendToPeers("taskc "..char.id..","..char.target.id)
+        server.sendToPeers("taskc "..char.id..","..char.target)
     end
 end
 

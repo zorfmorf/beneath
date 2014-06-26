@@ -62,8 +62,8 @@ function drawHandler.drawTerrain()
             end
             
             if obj.ressources then
-                for i,res in pairs(obj.ressources) do
-                    love.graphics.draw(objects[i..res], obj.x * tilesize, obj.y * tilesize)
+                for res,amount in pairs(obj.ressources) do
+                    love.graphics.draw(objects[res..amount], obj.x * tilesize, obj.y * tilesize)
                 end
             end
             if console then love.graphics.rectangle("line", obj.x * tilesize, obj.y * tilesize, tilesize, tilesize) end

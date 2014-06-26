@@ -156,10 +156,9 @@ function Tree:work(dt)
     
     if self.__name == "tree_small" and self.workleft >= 0 and wnew < 0 then
         self.image = nil
-        self.ressources = { wood=2 }
         if server then
             world.removeObject(self.id)
-            world.addObject(Ressource:new(self.x, self.y, self.ressources))
+            world.addObject(Ressource:new(self.x, self.y, { wood=2 }))
         end
     end
     
@@ -178,20 +177,18 @@ function Tree:work(dt)
             self.xshift = -0.5
             self.yshift = 0.5
         end
-        
-        if server then
-            if math.floor(self.workleft) % 2 == 0 and
+
+        if math.floor(self.workleft) % 2 == 0 and
                 not (math.floor(wnew) == math.floor(self.workleft)) then
-                if self.ressources == nil then self.ressources = { wood=0 } end
-                self.ressources.wood = self.ressources.wood + 1
-            end
+            if self.ressources == nil then self.ressources = { wood=0 } end
+            self.ressources.wood = self.ressources.wood + 1
         end
         
         if self.workleft >= 0 and wnew < 0 then
             self.image = nil
             if server then
                 world.removeObject(self.id)
-                world.addObject(Ressource:new(self.x, self.y, self.ressources))
+                world.addObject(Ressource:new(self.x, self.y, {wood=6}))
             end
         end
         

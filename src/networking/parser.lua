@@ -13,7 +13,13 @@ function parser.parseObjectsToString(objectlist)
     local string = ""
     for i,object in pairs(objectlist) do
         local id = object.id
-        string = string..object.__name..","..object.id..","..object.x..","..object.y..";"
+        string = string..object.__name..","..object.id..","..object.x..","..object.y
+        if object.ressources then
+            for res,amount in pairs(object.ressources) do
+                string = string..","..res.."="..amount
+            end
+        end
+        string = string..";"
     end
     return string
 end
@@ -43,6 +49,17 @@ function parser.parseObjects(string)
             if i == 3 then newobj.x = tonumber(value) end
             if i == 4 then newobj.y = tonumber(value) end
             
+            -- rest of the string should be ressources
+            if i >= 5 then 
+                local res,amount = parser.parseRessource(value)
+                if res and amount then
+                    if not newobj.ressources then 
+                        newobj.ressources = {} 
+                    end
+                    newobj.ressources[res] = amount
+                end
+            end
+            
             i = i + 1
         end
         
@@ -50,6 +67,21 @@ function parser.parseObjects(string)
     end
     
     return objectList
+end
+
+
+-- parse ressource from a string in the form 'wood=2'
+function parser.parseRessource(string)
+    local res = nil
+    local amount = nil
+    local i = 1
+    for value in string.gmatch(string, '[^=]+') do
+        if i == 1 then res = value end
+        if i == 2 then amount = value end
+        i = i + 1
+    end
+    if not res or not amount then return nil end
+    return res, amount
 end
 
 

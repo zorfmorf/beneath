@@ -19,7 +19,7 @@ function Char:__init(x, y)
     self.idletime = 0
     self.id = CHAR_ID
     CHAR_ID = CHAR_ID + 1
-    self.target = nil
+    self.target = nil -- if not nil it's an object.id
     self.path = nil
 end
 
@@ -28,7 +28,12 @@ function Char:addTask(target)
     self.anim = "walk"
     self.animcycle = 1
     self.path = nil
-    self.target = target
+    
+    if target then
+        self.target = target.id
+    else 
+        self.target = nil 
+    end
 end
 
 function Char:update(dt)
@@ -40,33 +45,40 @@ function Char:update(dt)
     
     if self.state == "work" then
         
-        local tx = self.target.x
-        local ty = self.target.y + 0.5
+        local target = world.getObject(self.target)
         
-        if self.x == tx and self.y == ty then
+        if target then
+        
+            local tx = target.x
+            local ty = target.y + 0.5
             
-            self.direction = "r"
-            self.anim = "work"
-            
-            self.target:work(dt)
-            if self.target.workleft < 0 then
-                self.target.selected = false
-                self:addTask(nil)
+            if self.x == tx and self.y == ty then
+                
+                self.direction = "r"
+                self.anim = "work"
+                
+                target:work(dt)
+                if target.workleft < 0 then
+                    target.selected = false
+                    self:addTask(nil)
+                end
+                
+            else
+                
+                if self.y > ty then
+                    self.y = self.y - math.min(dt, self.y - ty)
+                end
+                
+                if self.x < tx then
+                    self.x = self.x + math.min(dt, tx - self.x)
+                end
+                
+                if self.x > tx then
+                    self.x = self.x - math.min(dt, self.x - tx)
+                end
             end
-            
         else
-            
-            if self.y > ty then
-                self.y = self.y - math.min(dt, self.y - ty)
-            end
-            
-            if self.x < tx then
-                self.x = self.x + math.min(dt, tx - self.x)
-            end
-            
-            if self.x > tx then
-                self.x = self.x - math.min(dt, self.x - tx)
-            end
+            self:addTask(nil)
         end
     end
     
@@ -74,6 +86,29 @@ function Char:update(dt)
         
         if self.path == nil then
             self.state = "idle"
+            return
+        end
+        
+        if #self.path == 0 then
+            self.path = nil
+            self.animcycle = 1
+            self.state = "work"
+            
+            local targetObject = world.getObject(self.target)
+            if targetObject then
+                targetObject.selected = false
+                local xdif = self.x - targetObject.x
+                local ydif = self.y - targetObject.y
+                if math.abs(ydif) > math.abs(xdif) then
+                    self.direction = "d"
+                    if ydif > 0 then self.direction = "u" end
+                else
+                    self.direction = "r"
+                    if xdif > 0 then self.direction = "l" end
+                end
+            else
+                self:addTask(nil)
+            end
             return
         end
         
@@ -103,27 +138,12 @@ function Char:update(dt)
             table.remove(self.path, 1)
         end
         
-        if #self.path == 0 then
-            self.path = nil
-            self.animcycle = 1
-            self.state = "work"
-            self.target.selected = false
-            local xdif = self.x - self.target.x
-            local ydif = self.y - self.target.y
-            if math.abs(ydif) > math.abs(xdif) then
-                self.direction = "d"
-                if ydif > 0 then self.direction = "u" end
-            else
-                self.direction = "r"
-                if xdif > 0 then self.direction = "l" end
-            end
-        end
-        
     end
     
     if self.state == "idle" then
         
-        if self.target then
+        if self.target and world.getObject(self.target) then
+            local target = world.getObject(self.target)
             local tile = world.getTile(self.x, self.y)
             self.path = astar.calculate(
                     world.getTiles(), 
@@ -132,8 +152,8 @@ function Char:update(dt)
                         y=math.floor(self.y)
                     }, 
                     {
-                        x=math.floor(self.target.x), 
-                        y=math.floor(self.target.y)
+                        x=math.floor(target.x), 
+                        y=math.floor(target.y)
                     }
                 )
             if self.path then
@@ -161,8 +181,8 @@ function Char:update(dt)
                 self.state = "walk"
             else
                 print( "Path not createable" )
-                self.target.selected = false
-                if server then taskHandler.createTask(self.target) end
+                target.selected = false
+                if server then taskHandler.createTask(target) end
                 self.target = nil
                 self.idletime = 5
             end
@@ -170,8 +190,9 @@ function Char:update(dt)
             self.idletime = self.idletime - dt
             if self.idletime <= 0 then
                 if server then 
-                    self.target = taskHandler.getTask() 
-                    if self.target then
+                    local task = taskHandler.getTask() 
+                    if task then
+                        self.target = task.id
                         server.sendNewCharTask(self)
                     end
                 end

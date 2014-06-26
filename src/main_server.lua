@@ -18,6 +18,7 @@ require 'lib/misc'
 
 require 'control/gameInputHandler'
 require 'control/logicHandler'
+require 'control/ressourceHandler'
 require 'control/taskHandler'
 require 'misc/astar'
 require 'model/char'
@@ -41,7 +42,6 @@ function main()
     logfile:write( "Activating server\n" )
     
     local server_active = true
-    local SERVER = true
 
     logicHandler.init()
     taskHandler.init()
