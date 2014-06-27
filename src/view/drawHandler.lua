@@ -1,12 +1,41 @@
-sheark = -0.3
-
-local nameFont = nil
+--[[
+    
+    Draws everything game world - related
+    
+]]--
 
 drawHandler = {}
 
+sheark = -0.3
+
+local nameFont = nil
+local worldCanvas = nil -- the terrain without objects
+
 function drawHandler.init()
     nameFont = love.graphics.newFont(14)
+        
+    worldCanvas = love.graphics.newCanvas(tilesize, tilesize)
+    love.graphics.setCanvas(worldCanvas)
+    love.graphics.setColor(200,100,100,255)
+    love.graphics.rectangle("fill", 0, 0, tilesize, tilesize)
+    love.graphics.setCanvas()
 end
+
+
+-- should be called whenever the terrain changes
+function drawHandler.updateCanvas()
+    local tiles = world.getTiles()
+    worldCanvas = love.graphics.newCanvas(#tiles[1] * tilesize, #tiles * tilesize)
+    love.graphics.setCanvas(worldCanvas)
+    for y,row in pairs(tiles) do
+        for x,tile in pairs(row) do
+            love.graphics.draw(terrain[tile.texture], (y - 1) * tilesize, (x - 1) * tilesize)
+        end
+    end
+    love.graphics.setCanvas()
+end
+
+
 
 function drawHandler.drawTerrain()
 
@@ -16,7 +45,7 @@ function drawHandler.drawTerrain()
     love.graphics.translate( cameraHandler.getShifts() )
     
     love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.draw(world.getTerrainCanvas(), tilesize, tilesize)
+    love.graphics.draw(worldCanvas, tilesize, tilesize)
     
     love.graphics.setColor(100, 0, 0, 100)
     for y,row in pairs(world.getTiles()) do
@@ -81,6 +110,7 @@ function drawHandler.drawTerrain()
         end
     end
     
+    -- draw build preview if in placement mode
     local mx, my = love.mouse.getPosition()
     if not love.mouse.isVisible() then
         local tx, ty = cameraHandler.convertScreenCoordinates(mx, my)
