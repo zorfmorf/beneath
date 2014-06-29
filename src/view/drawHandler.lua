@@ -80,7 +80,6 @@ function drawHandler.drawTerrain()
         if char == nil or (obj ~= nil and char.y > obj.y) then
             
             love.graphics.setColor(255, 255, 255, 255)
-            if obj.selected then love.graphics.setColor(255, 150, 150, 255) end
             
             if obj.mesh then
                 love.graphics.draw(obj.mesh, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, obj.xshift * tilesize, obj.mesh:getImage():getHeight() - tilesize * (1 - obj.yshift))
@@ -95,6 +94,11 @@ function drawHandler.drawTerrain()
                     love.graphics.draw(objects[res..amount], obj.x * tilesize, obj.y * tilesize)
                 end
             end
+            
+            if obj.selected then 
+                love.graphics.draw(icons[obj.selected], obj.x * tilesize, obj.y * tilesize) 
+            end
+            
             if console then love.graphics.rectangle("line", obj.x * tilesize, obj.y * tilesize, tilesize, tilesize) end
             i = i + 1
         else

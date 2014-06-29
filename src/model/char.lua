@@ -59,7 +59,7 @@ function Char:update(dt)
                 
                 target:work(dt)
                 if target.workleft < 0 then
-                    target.selected = false
+                    target.icon = nil
                     self:addTask(nil)
                 end
                 
@@ -96,7 +96,6 @@ function Char:update(dt)
             
             local targetObject = world.getObject(self.target)
             if targetObject then
-                targetObject.selected = false
                 local xdif = self.x - targetObject.x
                 local ydif = self.y - targetObject.y
                 if math.abs(ydif) > math.abs(xdif) then
@@ -181,7 +180,6 @@ function Char:update(dt)
                 self.state = "walk"
             else
                 print( "Path not createable" )
-                target.selected = false
                 if server then taskHandler.createTask(target) end
                 self.target = nil
                 self.idletime = 5

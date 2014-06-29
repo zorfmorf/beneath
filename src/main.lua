@@ -31,6 +31,7 @@ function love.load()
     console = false -- while true display debug information
     
     tilesetParser.loadTerrain()
+    tilesetParser.parseIcons()
     charsetParser.parseCharset()
     cameraHandler.init()
     hudHandler.init()

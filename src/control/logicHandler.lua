@@ -43,7 +43,7 @@ function logicHandler.tileClick(x, y)
         local object = world.getClickedObject(x, y)
         
         if object and object.selectable and object.workleft >= 0 then
-            object.selected = true
+            object.selected = "axe"
             client.sendTask(object)
         end
         

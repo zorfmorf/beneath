@@ -96,3 +96,8 @@ function tilesetParser.loadTerrain()
     objects["wood6"] = love.graphics.newImage(imgData)
     
 end
+
+function tilesetParser.parseIcons()
+    icons = {}
+    icons["axe"] = love.graphics.newImage("ressource/icons/axe-in-stump.png")
+end
