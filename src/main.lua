@@ -28,9 +28,10 @@ function love.load()
     
     math.randomseed(os.time())
     
-    console = true -- while true display debug information
+    console = false -- while true display debug information
     
     tilesetParser.loadTerrain()
+    tilesetParser.parseIcons()
     charsetParser.parseCharset()
     cameraHandler.init()
     hudHandler.init()

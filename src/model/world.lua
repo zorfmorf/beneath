@@ -13,13 +13,6 @@ local worldCanvas = nil
 function world.init()
     
     tiles = {}
-    if love.graphics then
-        worldCanvas = love.graphics.newCanvas(tilesize, tilesize)
-        love.graphics.setCanvas(worldCanvas)
-        love.graphics.setColor(200,100,100,255)
-        love.graphics.rectangle("fill", 0, 0, tilesize, tilesize)
-        love.graphics.setCanvas()
-    end
     
     objects = {}
     objectDrawOrder = {}
@@ -61,27 +54,7 @@ function world.updateTiles(newTiles)
             tiles[#tiles][#tiles[#tiles] + 1] = { texture = tile, object = nil }
         end
     end
-    world.updateCanvas()
-end
-
-
--- should be called whenever the terrain changes
-function world.updateCanvas()
-    if love.graphics then
-        worldCanvas = love.graphics.newCanvas(WORLD_SIZE * tilesize, WORLD_SIZE * tilesize)
-        love.graphics.setCanvas(worldCanvas)
-        for y,row in pairs(tiles) do
-            for x,tile in pairs(row) do
-                love.graphics.draw(terrain[tile.texture], (y - 1) * tilesize, (x - 1) * tilesize)
-            end
-        end
-        love.graphics.setCanvas()
-    end 
-end
-
-
-function world.getTerrainCanvas()
-    return worldCanvas
+    drawHandler.updateCanvas()
 end
 
 

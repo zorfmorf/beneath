@@ -1,8 +1,14 @@
+--[[
+    
+    Tasked with drawing everything hud related
+    
+--]]
+
 
 hudHandler = {}
 
-local sidebarseed = {} -- randomseed for sidebar so that it looks always the same
 local active = false -- if not active, sidebar is deactivaed
+local sidebarCanvas = nil -- the canvas containing the sidebar bkg
 local sidebarslidespeed = 200
 local sideshift = 0 -- current sidebar shift
 local width = 0 -- max sidebar width
@@ -15,10 +21,24 @@ function hudHandler.init()
     width = tilesize * 2
     sideshift = 0
     
-    for i=1,500 do
-        sidebarseed[i] = math.random(1, 8)
-        if sidebarseed[i] > 5 then sidebarseed[i] = 1 end
+    local th = math.floor(love.graphics.getHeight() / tilesize + 1)
+    sidebarCanvas = love.graphics.newCanvas(tilesize * 3, th * tilesize)
+    love.graphics.setCanvas(sidebarCanvas)
+    for i=0,3 do
+        for j=0,th-1 do
+            local rand = math.random(1, 15)
+            if rand > 4 then rand = 1 end
+            love.graphics.draw(terrain["stone"..rand], 
+                (0.5 + i) * tilesize, j * tilesize)
+        end
     end
+    for j=0,th-1 do
+        love.graphics.draw(terrain["col_mid1"], 0, j * tilesize)
+    end
+    love.graphics.draw(terrain["col_mid2"], 0, 7 * tilesize)
+    love.graphics.draw(terrain["col_mid3"], 0, 8 * tilesize)
+    love.graphics.draw(terrain["col_mid4"], 0, (th-4) * tilesize)
+    love.graphics.setCanvas()
 end
 
 -- make hud visible again
@@ -106,17 +126,7 @@ function hudHandler.draw()
     love.graphics.setColor(255, 255, 255, 255)
     
     -- draw sidebar
-    local y = 0
-    local seedIndex = 1
-    while y * tilesize < love.graphics.getHeight() do
-        for i=1,3 do
-            love.graphics.draw(terrain["stone"..math.max(sidebarseed[seedIndex + i] % 5, 1)], 
-                xpos + (i - 1.5) * tilesize, y * tilesize)
-        end
-        love.graphics.draw(terrain["col_mid"..sidebarseed[seedIndex]], xpos - tilesize, y * tilesize)
-        y = y + 1
-        seedIndex = seedIndex + 4
-    end
+    love.graphics.draw(sidebarCanvas, love.graphics.getWidth() - tilesize - sideshift)
     
     -- draw mouse build icon
     local mx, my = love.mouse.getPosition()
