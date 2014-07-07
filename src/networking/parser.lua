@@ -112,11 +112,23 @@ end
 function parser.parseTask(string)
     local i = 1
     local charid = -1
-    local taskid = -1
+    local task = nil
+    local taskname = nil
+    local params = {}
     for value in string.gmatch(string, '[^,]+') do
         if i == 1 then charid = tonumber(value) end
-        if i == 2 then taskid = tonumber(value) end
+        if i == 2 then taskname = value end
+        if i >= 3 then table.insert(params, value) end
         i = i + 1
     end
-    return charid, taskid
+    
+    if taskname == WorkTask.__name then
+        task = WorkTask:new(tonumber(params[1]))
+    end
+    
+    if taskname == Task.__name then
+        task = Task:new( tonumber(params[1]), tonumber(params[2]) )
+    end
+    
+    return charid, task
 end

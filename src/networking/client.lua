@@ -49,7 +49,7 @@ function client.service()
                 
             elseif event.data:sub(1, 6) == "taskc " then
                 
-                print( "Received new char task" )
+                print( "Received new char task", event.data:sub(7) )
                 client.parseTask( event.data:sub(7) )
                 
             elseif event.data:sub(1, 6) == "remob " then
@@ -119,12 +119,10 @@ end
 
 -- Parse a new task for a char
 function client.parseTask(string)
-    local charid, taskid = parser.parseTask(string)
+    local charid, task = parser.parseTask(string)
     local char = world.getChar(charid)
-    local object = world.getObject(taskid)
-    if char and object then
-        object.selectable = false
-        char:addTask(object)
+    if char then
+        char:addTask(task)
     end
 end
 

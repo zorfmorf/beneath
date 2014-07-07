@@ -30,6 +30,6 @@ end
 
 
 -- Creates a task based on the target
-function taskHandler.createTask(target)
-    table.insert(tasklist, target)
+function taskHandler.createTask(task)
+    table.insert(tasklist, task)
 end

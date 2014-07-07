@@ -1,3 +1,8 @@
+--[[
+    
+    Any animated character in the game. Currently only represents villagers, but may be split up in the future
+    
+]]--
 
 CHAR_ID = 1
 
@@ -19,21 +24,16 @@ function Char:__init(x, y)
     self.idletime = 0
     self.id = CHAR_ID
     CHAR_ID = CHAR_ID + 1
-    self.target = nil -- if not nil it's an object.id
+    self.task = nil
     self.path = nil
 end
 
-function Char:addTask(target)
+function Char:addTask(task)
     self.state = "idle"
     self.anim = "walk"
     self.animcycle = 1
     self.path = nil
-    
-    if target then
-        self.target = target.id
-    else 
-        self.target = nil 
-    end
+    self.task = task
 end
 
 function Char:update(dt)
@@ -43,11 +43,15 @@ function Char:update(dt)
         self.animcycle = 1
     end
     
+    if self.state == "blocked" then
+        --print("Help I'm blocked")
+    end
+    
     if self.state == "work" then
         
-        local target = world.getObject(self.target)
-        
-        if target then
+        if self.task and not self.task:isCompleted() then
+            
+            local target = self.task:getTarget()
         
             local tx = target.x
             local ty = target.y + 0.5
@@ -56,12 +60,7 @@ function Char:update(dt)
                 
                 self.direction = "r"
                 self.anim = "work"
-                
-                target:work(dt)
-                if target.workleft < 0 then
-                    target.icon = nil
-                    self:addTask(nil)
-                end
+                self.task:doWork(self, dt)
                 
             else
                 
@@ -94,10 +93,10 @@ function Char:update(dt)
             self.animcycle = 1
             self.state = "work"
             
-            local targetObject = world.getObject(self.target)
-            if targetObject then
-                local xdif = self.x - targetObject.x
-                local ydif = self.y - targetObject.y
+            local taskTarget = self.task:getTarget()
+            if taskTarget then
+                local xdif = self.x - taskTarget.x
+                local ydif = self.y - taskTarget.y
                 if math.abs(ydif) > math.abs(xdif) then
                     self.direction = "d"
                     if ydif > 0 then self.direction = "u" end
@@ -141,19 +140,13 @@ function Char:update(dt)
     
     if self.state == "idle" then
         
-        if self.target and world.getObject(self.target) then
-            local target = world.getObject(self.target)
-            local tile = world.getTile(self.x, self.y)
+        if self.task then
+            if not server then print( "Client with task", self.task ) end
+            local target = self.task:getTarget()
             self.path = astar.calculate(
                     world.getTiles(), 
-                    {
-                        x=math.floor(self.x), 
-                        y=math.floor(self.y)
-                    }, 
-                    {
-                        x=math.floor(target.x), 
-                        y=math.floor(target.y)
-                    }
+                    { x=math.floor(self.x), y=math.floor(self.y) }, 
+                    { x=math.floor(target.x), y=math.floor(target.y)}
                 )
             if self.path then
                 if self.path[1] then
@@ -180,22 +173,19 @@ function Char:update(dt)
                 self.state = "walk"
             else
                 print( "Path not createable" )
-                if server then taskHandler.createTask(target) end
-                self.target = nil
-                self.idletime = 5
+                if server then taskHandler.createTask(self.task) end
+                self.idletime = math.random() * 5
             end
         else
-            self.idletime = self.idletime - dt
-            if self.idletime <= 0 then
-                if server then 
-                    local task = taskHandler.getTask() 
-                    if task then
-                        self.target = task.id
+            if server then
+                self.idletime = self.idletime - dt
+                if self.idletime <= 0 then
+                    self.task = taskHandler.getTask() 
+                    if self.task then
                         server.sendNewCharTask(self)
+                    else
+                        self.idletime = 2
                     end
-                end
-                if self.target == nil then
-                    self.idletime = 2
                 end
             end
         end

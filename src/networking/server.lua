@@ -51,7 +51,9 @@ function server.parseBuild(string)
     for i,object in pairs( parser.parseObjects(string) ) do        
         local result = world.addObject(object)
         if result then
-            if object.buildable then taskHandler.createTask(object) end
+            if object.buildable then 
+                taskHandler.createTask(WorkTask:new(object.id)) 
+            end
         end
     end
 end
@@ -61,7 +63,7 @@ function server.parseTask( string )
     local target = world.getObject( tonumber(string) )
     if target and target.selectable then
         target.selectable = false
-        taskHandler.createTask(target)
+        taskHandler.createTask(WorkTask:new(target.id))
     end
 end
 
@@ -83,15 +85,15 @@ end
 
 -- inform about new char task
 function server.sendNewCharTask(char)
-    if char and char.target then
-        server.sendToPeers("taskc "..char.id..","..char.target)
+    if char and char.task then
+        server.sendToPeers("taskc "..char.id..","..char.task:toString())
     end
 end
 
 
 -- inform about finished building
 function server.sendBuildFinished(object)
-    if id then
+    if object then
         server.sendToPeers("built "..object.id)
     end
 end

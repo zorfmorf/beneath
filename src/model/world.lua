@@ -40,7 +40,7 @@ function world.generate()
     end
     
     for i=1,10 do
-        local char = Char:new(math.random() * (WORLD_SIZE + 1), math.random() * (WORLD_SIZE + 1))
+        local char = Char:new(math.random() * (WORLD_SIZE - 5) + 1, math.random() * (WORLD_SIZE - 5) + 1)
         world.addChar(char)
     end
 end
