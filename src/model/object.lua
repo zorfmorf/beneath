@@ -6,32 +6,8 @@
     
 ]]--
 
-OBJECT_ID = 1
 
-Object = class()
-
-Object.__name = "object"
-
-function Object:__init(x, y)
-    self.x = x
-    self.y = y
-    self.image = "default"
-    self.icon = nil
-    self.selectable = false
-    self.ressources = nil
-    self.workleft = -1
-    self.xsize = 2
-    self.ysize = 1.5
-    self.xshift = 0
-    self.yshift = 0
-    self.id = OBJECT_ID
-    OBJECT_ID = OBJECT_ID + 1
-end
-
--- called whenever a worker worked a little bit on this object
-function Object:work(dt)
-    -- do nothing
-end
+------------ HELPER FUNCTIONS --------
 
 -- we need to calculate different if on client
 local function calculateWork(workleft, dt)
@@ -39,22 +15,6 @@ local function calculateWork(workleft, dt)
     if not server and wnew < 0 then return 0 end
     return wnew
 end
-
------------ Ressource
-
-Ressource = Object:extends()
-
-function Ressource:__init(x, y, restable)
-    Ressource.super.__init(self, x, y)
-    self.__name = "ressource"
-    self.ressources = restable
-    self.image = nil
-    self.xsize = 1
-    self.ysize = 1
-end
-
-
------------ BUILDINGS
 
 local function generateMesh(image)
     local xs = image:getWidth()
@@ -82,6 +42,57 @@ local function updateMesh(mesh, dt)
     mesh:setVertices(vertices)
 end
 
+---------------- OBJECTS --------------
+
+OBJECT_ID = 1
+
+Object = class()
+
+Object.__name = "object"
+
+function Object:__init(x, y)
+    self.x = x
+    self.y = y
+    self.image = "default"
+    self.icon = nil
+    self.selectable = false
+    self.ressources = nil
+    self.workleft = -1
+    self.xsize = 2
+    self.ysize = 1.5
+    self.xshift = 0
+    self.yshift = 0
+    self.id = OBJECT_ID
+    OBJECT_ID = OBJECT_ID + 1
+end
+
+-- called whenever a worker worked a little bit on this object
+function Object:work(dt)
+    if self.workleft >= 0 then
+        self.workleft = calculateWork(self.workleft, dt)
+        if server and self.workleft < 0 then server.sendBuildFinished(self) end
+        if love.graphics then
+            updateMesh(self.mesh, math.max(0, self.workleft / self.workMax) )
+        end
+    end
+end
+
+----------- Ressource
+
+Ressource = Object:extends()
+
+function Ressource:__init(x, y, restable)
+    Ressource.super.__init(self, x, y)
+    self.__name = "ressource"
+    self.ressources = restable
+    self.image = nil
+    self.xsize = 1
+    self.ysize = 1
+end
+
+
+----------- BUILDINGS
+
 ----------- TENT
 
 Tent = Object:extends()
@@ -99,17 +110,41 @@ function Tent:__init(x, y)
        self.mesh = generateMesh(objects[self.image]) 
     end
 end
+----------- SMITH
 
-function Tent:work(dt)
-    if self.workleft >= 0 then
-        self.workleft = calculateWork(self.workleft, dt)
-        if server and self.workleft < 0 then server.sendBuildFinished(self) end
-        if love.graphics then
-            updateMesh(self.mesh, math.max(0, self.workleft / self.workMax) )
-        end
+Smith = Object:extends()
+
+function Smith:__init(x, y)
+    Smith.super.__init(self, x, y)
+    self.__name = "smith"
+    self.image = "smith"
+    self.xsize = 4
+    self.ysize = 3
+    self.workMax = 10
+    self.workleft = self.workMax
+    self.buildable = true
+    if love.graphics then
+       self.mesh = generateMesh(objects[self.image]) 
     end
 end
 
+----------- Farm
+
+Farm = Object:extends()
+
+function Farm:__init(x, y)
+    Farm.super.__init(self, x, y)
+    self.__name = "farm"
+    self.image = "farm"
+    self.xsize = 4
+    self.ysize = 3
+    self.workMax = 10
+    self.workleft = self.workMax
+    self.buildable = true
+    if love.graphics then
+       self.mesh = generateMesh(objects[self.image]) 
+    end
+end
 ----------- TREE
 
 Tree = Object:extends()

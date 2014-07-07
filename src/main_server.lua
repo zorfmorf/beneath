@@ -43,6 +43,8 @@ function main()
     logfile:write( "Activating server\n" )
     
     local server_active = true
+    
+    math.randomseed(os.time())
 
     logicHandler.init()
     taskHandler.init()

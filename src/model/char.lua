@@ -141,7 +141,6 @@ function Char:update(dt)
     if self.state == "idle" then
         
         if self.task then
-            if not server then print( "Client with task", self.task ) end
             local target = self.task:getTarget()
             self.path = astar.calculate(
                     world.getTiles(), 

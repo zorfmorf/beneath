@@ -96,7 +96,7 @@ function drawHandler.drawTerrain()
             end
             
             if obj.selected then 
-                love.graphics.draw(icons[obj.selected], obj.x * tilesize, obj.y * tilesize) 
+                love.graphics.draw(icons[obj.selected], obj.x * tilesize, obj.y * tilesize, 0, 1, 1, -obj.xsize * tilesize / 2 + tilesize / 2, tilesize * 2) 
             end
             
             if console then love.graphics.rectangle("line", obj.x * tilesize, obj.y * tilesize, tilesize, tilesize) end

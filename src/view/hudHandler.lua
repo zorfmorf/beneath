@@ -88,22 +88,25 @@ function hudHandler.catchMouseClick(x, y)
             for i,builditem in pairs(builditems) do
                 
                 local item = objects[builditem.image]
+                local scale = (tilesize * 2) / item:getWidth()
                 
                 local yvalue = i * 5 + yshift
                 
-                if y > yvalue and y < yvalue + item:getHeight() then
+                if y > yvalue and y < yvalue + item:getHeight() * scale then
                     love.mouse.setVisible(false)
                     
                     local object = Object:new()
                     
                     if builditem.__name == "tree_small" then object = Tree:new() end
                     if builditem.__name == "tent" then object = Tent:new() end
+                    if builditem.__name == "farm" then object = Farm:new() end
+                    if builditem.__name == "smith" then object = Smith:new() end
                     cursor = object
                     logicHandler.switchToBuildMode(object)
                     
                     return true
                 end
-                yshift = item:getHeight()
+                yshift = item:getHeight()  * scale 
             end
         end
         return true
@@ -143,7 +146,7 @@ function hudHandler.draw()
         
         local yvalue = i * 5 + yshift
         
-        if mx > xpos and my > yvalue and my < yvalue + image:getHeight() then
+        if mx > xpos and my > yvalue and my < yvalue + image:getHeight() * scale then
             love.graphics.setColor(230, 150, 150, 255)
         else
             love.graphics.setColor(255, 255, 255, 255)
