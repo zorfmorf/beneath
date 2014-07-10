@@ -145,6 +145,23 @@ function Farm:__init(x, y)
        self.mesh = generateMesh(objects[self.image]) 
     end
 end
+
+
+Warehouse = Object:extends()
+
+function Warehouse:__init(x, y)
+    Warehouse.super.__init(self, x, y)
+    self.__name = "warehouse"
+    self.image = "warehouse"
+    self.xsize = 4
+    self.ysize = 3
+    self.workMax = 10
+    self.workleft = self.workMax
+    self.buildable = true
+    if love.graphics then
+       self.mesh = generateMesh(objects[self.image]) 
+    end
+end
 ----------- TREE
 
 Tree = Object:extends()

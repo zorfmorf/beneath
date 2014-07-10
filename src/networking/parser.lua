@@ -40,6 +40,7 @@ function parser.parseObjects(string)
                 if value == "tent" then newobj = Tent:new(0, 0) end
                 if value == "farm" then newobj = Farm:new(0, 0) end
                 if value == "smith" then newobj = Smith:new(0, 0) end
+                if value == "warehouse" then newobj = Warehouse:new(0, 0) end
                 if value == "object" then newobj = Object:new(0, 0) end
                 if value == "ressource" then newobj = Ressource:new(0, 0) end
                 if value == "tree_small" then newobj = Tree:new(0, 0, 3) end

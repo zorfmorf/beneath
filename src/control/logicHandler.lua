@@ -8,7 +8,8 @@ logicHandler = {}
 
 function logicHandler.init()
     table.insert(builditems, Farm:new(0, 0))
-    table.insert(builditems, Smith:new(0, 0))
+    --table.insert(builditems, Smith:new(0, 0))
+    table.insert(builditems, Warehouse:new(0, 0))
 end
 
 function logicHandler.getBuildItems()

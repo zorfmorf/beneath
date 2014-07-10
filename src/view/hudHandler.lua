@@ -101,6 +101,7 @@ function hudHandler.catchMouseClick(x, y)
                     if builditem.__name == "tent" then object = Tent:new() end
                     if builditem.__name == "farm" then object = Farm:new() end
                     if builditem.__name == "smith" then object = Smith:new() end
+                    if builditem.__name == "warehouse" then object = Warehouse:new() end
                     cursor = object
                     logicHandler.switchToBuildMode(object)
                     
