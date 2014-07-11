@@ -35,8 +35,8 @@ function world.generate()
     
     world.addObject(Ressource:new(15, 15, {wood=6}))
     world.addObject(Ressource:new(15, 16, {wood=6}))
-    world.addObject(Ressource:new(16, 15, {wood=6}))
-    world.addObject(Ressource:new(16, 16, {wood=6}))
+    world.addObject(Ressource:new(16, 15, {stone=3}))
+    world.addObject(Ressource:new(16, 16, {stone=3}))
     
     for i=1,20 do
         local x = math.random() * (WORLD_SIZE + 1)

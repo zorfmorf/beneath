@@ -99,6 +99,16 @@ function tilesetParser.loadTerrain()
     imgData:paste(source, 0, 0, 3 * tilesize, 11 * tilesize, tilesize * 1, tilesize * 1)
     objects["wood6"] = love.graphics.newImage(imgData)
     
+    source = love.image.newImageData("ressource/stone.png")
+    imgData = love.image.newImageData(tilesize * 1, tilesize * 1)
+    
+    imgData:paste(source, 0, 0, 0 * tilesize, 0 * tilesize, tilesize * 1, tilesize * 1)
+    objects["stone1"] = love.graphics.newImage(imgData)
+    imgData:paste(source, 0, 0, 0 * tilesize, 1 * tilesize, tilesize * 1, tilesize * 1)
+    objects["stone2"] = love.graphics.newImage(imgData)
+    imgData:paste(source, 0, 0, 0 * tilesize, 2 * tilesize, tilesize * 1, tilesize * 1)
+    objects["stone3"] = love.graphics.newImage(imgData)
+    
 end
 
 function tilesetParser.parseIcons()
