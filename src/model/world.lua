@@ -33,17 +33,25 @@ function world.generate()
         end
     end
     
-    tiles[i][j] = { texture = "g"..math.random(1,3), object = nil }
+    world.addObject(Ressource:new(15, 15, {wood=6}))
+    world.addObject(Ressource:new(15, 16, {wood=6}))
+    world.addObject(Ressource:new(16, 15, {wood=6}))
+    world.addObject(Ressource:new(16, 16, {wood=6}))
     
-    for i=1,100 do
+    for i=1,20 do
         local x = math.random() * (WORLD_SIZE + 1)
         local y = math.random() * (WORLD_SIZE + 1)
         world.addObject(Tree:new(x, y))
     end
     
-    for i=1,10 do
-        local char = Char:new(math.random() * (WORLD_SIZE - 5) + 1, math.random() * (WORLD_SIZE - 5) + 1)
-        world.addChar(char)
+    for i=1,3 do
+        local x = math.random() * (WORLD_SIZE - 5) + 1
+        local y = math.random() * (WORLD_SIZE - 5) + 1
+        local tile = world.getTile(x, y)
+        if tile then
+            local char = Char:new(x, y)
+            world.addChar(char)
+        end
     end
 end
 

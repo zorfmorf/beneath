@@ -169,7 +169,7 @@ function Warehouse:__init(x, y)
     self.__name = "warehouse"
     self.image = "warehouse"
     self.xsize = 4
-    self.ysize = 3
+    self.ysize = 2
     self.workMax = 10
     self.workleft = self.workMax
     self.buildable = true
