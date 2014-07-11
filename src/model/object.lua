@@ -91,6 +91,21 @@ function Ressource:__init(x, y, restable)
 end
 
 
+------------ Placeables
+
+-- a lonely barrel 
+Chest = Object:extends()
+
+function Chest:__init(x, y, bounty)
+    Chest.super.__init(self, x, y)
+    self.__name = "chest"
+    self.bounty = bounty
+    self.image = nil
+    self.xsize = 1
+    self.ysize = 1
+end
+
+
 ----------- BUILDINGS
 
 ----------- TENT

@@ -33,6 +33,8 @@ function world.generate()
         end
     end
     
+    tiles[i][j] = { texture = "g"..math.random(1,3), object = nil }
+    
     for i=1,100 do
         local x = math.random() * (WORLD_SIZE + 1)
         local y = math.random() * (WORLD_SIZE + 1)
@@ -45,7 +47,7 @@ function world.generate()
     end
 end
 
-
+-- TODO: clean up and move string parsing to parser
 function world.updateTiles(newTiles)
     tiles = {}
     for row in string.gmatch(newTiles, '[^;]+') do
