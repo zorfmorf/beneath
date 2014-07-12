@@ -63,7 +63,7 @@ function server.parseTask( string )
     local target = world.getObject( tonumber(string) )
     if target and target.selectable then
         target.selectable = false
-        taskHandler.createTask(WorkTask:new(target.id))
+        taskHandler.createTask(target)
     end
 end
 

@@ -57,6 +57,8 @@ function Object:__init(x, y)
     self.icon = nil
     self.selectable = false
     self.ressources = nil
+    self.costleft = nil
+    self.cost = nil
     self.workleft = -1
     self.xsize = 2
     self.ysize = 1.5
@@ -75,6 +77,22 @@ function Object:work(dt)
             updateMesh(self.mesh, math.max(0, self.workleft / self.workMax) )
         end
     end
+end
+
+function Object:removeRessource(ressource)
+    if self.ressources[ressource] then
+        self.ressources[ressource] = self.ressources[ressource] - 1
+        if self.ressources[ressource] <= 0 then
+            self.ressources[ressource] = nil
+        end
+    end
+end
+
+function Object:addRessource(ressource)
+    if self.ressources[ressource] == nil then
+        self.ressources[ressource] = 0
+    end
+    self.ressources[ressource] = self.ressources[ressource] + 1
 end
 
 ----------- Ressource
@@ -174,7 +192,8 @@ function Warehouse:__init(x, y)
     self.workMax = 10
     self.workleft = self.workMax
     self.buildable = true
-    self.cost = { wood=6, stone=3}
+    self.cost = { wood=6, stone=3 }
+    self.costleft = { wood=6, stone=3 }
     if love.graphics then
        self.mesh = generateMesh(objects[self.image]) 
     end

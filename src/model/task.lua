@@ -30,7 +30,7 @@ end
 -- Called by the villager when working on the task
 -- Villager doesn't have to worry about task type
 function Task:doWork(villager, dt)
-    
+    return false -- returning true means that the task is not yet finished and we have to go to another place
 end
 
 -- needed for server/client messages
@@ -44,7 +44,7 @@ WorkTask.__name = "worktask"
 
 function WorkTask:__init(target)
     self.object = world.getObject(target)
-    self.target = { x=self.object.x, y=self.object.y}
+    self.target = { x=self.object.x, y=self.object.y }
     if not self.object then
         print( "WorkTask: Got empty target" )
     end
@@ -60,9 +60,43 @@ end
 
 function WorkTask:doWork(villager, dt)
     self.object:work(dt)
+    return false
 end
 
 function WorkTask:toString()
     return self.__name..","..self.object.id
 end
-    
+
+------- Carry Task -----
+CarryTask = Task:extends()
+CarryTask.__name = "carrytask"
+
+function CarryTask:__init(from, to, ressource)
+    self.from = world.getObject(from)
+    self.to = world.getObject(to)
+    self.ressource = ressource
+end
+
+function CarryTask:isCompleted()
+    return self.to == nil
+end
+
+function CarryTask:getTarget()
+    if self.from then return self.from end
+    return self.to
+end
+
+function CarryTask:doWork(villager, dt)
+    if self.from then
+        self.from:removeRessource(self.ressource)
+        self.from = nil
+        return true
+    end
+    self.to:addRessource(self.ressource)
+    self.to = nil
+    return false
+end
+
+function CarryTask:toString()
+    return self.__name..","..self.from.id..","..self.to.id..","..self.ressource
+end

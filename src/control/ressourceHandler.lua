@@ -36,9 +36,19 @@ function ressourceHandler.addRessources(object)
             for i = 1,amount do
                 table.insert( ressources[res], object.id)
             end
-            print( "We now have", #ressources[res], res)
         end
     end
+end
+
+
+function ressourceHandler.hasRessource(res)
+    return #ressources[res] > 0
+end
+
+
+function ressourceHandler.withdraw(res)
+    if #ressources[res] <= 0 then return nil end
+    return table.remove(ressources[res], 1)
 end
 
 

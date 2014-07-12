@@ -60,7 +60,10 @@ function Char:update(dt)
                 
                 self.direction = "r"
                 self.anim = "work"
-                self.task:doWork(self, dt)
+                local change = self.task:doWork(self, dt)
+                if change then
+                    self.state = "idle"
+                end
                 
             else
                 
