@@ -161,6 +161,7 @@ function Farm:__init(x, y)
     end
 end
 
+-- Warehouse
 
 Warehouse = Object:extends()
 
@@ -173,6 +174,7 @@ function Warehouse:__init(x, y)
     self.workMax = 10
     self.workleft = self.workMax
     self.buildable = true
+    self.cost = { wood=6, stone=3}
     if love.graphics then
        self.mesh = generateMesh(objects[self.image]) 
     end

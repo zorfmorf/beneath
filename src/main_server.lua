@@ -45,7 +45,8 @@ function main()
     local server_active = true
     
     math.randomseed(os.time())
-
+    
+    ressourceHandler.init()
     logicHandler.init()
     taskHandler.init()
     world.init()

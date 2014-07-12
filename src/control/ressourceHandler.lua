@@ -20,9 +20,10 @@ function ressourceHandler.init()
     ressources = {}
     
     if server then
-        
-    else
-        
+        ressources = { 
+                wood = {}, 
+                stone = {} 
+            }
     end
     
 end
@@ -30,7 +31,14 @@ end
 
 -- take not of all ressources
 function ressourceHandler.addRessources(object)
-    
+    if object.ressources then
+        for res,amount in pairs(object.ressources) do
+            for i = 1,amount do
+                table.insert( ressources[res], object.id)
+            end
+            print( "We now have", #ressources[res], res)
+        end
+    end
 end
 
 

@@ -145,12 +145,12 @@ function world.addObject(object)
         table.sort(objectDrawOrder, 
             function(a, b) return objects[a].y < objects[b].y end )
     end
-    
-    -- track ressources if there are any
-    if object.ressources then ressourceHandler.addRessources(object) end
-    
-    -- if we are server, inform clients
-    if server then server.sendAddObject(object) end
+        
+    -- if we are server, track ressources and inform clients
+    if server then
+        if object.ressources then ressourceHandler.addRessources(object) end
+        server.sendAddObject(object)
+    end
     
     return true
 end
