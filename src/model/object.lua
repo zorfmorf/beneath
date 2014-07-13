@@ -63,8 +63,8 @@ function Object:__init(x, y)
     self.costleft = nil
     self.cost = nil
     self.workleft = -1
-    self.xsize = 2
-    self.ysize = 1.5
+    self.xsize = 1
+    self.ysize = 1
     self.xshift = 0
     self.yshift = 0
     self.id = OBJECT_ID
@@ -150,6 +150,49 @@ function Chest:__init(x, y, bounty)
     self.ysize = 1
 end
 
+-- field
+Field = Object:extends()
+
+function Field:__init(x, y)
+    Field.super.__init(self, x, y)
+    self.__name = "field"
+    self.image = "field"
+    self.xsize = 2
+    self.ysize = 2
+end
+
+-- update field image
+function Field:generateImage()
+    local canvas = love.graphics.newCanvas(self.xsize * tilesize, self.ysize * tilesize)
+    love.graphics.setCanvas(canvas)
+    for i=1,self.xsize do
+        for j=1,self.ysize do
+            
+            local nextImage = "fm"
+            
+            if i == 1 then
+                if j == 1 then nextImage = "ful" end
+                if j > 1 and i < self.ysize then nextImage = "fml" end
+                if j == self.ysize then nextImage = "fdl" end
+            end
+            
+            if i > 1 and i < self.xsize then
+                if j == 1 then nextImage = "fu" end
+                if j == self.ysize then nextImage = "fd" end
+            end
+            
+            if i == self.xsize then
+                if j == 1 then nextImage = "fur" end
+                if j > 1 and j < self.ysize then nextImage = "fmr" end
+                if j == self.ysize then nextImage = "fdr" end
+            end
+            
+            love.graphics.draw(terrain[nextImage], (i - 1) * tilesize, (j - 1) * tilesize)
+        end
+    end
+    love.graphics.setCanvas()
+    self.image = canvas
+end
 
 ----------- BUILDINGS
 

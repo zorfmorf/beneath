@@ -13,7 +13,7 @@ function parser.parseObjectsToString(objectlist)
     local string = ""
     for i,object in pairs(objectlist) do
         local id = object.id
-        string = string..object.__name..","..object.id..","..object.x..","..object.y
+        string = string..object.__name..","..object.id..","..object.x..","..object.y..","..object.xsize..","..object.ysize
         if object.ressources then
             for res,amount in pairs(object.ressources) do
                 string = string..","..res.."="..amount
@@ -41,6 +41,7 @@ function parser.parseObjects(string)
                 if value == "farm" then newobj = Farm:new(0, 0) end
                 if value == "smith" then newobj = Smith:new(0, 0) end
                 if value == "warehouse" then newobj = Warehouse:new(0, 0) end
+                if value == "field" then newobj = Field:new(0, 0) end
                 if value == "object" then newobj = Object:new(0, 0) end
                 if value == "ressource" then newobj = Ressource:new(0, 0) end
                 if value == "tree_small" then newobj = Tree:new(0, 0, 3) end
@@ -51,9 +52,11 @@ function parser.parseObjects(string)
             if i == 2 and not server then newobj.id = tonumber(value) end
             if i == 3 then newobj.x = tonumber(value) end
             if i == 4 then newobj.y = tonumber(value) end
+            if i == 5 then newobj.xsize = tonumber(value) end
+            if i == 6 then newobj.ysize = tonumber(value) end
             
             -- rest of the string should be ressources
-            if i >= 5 then 
+            if i >= 7 then 
                 local res,amount = parser.parseRessource(value)
                 if res and amount then
                     if not newobj.ressources then 

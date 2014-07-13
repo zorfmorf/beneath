@@ -23,6 +23,7 @@ function tilesetParser.loadTerrain()
     
     
     source = love.image.newImageData("ressource/terrain_atlas.png")
+    
     -- dirt textures
     terrain["dul"] = parseTile(source, 3, 28)
     terrain["du"] = parseTile(source, 4, 28)
@@ -34,6 +35,18 @@ function tilesetParser.loadTerrain()
     terrain["dd"] = parseTile(source, 4, 30)
     terrain["ddr"] = parseTile(source, 5, 30)
     
+    -- field textures
+    terrain["ful"] = parseTile(source, 5, 17)
+    terrain["fu"] = parseTile(source, 6, 17)
+    terrain["fur"] = parseTile(source, 7, 17)
+    terrain["fml"] = parseTile(source, 5, 18)
+    terrain["fm"] = parseTile(source, 6, 18)
+    terrain["fmr"] = parseTile(source, 7, 18)
+    terrain["fdl"] = parseTile(source, 5, 19)
+    terrain["fd"] = parseTile(source, 6, 19)
+    terrain["fdr"] = parseTile(source, 7, 19)
+    
+    -- columns
     terrain["col_bot1"] = parseTile(source, 14, 14)
     terrain["col_bot2"] = parseTile(source, 20, 14)
     terrain["col_bot3"] = parseTile(source, 19, 17)
@@ -82,6 +95,9 @@ function tilesetParser.loadTerrain()
     imgData = love.image.newImageData(tilesize * 1, tilesize * 1)
     imgData:paste(source, 0, 0, 23 * tilesize, 18 * tilesize, tilesize * 1, tilesize * 1)
     objects["tree_stump2"] = love.graphics.newImage(imgData)
+    
+    -- field
+    objects["field"] = terrain["fm"]
     
     -- buildings
     source = love.image.newImageData("ressource/terrain_atlas2.png")

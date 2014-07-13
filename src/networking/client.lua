@@ -78,7 +78,7 @@ end
 
 -- send build wish
 function client.sendBuild(build)
-    server:send("build "..build.__name..","..(-1)..","..build.x..","..build.y)
+    server:send("build "..build.__name..","..(-1)..","..build.x..","..build.y..","..build.xsize..","..build.ysize)
 end
 
 
@@ -132,6 +132,7 @@ end
 function client.parseObjects(string)
     for i,object in pairs(parser.parseObjects(string)) do
         world.addObject(object)
+        if object:is(Field) then object:generateImage() end
     end
 end
 

@@ -89,7 +89,8 @@ function drawHandler.drawTerrain()
             if obj.mesh then
                 love.graphics.draw(obj.mesh, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, obj.xshift * tilesize, obj.mesh:getImage():getHeight() - tilesize * (1 - obj.yshift))
             else if obj.image then
-                    local image = objects[obj.image]
+                    local image = nil
+                    if obj:is(Field) then image = obj.image else image = objects[obj.image] end
                     love.graphics.draw(image, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, obj.xshift * tilesize, image:getHeight() - tilesize * (1 - obj.yshift))
                 end
             end
@@ -123,13 +124,21 @@ function drawHandler.drawTerrain()
     -- draw build preview if in placement mode
     local mx, my = love.mouse.getPosition()
     if not love.mouse.isVisible() then
-        local tx, ty = cameraHandler.convertScreenCoordinates(mx, my)
-        tx = math.floor(tx)
-        ty = math.floor(ty)
-        local cursor = hudHandler.getCursor()
-        local img = objects[cursor.image]
-        love.graphics.setColor(hudHandler.getCursorColor())
-        love.graphics.draw(img, tx * tilesize, ty * tilesize, 0, 1, 1, cursor.xshift * tilesize, img:getHeight() - tilesize * (1 - cursor.yshift))
+        
+        if logicHandler.getMouseState() == "buildfarm2" then
+            love.graphics.setColor(hudHandler.getCursorColor())
+            local build = logicHandler.getBuildCandidate()
+            local image = build.image
+            love.graphics.draw(image, build.x * tilesize, build.y * tilesize, 0, 1, 1, build.xshift * tilesize, image:getHeight() - tilesize * (1 - build.yshift))
+        else
+            local tx, ty = cameraHandler.convertScreenCoordinates(mx, my)
+            tx = math.floor(tx)
+            ty = math.floor(ty)
+            local cursor = hudHandler.getCursor()
+            local img = objects[cursor.image]
+            love.graphics.setColor(hudHandler.getCursorColor())
+            love.graphics.draw(img, tx * tilesize, ty * tilesize, 0, 1, 1, cursor.xshift * tilesize, img:getHeight() - tilesize * (1 - cursor.yshift))
+        end
     end
     
 end

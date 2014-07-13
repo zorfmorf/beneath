@@ -65,7 +65,7 @@ function hudHandler.update(dt)
     end
     
     -- if in placemode check if placable
-    if cursor then
+    if logicHandler.getMouseState() == "build" or logicHandler.getMouseState() == "buildfarm1" then
         local x, y = cameraHandler.convertScreenCoordinates( love.mouse.getPosition() )
         cursor.x = x
         cursor.y = y
@@ -73,6 +73,19 @@ function hudHandler.update(dt)
             cursor_color = {120, 255, 120, 255}
         else
             cursor_color = {255, 120, 120, 255}
+        end
+    end
+    
+    -- handle dynamic field size adjustment placement
+    if logicHandler.getMouseState() == "buildfarm2" then
+        local x, y = cameraHandler.convertScreenCoordinates( love.mouse.getPosition() )
+        local buildCandidate = logicHandler.getBuildCandidate()
+        local xsize = math.floor(x) - buildCandidate.x
+        local ysize = buildCandidate.y - math.floor(y)
+        if (ysize >= 2 or xsize >= 2) and ysize ~= buildCandidate.y and xsize ~= buildCandidate.x then
+            buildCandidate.xsize = math.max(xsize, 2)
+            buildCandidate.ysize = math.max(ysize, 2)
+            buildCandidate:generateImage()
         end
     end
     
@@ -100,6 +113,7 @@ function hudHandler.catchMouseClick(x, y)
                     if builditem.__name == "tree_small" then object = Tree:new() end
                     if builditem.__name == "tent" then object = Tent:new() end
                     if builditem.__name == "farm" then object = Farm:new() end
+                    if builditem.__name == "field" then object = Field:new() end
                     if builditem.__name == "smith" then object = Smith:new() end
                     if builditem.__name == "warehouse" then object = Warehouse:new() end
                     cursor = object
