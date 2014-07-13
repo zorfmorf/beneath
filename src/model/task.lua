@@ -38,6 +38,11 @@ function Task:toString()
     return self.__name..","..self.target.x..","..self.target.y
 end
 
+-- finish client task to sync with server
+function Task:clientFinish()
+    -- do nothing
+end
+
 ------ Work Task -----
 WorkTask = Task:extends()
 WorkTask.__name = "worktask"
@@ -72,7 +77,6 @@ CarryTask = Task:extends()
 CarryTask.__name = "carrytask"
 
 function CarryTask:__init(from, to, ressource)
-    print( "Init CarryTask:", from, to, ressource)
     self.from = world.getObject(from)
     self.to = world.getObject(to)
     self.ressource = ressource
@@ -100,4 +104,15 @@ end
 
 function CarryTask:toString()
     return self.__name..","..self.from.id..","..self.to.id..","..self.ressource
+end
+
+function CarryTask:clientFinish()
+    if self.from then 
+        self.from:removeRessource(self.ressource)
+        self.from = nil
+    end
+    if self.to then
+        self.to:addRessource(self.ressource)
+        self.to = nil
+    end
 end

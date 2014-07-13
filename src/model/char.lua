@@ -29,6 +29,13 @@ function Char:__init(x, y)
 end
 
 function Char:addTask(task)
+    
+    -- if we are client and the current
+    -- task is not finished, finish it
+    if not server and self.task then
+        self.task:clientFinish()
+    end
+    
     self.state = "idle"
     self.anim = "walk"
     self.animcycle = 1
@@ -55,30 +62,16 @@ function Char:update(dt)
         
             local tx = target.x
             local ty = target.y + 0.5
-            
-            if self.x == tx and self.y == ty then
                 
-                self.direction = "r"
-                self.anim = "work"
-                local change = self.task:doWork(self, dt)
-                if change then
-                    self.state = "idle"
-                end
-                
-            else
-                
-                if self.y > ty then
-                    self.y = self.y - math.min(dt, self.y - ty)
-                end
-                
-                if self.x < tx then
-                    self.x = self.x + math.min(dt, tx - self.x)
-                end
-                
-                if self.x > tx then
-                    self.x = self.x - math.min(dt, self.x - tx)
-                end
+            self.direction = "r"
+            self.anim = "work"
+            local change = self.task:doWork(self, dt)
+            if change then
+                self.state = "idle"
+                self.anim = "walk"
+                self.path = nil
             end
+            
         else
             self:addTask(nil)
         end
@@ -175,7 +168,7 @@ function Char:update(dt)
                 self.state = "walk"
             else
                 print( "Path not createable" )
-                if server then taskHandler.createTask(self.task) end
+                if server then taskHandler.giveBackTask(self.task) end
                 self.idletime = math.random() * 5
             end
         else

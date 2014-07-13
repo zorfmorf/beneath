@@ -79,22 +79,25 @@ function Object:work(dt)
     end
 end
 
-function Object:removeRessource(ressource)
-    if self.ressources[ressource] then
-        self.ressources[ressource] = self.ressources[ressource] - 1
-        if self.ressources[ressource] <= 0 then
-            self.ressources[ressource] = nil
-            if #self.ressources <= 0 then self.ressources = nil end
+function Object:removeRessource(res)
+    if self.ressources and self.ressources[res] then
+        self.ressources[res] = self.ressources[res] - 1
+        if self.ressources[res] <= 0 then
+            self.ressources[res] = nil
+            if #self.ressources <= 0 then 
+                self.ressources = nil
+                if self:is(Ressource) and server then world.removeObject(self.id) end
+            end
         end
     end
 end
 
-function Object:addRessource(ressource)
+function Object:addRessource(res)
     if self.ressources == nil then self.ressources = {} end
-    if self.ressources[ressource] == nil then
-        self.ressources[ressource] = 0
+    if self.ressources[res] == nil then
+        self.ressources[res] = 0
     end
-    self.ressources[ressource] = self.ressources[ressource] + 1
+    self.ressources[res] = self.ressources[res] + 1
 end
 
 ----------- Ressource

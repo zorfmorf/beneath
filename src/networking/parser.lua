@@ -134,7 +134,7 @@ function parser.parseTask(string)
     end
     
     if taskname == CarryTask.__name then
-        task = CarryTask:new( tonumber(params[1]), tonumber(params[2]), tonumber(params[1]) )
+        task = CarryTask:new( tonumber(params[1]), tonumber(params[2]), params[3] )
     end
     
     return charid, task

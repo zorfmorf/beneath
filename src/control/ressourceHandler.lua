@@ -33,6 +33,7 @@ end
 function ressourceHandler.addRessources(object)
     if object.ressources then
         for res,amount in pairs(object.ressources) do
+            local old = #ressources[res]
             for i = 1,amount do
                 table.insert( ressources[res], object.id)
             end
@@ -48,7 +49,7 @@ end
 
 function ressourceHandler.withdraw(res)
     if #ressources[res] <= 0 then return nil end
-    return table.remove(ressources[res], 1)
+    return table.remove(ressources[res])
 end
 
 

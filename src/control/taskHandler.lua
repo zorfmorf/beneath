@@ -29,41 +29,44 @@ function taskHandler.update(dt)
     
         for i,target in ipairs(queuedTasks) do
             
-            print( "updating a queued task", target.__name )
-            
             if target.costleft then
                 
                 local paid = true
             
                 for res,amount in pairs(target.costleft) do
-                    print( res, amount)
-                    if amount > 0 and ressourceHandler.hasRessource(res) then
+                    if amount > 0 then
                         paid = false
-                        local from = ressourceHandler.withdraw(res)
-                        if from then
-                            target.costleft[res] = target.costleft[res] - 1
-                            table.insert(tasklist, CarryTask:new(from, target.id, res))
-                        else
-                            print("RessourceHandler returned empty ressource wtf")
+                        if ressourceHandler.hasRessource(res) then
+                        
+                            local from = ressourceHandler.withdraw(res)
+                            if from then
+                                target.costleft[res] = target.costleft[res] - 1
+                                table.insert(tasklist, CarryTask:new(from, target.id, res))
+                            else
+                                print("RessourceHandler returned empty ressource wtf")
+                            end
                         end
                     end
                 end
                 
-                if paid then target.costleft = nil end
+                if paid then
+                    print( "Sent all required ressources to ", target.__name )
+                    target.costleft = nil 
+                end
             
             else
                 local ready = true
                 if target.ressources == nil then
                     ready = false
                 else
-                    for res,amount in ipairs(target.ressources) do
+                    for res,amount in pairs(target.ressources) do
                         if amount < target.cost[res] then
                             ready = false
                         end
                     end
                 end
                 if ready then
-                    WorkTask:new(target.id)
+                    table.insert(tasklist, WorkTask:new(target.id))
                     table.remove(queuedTasks, i)
                 end
             end
@@ -80,6 +83,11 @@ function taskHandler.getTask()
     return table.remove(tasklist, 1)
 end
 
+
+-- giving back tasks that could not be fulfilled for some reason
+function taskHandler.giveBackTask(task)
+    table.insert(tasklist, task)
+end
 
 -- Creates a task based on the target
 function taskHandler.createTask(target)

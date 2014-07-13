@@ -91,6 +91,7 @@ function drawHandler.drawTerrain()
             
             if obj.ressources then
                 for res,amount in pairs(obj.ressources) do
+                    if not objects[res..amount] then print("Missing ressource texture:", res..amount) end
                     love.graphics.draw(objects[res..amount], obj.x * tilesize, obj.y * tilesize)
                 end
             end
