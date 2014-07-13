@@ -66,6 +66,7 @@ function parser.parseObjects(string)
             i = i + 1
         end
         
+        print ( "Parsed new object", newobj.__name, newobj.id)
         table.insert(objectList, newobj)
     end
     

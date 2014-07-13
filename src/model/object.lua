@@ -12,7 +12,7 @@
 -- we need to calculate different if on client
 local function calculateWork(workleft, dt)
     local wnew = workleft - dt
-    if not server and wnew < 0 then return 0 end
+    --if not server and wnew < 0 then return 0 end
     return wnew
 end
 
@@ -57,6 +57,9 @@ function Object:__init(x, y)
     self.icon = nil
     self.selectable = false
     self.ressources = nil
+    self.resUsage = 0 -- res / second
+    self.resUsageDt = 0 -- timer value for resUsage
+    self.resShift = { wood=0, stone=0 }
     self.costleft = nil
     self.cost = nil
     self.workleft = -1
@@ -72,7 +75,26 @@ end
 function Object:work(dt)
     if self.workleft >= 0 then
         self.workleft = calculateWork(self.workleft, dt)
-        if server and self.workleft < 0 then server.sendBuildFinished(self) end
+        
+        -- use up res
+        if self.resUsage > 0 then
+            self.resUsageDt = self.resUsageDt + dt
+            if self.resUsageDt >= self.resUsage then
+                self.resUsageDt = 0
+                if self.ressources then
+                    if self.ressources.stone then 
+                        self:removeRessource("stone")
+                    elseif self.ressources.wood then
+                        self:removeRessource("wood")
+                    end
+                end
+            end
+        end
+        
+        if self.workleft < 0  then
+            self.ressources = nil
+            if server then server.sendBuildFinished(self) end
+        end
         if love.graphics then
             updateMesh(self.mesh, math.max(0, self.workleft / self.workMax) )
         end
@@ -84,7 +106,7 @@ function Object:removeRessource(res)
         self.ressources[res] = self.ressources[res] - 1
         if self.ressources[res] <= 0 then
             self.ressources[res] = nil
-            if #self.ressources <= 0 then 
+            if not (self.ressources.wood or self.ressources.stone) then 
                 self.ressources = nil
                 if self:is(Ressource) and server then world.removeObject(self.id) end
             end
@@ -193,12 +215,15 @@ function Warehouse:__init(x, y)
     self.__name = "warehouse"
     self.image = "warehouse"
     self.xsize = 4
-    self.ysize = 2
+    self.ysize = 3
     self.workMax = 10
     self.workleft = self.workMax
     self.buildable = true
+    self.resShift = { wood=0, stone=1 } -- purely visual
     self.cost = { wood=6, stone=3 }
     self.costleft = { wood=6, stone=3 }
+    self.resUsage = 1 -- 1 res / second
+    self.resUsageDt = 0 -- timer value
     if love.graphics then
        self.mesh = generateMesh(objects[self.image]) 
     end

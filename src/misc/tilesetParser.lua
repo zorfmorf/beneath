@@ -14,12 +14,26 @@ function tilesetParser.loadTerrain()
         
     terrain = {}
     local source = love.image.newImageData("ressource/terrain.png")
+    
+    -- grass textures
     terrain["g1"] = parseTile(source, 0, 11)
     terrain["g2"] = parseTile(source, 1, 11)
     terrain["g3"] = parseTile(source, 2, 11)
     terrain["g4"] = parseTile(source, 3, 11)
     
+    
     source = love.image.newImageData("ressource/terrain_atlas.png")
+    -- dirt textures
+    terrain["dul"] = parseTile(source, 3, 28)
+    terrain["du"] = parseTile(source, 4, 28)
+    terrain["dur"] = parseTile(source, 5, 28)
+    terrain["dml"] = parseTile(source, 3, 29)
+    terrain["dm"] = parseTile(source, 4, 29)
+    terrain["dmr"] = parseTile(source, 5, 29)
+    terrain["ddl"] = parseTile(source, 3, 30)
+    terrain["dd"] = parseTile(source, 4, 30)
+    terrain["ddr"] = parseTile(source, 5, 30)
+    
     terrain["col_bot1"] = parseTile(source, 14, 14)
     terrain["col_bot2"] = parseTile(source, 20, 14)
     terrain["col_bot3"] = parseTile(source, 19, 17)
@@ -108,6 +122,14 @@ function tilesetParser.loadTerrain()
     objects["stone2"] = love.graphics.newImage(imgData)
     imgData:paste(source, 0, 0, 0 * tilesize, 2 * tilesize, tilesize * 1, tilesize * 1)
     objects["stone3"] = love.graphics.newImage(imgData)
+    
+    imgData = love.image.newImageData(tilesize * 1, tilesize * 2)
+    imgData:paste(source, 0, 0, 0 * tilesize, 3 * tilesize, tilesize * 1, tilesize * 2)
+    objects["stone4"] = love.graphics.newImage(imgData)
+    imgData:paste(source, 0, 0, 0 * tilesize, 5 * tilesize, tilesize * 1, tilesize * 2)
+    objects["stone5"] = love.graphics.newImage(imgData)
+    imgData:paste(source, 0, 0, 0 * tilesize, 7 * tilesize, tilesize * 1, tilesize * 2)
+    objects["stone6"] = love.graphics.newImage(imgData)
     
 end
 

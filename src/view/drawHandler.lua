@@ -29,7 +29,12 @@ function drawHandler.updateCanvas()
     love.graphics.setCanvas(worldCanvas)
     for y,row in pairs(tiles) do
         for x,tile in pairs(row) do
-            love.graphics.draw(terrain[tile.texture], (y - 1) * tilesize, (x - 1) * tilesize)
+            love.graphics.draw(terrain[tile.texture], (x - 1) * tilesize, (y - 1) * tilesize)
+            if tile.overlays then
+                for i,texture in ipairs(tile.overlays) do
+                    love.graphics.draw(terrain[texture], (x - 1) * tilesize, (y - 1) * tilesize)
+                end
+            end
         end
     end
     love.graphics.setCanvas()
@@ -92,7 +97,7 @@ function drawHandler.drawTerrain()
             if obj.ressources then
                 for res,amount in pairs(obj.ressources) do
                     if not objects[res..amount] then print("Missing ressource texture:", res..amount) end
-                    love.graphics.draw(objects[res..amount], obj.x * tilesize, obj.y * tilesize)
+                    love.graphics.draw(objects[res..amount], obj.x * tilesize, obj.y * tilesize, 0, 1, 1, -obj.resShift[res] * tilesize, objects[res..amount]:getHeight() - 32)
                 end
             end
             

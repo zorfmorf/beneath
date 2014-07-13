@@ -29,14 +29,14 @@ function world.generate()
     for i=1,WORLD_SIZE do
         tiles[i] = {}
         for j=1,WORLD_SIZE do
-            tiles[i][j] = { texture = "g"..math.random(1,3), object = nil }
+            tiles[i][j] = { texture = "g"..math.random(1,3), overlays = nil, object = nil }
         end
     end
     
     world.addObject(Ressource:new(15, 15, {wood=6}))
     world.addObject(Ressource:new(15, 16, {wood=6}))
-    world.addObject(Ressource:new(16, 15, {stone=3}))
-    world.addObject(Ressource:new(16, 16, {stone=3}))
+    world.addObject(Ressource:new(16, 15, {stone=6}))
+    world.addObject(Ressource:new(16, 16, {stone=6}))
     
     for i=1,20 do
         local x = math.random() * (WORLD_SIZE + 1)
@@ -116,6 +116,50 @@ function world.isPlacable(object)
     return tileselection
 end
 
+-- mark tiles as "built on", change texture if necessary
+function world.markTiles(tileselection, object)
+    
+    for i,tile in pairs(tileselection) do
+        tile.object = object.id
+    end
+    
+    -- todo find solution to easily identify buildings
+    if object:is(Warehouse) then
+        for l=1,object.xsize+2 do
+            for m=1,object.ysize do
+                local tile = world.getTile(object.x + l - 2, object.y - m + 1)
+                
+                local toadd = nil
+                
+                if l == 1 then
+                    if m == 1 then toadd = "ddl" end
+                    if m > 1 and m < object.ysize then toadd = "dml" end
+                    if m == object.ysize then toadd = "dul" end
+                end
+                
+                if l > 1 and l < object.xsize+2 then
+                    if m == 1 then toadd = "dd" end
+                    if m > 1 and m < object.ysize then toadd = "dm" end
+                    if m == object.ysize then toadd = "du" end
+                end
+                
+                if l == object.xsize+2 then
+                    if m == 1 then toadd = "ddr" end
+                    if m > 1 and m < object.ysize then toadd = "dmr" end
+                    if m == object.ysize then toadd = "dur" end
+                end
+                
+                if toadd then
+                    if not tile.overlays then tile.overlays = { } end
+                    table.insert(tile.overlays, toadd)
+                end
+
+            end
+        end
+        if not server then drawHandler.updateCanvas() end
+    end
+end
+
 
 -- add object to world. marks tiles as built and calculates draw order
 function world.addObject(object)
@@ -135,9 +179,7 @@ function world.addObject(object)
     objects[object.id] = object
     
     -- mark tiles as used so that no other building can be placed there
-    for i,tile in pairs(tileselection) do
-        tile.object = object.id
-    end
+    world.markTiles(tileselection, object)
     
     -- add object to draw order
     if not server then
