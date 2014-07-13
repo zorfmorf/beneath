@@ -52,7 +52,7 @@ function server.parseBuild(string)
         local result = world.addObject(object)
         if result then
             if object.buildable then 
-                taskHandler.createTask(WorkTask:new(object.id)) 
+                taskHandler.createTask(object) 
             end
         end
     end

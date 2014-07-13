@@ -84,11 +84,13 @@ function Object:removeRessource(ressource)
         self.ressources[ressource] = self.ressources[ressource] - 1
         if self.ressources[ressource] <= 0 then
             self.ressources[ressource] = nil
+            if #self.ressources <= 0 then self.ressources = nil end
         end
     end
 end
 
 function Object:addRessource(ressource)
+    if self.ressources == nil then self.ressources = {} end
     if self.ressources[ressource] == nil then
         self.ressources[ressource] = 0
     end

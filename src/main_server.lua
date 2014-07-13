@@ -35,6 +35,7 @@ logfile:write("Loaded requires \n")
 -- equivalent for love.update(dt)
 local function update(dt)
     world.update(dt)
+    taskHandler.update(dt)
     server.service()
 end
 

@@ -72,6 +72,7 @@ CarryTask = Task:extends()
 CarryTask.__name = "carrytask"
 
 function CarryTask:__init(from, to, ressource)
+    print( "Init CarryTask:", from, to, ressource)
     self.from = world.getObject(from)
     self.to = world.getObject(to)
     self.ressource = ressource
