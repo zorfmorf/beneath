@@ -42,6 +42,13 @@ function ressourceHandler.addRessources(object)
 end
 
 
+-- when buildings create ressources, we need to take note of them
+-- individually
+function ressourceHandler.addSingleRessource(objectid, res)
+    table.insert( ressources[res], objectid )
+end
+
+
 function ressourceHandler.hasRessource(res)
     return #ressources[res] > 0
 end

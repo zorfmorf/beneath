@@ -61,6 +61,11 @@ function client.service()
                 print( "Received build finished object", event.data:sub(7)  )
                 client.parseFinishBuild( event.data:sub(7) )
                 
+            elseif event.data:sub(1, 6) == "objup " then
+                
+                print( "Received update on object", event.data:sub(7)  )
+                client.parseObjectUpdate( event.data:sub(7) )
+                
             else
                 
                 print("Got message: ", event.data, event.peer)
@@ -137,6 +142,24 @@ function client.parseObjects(string)
         end
     end
 end
+
+
+-- parse updates on one or more objects
+function client.parseObjectUpdate(string)
+    for i,object in pairs(parser.parseObjects(string)) do
+        
+        local actualObject = world.getObject(object.id)
+        
+        if actualObject then
+            -- TODO: add all attributes that are interesting for this
+            actualObject.ressources = object.ressources
+        else
+            print( "Got invalid update for", object.__name, object.id )
+        end
+        
+    end
+end
+
 
 function client.disconnect()
     server:disconnect()

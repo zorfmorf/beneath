@@ -89,6 +89,7 @@ function taskHandler.giveBackTask(task)
     table.insert(tasklist, task)
 end
 
+
 -- Creates a task based on the target
 function taskHandler.createTask(target)
     if target.cost then
@@ -96,4 +97,17 @@ function taskHandler.createTask(target)
     else
         table.insert(tasklist, WorkTask:new(target.id))
     end
+end
+
+
+-- buildings can request ressources here
+function taskHandler.requestRessource(object, res)
+    if ressourceHandler.hasRessource(res) then
+        local source = ressourceHandler.withdraw(res)
+        if source then
+            table.insert(tasklist, CarryTask:new(source, object.id, res))
+            return true
+        end
+    end
+    return false
 end

@@ -58,6 +58,7 @@ function server.parseBuild(string)
     end
 end
 
+
 -- try to grant a task wish
 function server.parseTask( string )
     local target = world.getObject( tonumber(string) )
@@ -88,6 +89,12 @@ function server.sendNewCharTask(char)
     if char and char.task then
         server.sendToPeers("taskc "..char.id..","..char.task:toString())
     end
+end
+
+
+-- send update on objects
+function server.updateObject(object)
+    server.sendToPeers( "objup "..parser.parseObjectsToString( { object } ) )
 end
 
 

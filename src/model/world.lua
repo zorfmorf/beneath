@@ -6,6 +6,7 @@ local WORLD_SIZE = 30
 local tiles = nil -- the floor
 local objects = nil -- objects can be placed on tiles
 local objectDrawOrder = nil -- draw order for objects
+local characters = nil -- villagers, monsters, etc
 local charDrawOrder = nil -- draw order for chars
 local worldCanvas = nil
 
@@ -203,6 +204,14 @@ end
 function world.update(dt)
     for i,char in pairs(characters) do
         char:update(dt)
+    end
+    
+    if server then
+        for i,object in pairs(objects) do
+            if object.workleft < 0 and object:is(Building) then
+                object:update(dt)
+            end
+        end
     end
     
     if not server then

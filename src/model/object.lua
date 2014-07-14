@@ -10,13 +10,13 @@
 ------------ HELPER FUNCTIONS --------
 
 -- we need to calculate different if on client
-local function calculateWork(workleft, dt)
+function calculateWork(workleft, dt)
     local wnew = workleft - dt
     --if not server and wnew < 0 then return 0 end
     return wnew
 end
 
-local function generateMesh(image)
+function generateMesh(image)
     local xs = image:getWidth()
     local ys = image:getHeight()
     local vertices = {
@@ -29,7 +29,7 @@ local function generateMesh(image)
 end
 
 -- dt needs to be value from 0 (started) to 1 (finished)
-local function updateMesh(mesh, dt)
+function updateMesh(mesh, dt)
     local xs = mesh:getImage():getWidth()
     local ys = mesh:getImage():getHeight()
     local ts = ys * dt
@@ -122,6 +122,12 @@ function Object:addRessource(res)
         self.ressources[res] = 0
     end
     self.ressources[res] = self.ressources[res] + 1
+end
+
+
+function Object:getRessourceAmount(res)
+    if self.ressources and self.ressources[res] then return self.ressources[res] end
+    return 0
 end
 
 ----------- Ressource
@@ -231,106 +237,6 @@ function Field:generateImage()
             end
         end
         drawHandler.updateCanvas()
-    end
-end
-
------------ BUILDINGS
-
------------ TENT
-
-Tent = Object:extends()
-
-function Tent:__init(x, y)
-    Tent.super.__init(self, x, y)
-    self.__name = "tent"
-    self.image = "tent"
-    self.xsize = 4
-    self.ysize = 3
-    self.workMax = 10
-    self.workleft = self.workMax
-    self.buildable = true
-    if love.graphics then
-       self.mesh = generateMesh(objects[self.image]) 
-    end
-end
------------ SMITH
-
-Smith = Object:extends()
-
-function Smith:__init(x, y)
-    Smith.super.__init(self, x, y)
-    self.__name = "smith"
-    self.image = "smith"
-    self.xsize = 4
-    self.ysize = 3
-    self.workMax = 10
-    self.workleft = self.workMax
-    self.buildable = true
-    if love.graphics then
-       self.mesh = generateMesh(objects[self.image]) 
-    end
-end
-
------------ Farm
-
-Farm = Object:extends()
-
-function Farm:__init(x, y)
-    Farm.super.__init(self, x, y)
-    self.__name = "farm"
-    self.image = "farm"
-    self.xsize = 4
-    self.ysize = 3
-    self.workMax = 10
-    self.workleft = self.workMax
-    self.buildable = true
-    if love.graphics then
-       self.mesh = generateMesh(objects[self.image]) 
-    end
-end
-
--- Warehouse
-
-Warehouse = Object:extends()
-
-function Warehouse:__init(x, y)
-    Warehouse.super.__init(self, x, y)
-    self.__name = "warehouse"
-    self.image = "warehouse"
-    self.xsize = 4
-    self.ysize = 3
-    self.workMax = 10
-    self.workleft = self.workMax
-    self.buildable = true
-    self.resShift = { stone=1 } -- purely visual
-    self.cost = { planks=6, stone=3 }
-    self.costleft = { planks=6, stone=3 }
-    self.resUsage = 1 -- 1 res / second
-    self.resUsageDt = 0 -- timer value
-    if love.graphics then
-       self.mesh = generateMesh(objects[self.image]) 
-    end
-end
-
-
-Carpenter = Object:extends()
-
-function Carpenter:__init(x, y)
-    Carpenter.super.__init(self, x, y)
-    self.__name = "carpenter"
-    self.image = "carpenter"
-    self.xsize = 4
-    self.ysize = 3
-    self.workMax = 10
-    self.workleft = self.workMax
-    self.buildable = true
-    self.resShift = { planks=1 } -- purely visual
-    self.cost = { wood=3 }
-    self.costleft = { wood=3 }
-    self.resUsage = 1 -- 1 res / second
-    self.resUsageDt = 0 -- timer value
-    if love.graphics then
-       self.mesh = generateMesh(objects[self.image]) 
     end
 end
 
