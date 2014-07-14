@@ -97,15 +97,13 @@ function hudHandler.catchMouseClick(x, y)
         if x > love.graphics.getWidth() - sideshift then
             
             local builditems = logicHandler.getBuildItems()
-            local yshift = 0
+            local yshift = 5
             for i,builditem in pairs(builditems) do
                 
                 local item = objects[builditem.image]
                 local scale = (tilesize * 2) / item:getWidth()
                 
-                local yvalue = i * 5 + yshift
-                
-                if y > yvalue and y < yvalue + item:getHeight() * scale then
+                if y > yshift and y < yshift + item:getHeight() * scale then
                     love.mouse.setVisible(false)
                     
                     local object = Object:new()
@@ -121,7 +119,7 @@ function hudHandler.catchMouseClick(x, y)
                     
                     return true
                 end
-                yshift = item:getHeight()  * scale 
+                yshift = yshift + 5 + item:getHeight()  * scale 
             end
         end
         return true
@@ -152,23 +150,21 @@ function hudHandler.draw()
     
     -- draw buildables    
     local builditems = logicHandler.getBuildItems()
-    local yshift = 0
-    for i,item in pairs(builditems) do
+    local yshift = 5
+    for i,item in ipairs(builditems) do
         
         local image = objects[item.image]
         
         local scale = (tilesize * 2) / image:getWidth()
         
-        local yvalue = i * 5 + yshift
-        
-        if mx > xpos and my > yvalue and my < yvalue + image:getHeight() * scale then
+        if mx > xpos and my > yshift and my < yshift + image:getHeight() * scale then
             love.graphics.setColor(230, 150, 150, 255)
         else
             love.graphics.setColor(255, 255, 255, 255)
         end
         
-        love.graphics.draw(image, xpos, yvalue, 0, scale, scale)
-        yshift = yshift + image:getHeight() * scale
+        love.graphics.draw(image, xpos, yshift, 0, scale, scale)
+        yshift = yshift + 5 + image:getHeight() * scale
     end
     
 end

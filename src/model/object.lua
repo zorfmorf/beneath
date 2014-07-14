@@ -59,7 +59,7 @@ function Object:__init(x, y)
     self.ressources = nil
     self.resUsage = 0 -- res / second
     self.resUsageDt = 0 -- timer value for resUsage
-    self.resShift = { wood=0, stone=0 }
+    self.resShift = { } -- can be used to shift stockpile placement for individual ressources
     self.costleft = nil
     self.cost = nil
     self.workleft = -1
@@ -86,6 +86,8 @@ function Object:work(dt)
                         self:removeRessource("stone")
                     elseif self.ressources.wood then
                         self:removeRessource("wood")
+                    elseif self.ressources.planks then
+                        self:removeRessource("planks")
                     end
                 end
             end
@@ -106,7 +108,7 @@ function Object:removeRessource(res)
         self.ressources[res] = self.ressources[res] - 1
         if self.ressources[res] <= 0 then
             self.ressources[res] = nil
-            if not (self.ressources.wood or self.ressources.stone) then 
+            if not (self.ressources.wood or self.ressources.stone or self.ressources.planks) then 
                 self.ressources = nil
                 if self:is(Ressource) and server then world.removeObject(self.id) end
             end
@@ -262,9 +264,9 @@ function Warehouse:__init(x, y)
     self.workMax = 10
     self.workleft = self.workMax
     self.buildable = true
-    self.resShift = { wood=0, stone=1 } -- purely visual
-    self.cost = { wood=6, stone=3 }
-    self.costleft = { wood=6, stone=3 }
+    self.resShift = { stone=1 } -- purely visual
+    self.cost = { planks=6, stone=3 }
+    self.costleft = { planks=6, stone=3 }
     self.resUsage = 1 -- 1 res / second
     self.resUsageDt = 0 -- timer value
     if love.graphics then

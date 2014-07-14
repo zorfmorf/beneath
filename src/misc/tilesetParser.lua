@@ -13,16 +13,15 @@ end
 function tilesetParser.loadTerrain()
         
     terrain = {}
-    local source = love.image.newImageData("ressource/terrain.png")
+    local source = love.image.newImageData("ressource/terrain_atlas.png")
     
     -- grass textures
-    terrain["g1"] = parseTile(source, 0, 11)
-    terrain["g2"] = parseTile(source, 1, 11)
-    terrain["g3"] = parseTile(source, 2, 11)
-    terrain["g4"] = parseTile(source, 3, 11)
-    
-    
-    source = love.image.newImageData("ressource/terrain_atlas.png")
+    terrain["g1"] = parseTile(source, 21, 5)
+    terrain["g2"] = parseTile(source, 22, 5)
+    terrain["g3"] = parseTile(source, 23, 5)
+    terrain["g4"] = parseTile(source, 21, 11)
+    terrain["g5"] = parseTile(source, 22, 11)
+    terrain["g6"] = parseTile(source, 23, 11)
     
     -- dirt textures
     terrain["dul"] = parseTile(source, 3, 28)
@@ -146,6 +145,25 @@ function tilesetParser.loadTerrain()
     objects["stone5"] = love.graphics.newImage(imgData)
     imgData:paste(source, 0, 0, 0 * tilesize, 7 * tilesize, tilesize * 1, tilesize * 2)
     objects["stone6"] = love.graphics.newImage(imgData)
+    
+    
+    source = love.image.newImageData("ressource/planks.png")
+    imgData = love.image.newImageData(tilesize * 1, tilesize * 1)
+    
+    imgData:paste(source, 0, 0, 0 * tilesize, 0 * tilesize, tilesize * 1, tilesize * 1)
+    objects["planks1"] = love.graphics.newImage(imgData)
+    imgData:paste(source, 0, 0, 0 * tilesize, 1 * tilesize, tilesize * 1, tilesize * 1)
+    objects["planks2"] = love.graphics.newImage(imgData)
+    imgData:paste(source, 0, 0, 0 * tilesize, 2 * tilesize, tilesize * 1, tilesize * 1)
+    objects["planks3"] = love.graphics.newImage(imgData)
+    
+    imgData = love.image.newImageData(tilesize * 1, tilesize * 2)
+    imgData:paste(source, 0, 0, 0 * tilesize, 3 * tilesize, tilesize * 1, tilesize * 2)
+    objects["planks4"] = love.graphics.newImage(imgData)
+    imgData:paste(source, 0, 0, 0 * tilesize, 5 * tilesize, tilesize * 1, tilesize * 2)
+    objects["planks5"] = love.graphics.newImage(imgData)
+    imgData:paste(source, 0, 0, 0 * tilesize, 7 * tilesize, tilesize * 1, tilesize * 2)
+    objects["planks6"] = love.graphics.newImage(imgData)
     
 end
 

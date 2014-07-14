@@ -19,7 +19,6 @@ function client.init()
     
     host = enet.host_create()
     server = host:connect(host_id)
-    print(" Client connected:", server )
 end
 
 function client.service()

@@ -21,8 +21,9 @@ function ressourceHandler.init()
     
     if server then
         ressources = { 
-                wood = {}, 
-                stone = {} 
+                wood = {},
+                stone = {},
+                planks = {}
             }
     end
     

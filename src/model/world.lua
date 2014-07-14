@@ -30,11 +30,12 @@ function world.generate()
         tiles[i] = {}
         for j=1,WORLD_SIZE do
             tiles[i][j] = { texture = "g"..math.random(1,3), overlays = nil, object = nil }
+            if math.random(1, 14) == 10 then tiles[i][j].texture = "g"..math.random(4,6) end
         end
     end
     
-    world.addObject(Ressource:new(15, 15, {wood=6}))
-    world.addObject(Ressource:new(15, 16, {wood=6}))
+    world.addObject(Ressource:new(15, 15, {planks=6}))
+    world.addObject(Ressource:new(15, 16, {planks=6}))
     world.addObject(Ressource:new(16, 15, {stone=6}))
     world.addObject(Ressource:new(16, 16, {stone=6}))
     
