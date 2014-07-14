@@ -159,41 +159,79 @@ function Field:__init(x, y)
     Field.super.__init(self, x, y)
     self.__name = "field"
     self.image = "field"
-    self.xsize = 2
-    self.ysize = 2
+    self.xsize = 3
+    self.ysize = 3
+    self.placed = false
 end
 
 -- update field image
 function Field:generateImage()
-    local canvas = love.graphics.newCanvas(self.xsize * tilesize, self.ysize * tilesize)
-    love.graphics.setCanvas(canvas)
-    for i=1,self.xsize do
-        for j=1,self.ysize do
-            
-            local nextImage = "fm"
-            
-            if i == 1 then
-                if j == 1 then nextImage = "ful" end
-                if j > 1 and i < self.ysize then nextImage = "fml" end
-                if j == self.ysize then nextImage = "fdl" end
+    
+    -- if not placed we are in preview mode and want to create a preview image
+    if not self.placed then
+        local canvas = love.graphics.newCanvas(self.xsize * tilesize, self.ysize * tilesize)
+        love.graphics.setCanvas(canvas)
+        for i=1,self.xsize do
+            for j=1,self.ysize do
+                
+                local nextImage = "fm"
+                
+                if i == 1 then
+                    if j == 1 then nextImage = "ful" end
+                    if j > 1 and i < self.ysize then nextImage = "fml" end
+                    if j == self.ysize then nextImage = "fdl" end
+                end
+                
+                if i > 1 and i < self.xsize then
+                    if j == 1 then nextImage = "fu" end
+                    if j == self.ysize then nextImage = "fd" end
+                end
+                
+                if i == self.xsize then
+                    if j == 1 then nextImage = "fur" end
+                    if j > 1 and j < self.ysize then nextImage = "fmr" end
+                    if j == self.ysize then nextImage = "fdr" end
+                end
+                
+                love.graphics.draw(terrain[nextImage], (i - 1) * tilesize, (j - 1) * tilesize)
             end
-            
-            if i > 1 and i < self.xsize then
-                if j == 1 then nextImage = "fu" end
-                if j == self.ysize then nextImage = "fd" end
-            end
-            
-            if i == self.xsize then
-                if j == 1 then nextImage = "fur" end
-                if j > 1 and j < self.ysize then nextImage = "fmr" end
-                if j == self.ysize then nextImage = "fdr" end
-            end
-            
-            love.graphics.draw(terrain[nextImage], (i - 1) * tilesize, (j - 1) * tilesize)
         end
+        love.graphics.setCanvas()
+        self.image = canvas
     end
-    love.graphics.setCanvas()
-    self.image = canvas
+    
+    -- if it is placed we just add our overlay to the game
+    if self.placed then
+        self.image = nil
+        for i=1,self.xsize do
+            for j=1,self.ysize do
+                
+                local nextImage = "fm"
+                
+                if i == 1 then
+                    if j == 1 then nextImage = "fdl" end
+                    if j > 1 and i < self.ysize then nextImage = "fml" end
+                    if j == self.ysize then nextImage = "ful" end
+                end
+                
+                if i > 1 and i < self.xsize then
+                    if j == 1 then nextImage = "fd" end
+                    if j == self.ysize then nextImage = "fu" end
+                end
+                
+                if i == self.xsize then
+                    if j == 1 then nextImage = "fdr" end
+                    if j > 1 and j < self.ysize then nextImage = "fmr" end
+                    if j == self.ysize then nextImage = "fur" end
+                end
+                
+                local tile = world.getTile(self.x + (i - 1), self.y - (j - 1))
+                if not tile.overlays then tile.overlays = {} end
+                table.insert(tile.overlays, nextImage)
+            end
+        end
+        drawHandler.updateCanvas()
+    end
 end
 
 ----------- BUILDINGS
@@ -273,6 +311,29 @@ function Warehouse:__init(x, y)
        self.mesh = generateMesh(objects[self.image]) 
     end
 end
+
+
+Carpenter = Object:extends()
+
+function Carpenter:__init(x, y)
+    Carpenter.super.__init(self, x, y)
+    self.__name = "carpenter"
+    self.image = "carpenter"
+    self.xsize = 4
+    self.ysize = 3
+    self.workMax = 10
+    self.workleft = self.workMax
+    self.buildable = true
+    self.resShift = { planks=1 } -- purely visual
+    self.cost = { wood=3 }
+    self.costleft = { wood=3 }
+    self.resUsage = 1 -- 1 res / second
+    self.resUsageDt = 0 -- timer value
+    if love.graphics then
+       self.mesh = generateMesh(objects[self.image]) 
+    end
+end
+
 ----------- TREE
 
 Tree = Object:extends()

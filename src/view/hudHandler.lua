@@ -82,9 +82,9 @@ function hudHandler.update(dt)
         local buildCandidate = logicHandler.getBuildCandidate()
         local xsize = math.floor(x) - buildCandidate.x
         local ysize = buildCandidate.y - math.floor(y)
-        if (ysize >= 2 or xsize >= 2) and ysize ~= buildCandidate.y and xsize ~= buildCandidate.x then
-            buildCandidate.xsize = math.max(xsize, 2)
-            buildCandidate.ysize = math.max(ysize, 2)
+        if (ysize >= 3 or xsize >= 3) and (ysize ~= buildCandidate.ysize or xsize ~= buildCandidate.xsize) then
+            buildCandidate.xsize = math.max(xsize, 3)
+            buildCandidate.ysize = math.max(ysize, 3)
             buildCandidate:generateImage()
         end
     end
@@ -114,6 +114,7 @@ function hudHandler.catchMouseClick(x, y)
                     if builditem.__name == "field" then object = Field:new() end
                     if builditem.__name == "smith" then object = Smith:new() end
                     if builditem.__name == "warehouse" then object = Warehouse:new() end
+                    if builditem.__name == "carpenter" then object = Carpenter:new() end
                     cursor = object
                     logicHandler.switchToBuildMode(object)
                     

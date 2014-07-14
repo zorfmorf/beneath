@@ -110,6 +110,7 @@ function tilesetParser.loadTerrain()
     objects["smith"] = love.graphics.newImage("ressource/smith1.png")
     objects["farm"] = love.graphics.newImage("ressource/farm1.png")
     objects["warehouse"] = love.graphics.newImage("ressource/warehouse.png")
+    objects["carpenter"] = love.graphics.newImage("ressource/carpenter.png")
     
     -- ressources
     source = love.image.newImageData("ressource/terrain_atlas3.png")

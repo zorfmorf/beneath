@@ -34,8 +34,8 @@ function world.generate()
         end
     end
     
-    world.addObject(Ressource:new(15, 15, {planks=6}))
-    world.addObject(Ressource:new(15, 16, {planks=6}))
+    --world.addObject(Ressource:new(15, 15, {planks=6}))
+    --world.addObject(Ressource:new(15, 16, {planks=6}))
     world.addObject(Ressource:new(16, 15, {stone=6}))
     world.addObject(Ressource:new(16, 16, {stone=6}))
     
@@ -62,7 +62,7 @@ function world.updateTiles(newTiles)
     for row in string.gmatch(newTiles, '[^;]+') do
         tiles[#tiles + 1] = {}
         for tile in string.gmatch(row, '[^,]+') do
-            tiles[#tiles][#tiles[#tiles] + 1] = { texture = tile, object = nil }
+            tiles[#tiles][#tiles[#tiles] + 1] = { texture = tile, overlays = nil, object = nil }
         end
     end
     drawHandler.updateCanvas()
@@ -125,7 +125,7 @@ function world.markTiles(tileselection, object)
     end
     
     -- todo find solution to easily identify buildings
-    if object:is(Warehouse) then
+    if object:is(Warehouse) or object:is(Carpenter) then
         for l=1,object.xsize+2 do
             for m=1,object.ysize do
                 local tile = world.getTile(object.x + l - 2, object.y - m + 1)

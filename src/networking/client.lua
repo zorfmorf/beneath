@@ -131,7 +131,10 @@ end
 function client.parseObjects(string)
     for i,object in pairs(parser.parseObjects(string)) do
         world.addObject(object)
-        if object:is(Field) then object:generateImage() end
+        if object:is(Field) then 
+            object.placed = true
+            object:generateImage() 
+        end
     end
 end
 
