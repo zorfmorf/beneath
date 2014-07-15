@@ -142,5 +142,9 @@ function parser.parseTask(string)
         task = CarryTask:new( tonumber(params[1]), tonumber(params[2]), params[3] )
     end
     
+    if taskname == ProfessionTask.__name then
+        task = ProfessionTask:new( tonumber(params[1]) )
+    end
+    
     return charid, task
 end

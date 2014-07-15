@@ -39,7 +39,7 @@ function Task:toString()
 end
 
 -- finish client task to sync with server
-function Task:clientFinish()
+function Task:clientFinish(villager)
     -- do nothing
 end
 
@@ -106,7 +106,7 @@ function CarryTask:toString()
     return self.__name..","..self.from.id..","..self.to.id..","..self.ressource
 end
 
-function CarryTask:clientFinish()
+function CarryTask:clientFinish(villager)
     if self.from then 
         self.from:removeRessource(self.ressource)
         self.from = nil
@@ -115,4 +115,33 @@ function CarryTask:clientFinish()
         self.to:addRessource(self.ressource)
         self.to = nil
     end
+end
+
+------- Profession Task -----
+ProfessionTask = Task:extends()
+ProfessionTask.__name = "professiontask"
+
+function ProfessionTask:__init(targetid)
+    self.target = world.getObject(targetid)
+end
+
+function ProfessionTask:isCompleted()
+    return false
+end
+
+function ProfessionTask:getTarget()
+    return self.target
+end
+
+function ProfessionTask:doWork(villager, dt)
+    self.target:receiveChar(villager)
+    return false
+end
+
+function ProfessionTask:toString()
+    return self.__name..","..self.target.id
+end
+
+function ProfessionTask:clientFinish(villager)
+    self:doWork(villager, 0)
 end

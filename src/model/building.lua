@@ -8,8 +8,36 @@
 Building = Object:extends()
 Building.__name = "building"
 
-function Building:update(dt)
-    
+function Building:__init(x, y)
+    Building.super.__init(self, x, y)
+    self.char = nil
+    self.charrequested = true -- don't request chars by default
+end
+
+-- all buildings work when having a worker, otherwise request one
+function Building:serverupdate(dt)
+    if self.char then
+        self:cycle(dt)
+    else
+        if not self.charrequested then
+            self.charrequested = true
+            taskHandler.requestchar(self.id)
+        end
+    end
+end
+
+function Building:clientupdate(dt)
+    if self.char then
+        self:clientcycle(dt)
+    end
+end
+
+function Building:cycle(dt)
+    -- do nothing for default building
+end
+
+function Building:receiveChar(villager)
+    -- do nothing for default building
 end
 
 ----------- TENT
@@ -88,7 +116,7 @@ function Warehouse:__init(x, y)
     end
 end
 
---- Carpenter
+-- Carpenter
 
 Carpenter = Building:extends()
 
@@ -111,31 +139,46 @@ function Carpenter:__init(x, y)
     self.dt = 0
     self.transmutetime = 15
     self.woodslots = 6
+    self.charrequested = false
     
     if love.graphics then
        self.mesh = generateMesh(objects[self.image]) 
     end
 end
 
-function Carpenter:update(dt)
-    if server then
-        
-        if self.woodslots > 0 then 
-            local result = taskHandler.requestRessource(self, "wood")
-            if result then self.woodslots = self.woodslots - 1 end
-        end
-        
-        if self:getRessourceAmount("wood") > 0 and self:getRessourceAmount("planks") < 6 then
-            self.dt = self.dt + dt
-            if self.dt >= self.transmutetime then
-                self.dt = 0
-                self:removeRessource("wood")
-                self:addRessource("planks")
-                ressourceHandler.addSingleRessource(self.id, "planks")
-                self.woodslots = self.woodslots + 1
-                server.updateObject(self)
-            end
-        end
-        
+function Carpenter:cycle(dt)
+    if self.woodslots > 0 then 
+        local result = taskHandler.requestRessource(self, "wood")
+        if result then self.woodslots = self.woodslots - 1 end
     end
+    
+    if self:getRessourceAmount("wood") > 0 and self:getRessourceAmount("planks") < 6 then
+        self.dt = self.dt + dt
+        if self.dt >= self.transmutetime then
+            self.dt = 0
+            self:removeRessource("wood")
+            self:addRessource("planks")
+            ressourceHandler.addSingleRessource(self.id, "planks")
+            self.woodslots = self.woodslots + 1
+            server.updateObject(self)
+        end
+    else
+        self.dt = 0
+    end
+end
+
+function Carpenter:clientcycle(dt)
+    if self:getRessourceAmount("wood") > 0 and self:getRessourceAmount("planks") < 6 then
+        self.char.visible = true
+    else
+        self.char.visible = false
+    end
+end
+
+function Carpenter:receiveChar(villager)
+    self.char = Charpenter:new(villager)
+    world.removeChar(self.char)
+    self.char.visible = false
+    self.char.x = self.x + 2
+    self.char.y = self.y
 end

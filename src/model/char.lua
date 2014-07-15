@@ -19,6 +19,7 @@ function Char:__init(x, y)
     self.state = "idle"
     self.anim = "walk"
     self.name = "Lysa Thorne"
+    self.visible = true -- on by default
     self.direction = "d"
     self.animcycle = 1
     self.idletime = 0
@@ -33,7 +34,7 @@ function Char:addTask(task)
     -- if we are client and the current
     -- task is not finished, finish it
     if not server and self.task then
-        self.task:clientFinish()
+        self.task:clientFinish(self)
     end
     
     self.state = "idle"

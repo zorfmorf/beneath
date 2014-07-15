@@ -95,6 +95,19 @@ function world.addChar(char)
 end
 
 
+-- chars need to be removed when dying or when taking up a profession
+function world.removeChar(char)
+    characters[char.id] = nil
+    local i = #charDrawOrder
+    while i > 0 do
+        if charDrawOrder[i] == char.id then
+            table.remove(charDrawOrder, i)
+        end
+        i = i - 1
+    end
+end
+
+
 -- returns a tileselection or nil
 function world.isPlacable(object)
     local tileselection = {}
@@ -206,11 +219,11 @@ function world.update(dt)
         char:update(dt)
     end
     
-    if server then
-        for i,object in pairs(objects) do
-            if object.workleft < 0 and object:is(Building) then
-                object:update(dt)
-            end
+    for i,object in pairs(objects) do
+        if object.workleft < 0 and object:is(Building) then
+            
+            if server then object:serverupdate(dt) end
+            if not server then object:clientupdate(dt) end
         end
     end
     

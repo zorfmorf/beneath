@@ -84,6 +84,8 @@ function drawHandler.drawTerrain()
         
         if char == nil or (obj ~= nil and char.y > obj.y) then
             
+            -- draw object
+            
             love.graphics.setColor(255, 255, 255, 255)
             
             if obj.mesh then
@@ -104,6 +106,10 @@ function drawHandler.drawTerrain()
                 end
             end
             
+            if obj.char and obj.char.visible then
+                love.graphics.draw(charset, anim_quad[obj.char:getAnimation()], obj.char.x * tilesize, obj.char.y * tilesize, 0, 1, 1, 32, 58)
+            end
+            
             if obj.selected then 
                 love.graphics.draw(icons[obj.selected], obj.x * tilesize, obj.y * tilesize, 0, 1, 1, -obj.xsize * tilesize / 2 + tilesize / 2, tilesize * 2) 
             end
@@ -111,13 +117,16 @@ function drawHandler.drawTerrain()
             if console then love.graphics.rectangle("line", obj.x * tilesize, obj.y * tilesize, tilesize, tilesize) end
             i = i + 1
         else
+            -- draw char
             love.graphics.setColor(255, 255, 255, 255)
-            love.graphics.setFont(nameFont)
-            love.graphics.print(char.name, char.x * tilesize, char.y * tilesize, 0, 1, 1, nameFont:getWidth(char.name) / 2, 64)
-            if anim_quad[char:getAnimation()] then
+            if char.visible then
+                love.graphics.setFont(nameFont)
+                love.graphics.print(char.name, char.x * tilesize, char.y * tilesize, 0, 1, 1, nameFont:getWidth(char.name) / 2, 64)
+                if anim_quad[char:getAnimation()] then
                 love.graphics.draw(charset, anim_quad[char:getAnimation()], char.x * tilesize, char.y * tilesize, 0, 1, 1, 32, 58)
-            else
-                print("Anim missing:", char:getAnimation(), char.state, char.anim, char.animcycle)
+                else
+                    print("Anim missing:", char:getAnimation(), char.state, char.anim, char.animcycle)
+                end
             end
             j = j + 1
         end

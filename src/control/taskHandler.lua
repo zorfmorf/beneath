@@ -111,3 +111,9 @@ function taskHandler.requestRessource(object, res)
     end
     return false
 end
+
+
+-- buildings may request chars to take up a profession
+function taskHandler.requestchar(buildingId)
+    table.insert(tasklist, ProfessionTask:new(buildingId))
+end
