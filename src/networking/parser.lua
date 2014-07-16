@@ -85,7 +85,7 @@ function parser.parseRessource(string)
     local i = 1
     for value in string.gmatch(string, '[^=]+') do
         if i == 1 then res = value end
-        if i == 2 then amount = value end
+        if i == 2 then amount = tonumber(value) end
         i = i + 1
     end
     if not res or not amount then return nil end

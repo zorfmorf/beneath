@@ -44,12 +44,24 @@ function Char:addTask(task)
     self.task = task
 end
 
-function Char:update(dt)
+function Char:updateAnimation(dt)
     self.animcycle = self.animcycle + dt * ANIM_SPEED
     if self.animcycle >= 9 or self.state == "idle" 
         or (self.state == "work" and self.animcycle >= 6) then 
         self.animcycle = 1
     end
+end
+
+function Char:walk(target, dt)
+    if self.x < target.x then self.x = math.min(target.x, self.x + WALK_SPEED * dt) self.direction = "r" return end
+    if self.x > target.x then self.x = math.max(target.x, self.x - WALK_SPEED * dt) self.direction = "l" return end
+    if self.y < target.y then self.y = math.min(target.y, self.y + WALK_SPEED * dt) self.direction = "d" end
+    if self.y > target.y then self.y = math.max(target.y, self.y - WALK_SPEED * dt) self.direction = "u" end
+end
+
+function Char:update(dt)
+    
+    self:updateAnimation(dt)
     
     if self.state == "blocked" then
         --print("Help I'm blocked")
@@ -124,10 +136,7 @@ function Char:update(dt)
             end
         end
         
-        if self.y < target.y then self.y = math.min(target.y, self.y + WALK_SPEED * dt) self.direction = "d" end
-        if self.y > target.y then self.y = math.max(target.y, self.y - WALK_SPEED * dt) self.direction = "u" end
-        if self.x < target.x then self.x = math.min(target.x, self.x + WALK_SPEED * dt) self.direction = "r" end
-        if self.x > target.x then self.x = math.max(target.x, self.x - WALK_SPEED * dt) self.direction = "l" end
+        self:walk(target, dt)
         
         if self.x == target.x and self.y == target.y then
             table.remove(self.path, 1)

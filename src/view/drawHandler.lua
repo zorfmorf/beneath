@@ -107,7 +107,11 @@ function drawHandler.drawTerrain()
             end
             
             if obj.char and obj.char.visible then
-                love.graphics.draw(charset, anim_quad[obj.char:getAnimation()], obj.char.x * tilesize, obj.char.y * tilesize, 0, 1, 1, 32, 58)
+                if anim_quad[obj.char:getAnimation()] then
+                    love.graphics.draw(charset, anim_quad[obj.char:getAnimation()], obj.char.x * tilesize, obj.char.y * tilesize, 0, 1, 1, 32, 58)
+                else
+                    print("Missing char anim for", obj.char:getAnimation())
+                end
             end
             
             if obj.selected then 

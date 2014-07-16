@@ -110,7 +110,7 @@ function Object:removeRessource(res)
             self.ressources[res] = nil
             if not (self.ressources.wood or self.ressources.stone or self.ressources.planks) then 
                 self.ressources = nil
-                if self:is(Ressource) and server then world.removeObject(self.id) end
+                if self:is(Ressource) and server then world.removeObject(self.id) return end
             end
         end
     end
@@ -126,7 +126,9 @@ end
 
 
 function Object:getRessourceAmount(res)
-    if self.ressources and self.ressources[res] then return self.ressources[res] end
+    if self.ressources and self.ressources[res] then
+        return self.ressources[res] 
+    end
     return 0
 end
 

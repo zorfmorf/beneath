@@ -32,10 +32,17 @@ function Building:clientupdate(dt)
     end
 end
 
+
+-- only called when server side building has a worker
+-- tasked with handling ressource production and informing clients
 function Building:cycle(dt)
     -- do nothing for default building
 end
 
+
+-- only called when the client building has a worker
+-- handles animation cycles (worker working on building) which
+-- is not necessary for server and does not need to be synced
 function Building:receiveChar(villager)
     -- do nothing for default building
 end
@@ -134,17 +141,20 @@ function Carpenter:__init(x, y)
     self.costleft = { wood=3 }
     self.resUsage = 1 -- 1 res / second
     self.resUsageDt = 0 -- timer value
+    self.charrequested = false -- we want a char for this one
     
     -- carpenter specific attributes
     self.dt = 0
     self.transmutetime = 15
     self.woodslots = 6
-    self.charrequested = false
+    self.workpos = { x = 2.4, y = -0.5 }
+    self.entrance = { x = 2, y = 0.5 }
     
     if love.graphics then
        self.mesh = generateMesh(objects[self.image]) 
     end
 end
+
 
 function Carpenter:cycle(dt)
     if self.woodslots > 0 then 
@@ -167,18 +177,19 @@ function Carpenter:cycle(dt)
     end
 end
 
+
 function Carpenter:clientcycle(dt)
     if self:getRessourceAmount("wood") > 0 and self:getRessourceAmount("planks") < 6 then
-        self.char.visible = true
+        self.char:gotoWork( { x = self.x + self.workpos.x, y = self.y - self.workpos.y }, dt)
     else
-        self.char.visible = false
+        self.char:goHome( { x = self.x + self.entrance.x, y = self.y - self.entrance.y }, dt)
     end
 end
+
 
 function Carpenter:receiveChar(villager)
     self.char = Charpenter:new(villager)
     world.removeChar(self.char)
-    self.char.visible = false
-    self.char.x = self.x + 2
-    self.char.y = self.y
+    self.char:addTask(nil) --reset animations
+    self.char.visible = true
 end

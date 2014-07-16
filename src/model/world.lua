@@ -221,7 +221,6 @@ function world.update(dt)
     
     for i,object in pairs(objects) do
         if object.workleft < 0 and object:is(Building) then
-            
             if server then object:serverupdate(dt) end
             if not server then object:clientupdate(dt) end
         end
