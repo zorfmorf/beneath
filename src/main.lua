@@ -1,3 +1,6 @@
+
+-- game includes
+
 class = require 'lib/30logclean'
 require 'lib/misc'
 
@@ -21,66 +24,101 @@ require 'view/consoleHandler'
 require 'view/drawHandler'
 require 'view/hudHandler'
 
+--- menu includes
+
+require 'menu/mainMenu'
+require 'menu/menuInputHandler'
+require 'menu/gameCreator'
+
 function love.load()
     
-    ONLINE_GAME = false
+    state = "menu"
+    displayMenu = false
     
-    if not ONLINE_GAME then
-        main_server = love.thread.newThread( "main_server.lua" )
-        main_server:start()
-    end
-    
-    math.randomseed(os.time())
-    
-    console = false -- while true display debug information
-    
-    tilesetParser.loadTerrain()
-    tilesetParser.parseIcons()
-    charsetParser.parseCharset()
-    cameraHandler.init()
-    hudHandler.init()
-    logicHandler.init()
-    drawHandler.init()
-    world.init()
-    
-    client.init()
+    mainMenu.init()
 end
 
 
 function love.update(dt)
-    world.update(dt)
-    hudHandler.update(dt)
-    gameInputHandler.update(dt)
     
-    client.service()
+    if state == "menu" or displayMenu then
+        mainMenu.update(dt)
+    end
+    
+    if state == "ingame" then
+        world.update(dt)
+        hudHandler.update(dt)
+        gameInputHandler.update(dt)
+        client.service()
+    end
+    
 end
 
 
 function love.draw()
     
-    drawHandler.drawTerrain()
-    hudHandler.draw()
+    if state == "ingame" then
     
-    if console then consoleHandler.draw() end
+        drawHandler.drawTerrain()
+        hudHandler.draw()
+        
+        if console then consoleHandler.draw() end
+    end
+    
+    if state == "menu" or displayMenu then
+        mainMenu.draw()
+    end
     
 end
 
 
 function love.keypressed(key, isRepeat)
-    gameInputHandler.keypressed(key, isRepeat)
+    
+    if state == "menu" or displayMenu then
+        menuInputHandler.keypressed(key, isRepeat)
+    end
+    
+    if state == "ingame" and not displayMenu then
+        gameInputHandler.keypressed(key, isRepeat)
+    end
+    
 end
 
 
 function love.keyreleased(key, isRepeat)
-    gameInputHandler.keyreleased(key, isRepeat)
+    
+    if state == "menu" or displayMenu then
+        menuInputHandler.keyreleased(key, isRepeat)
+    end
+    
+    if state == "ingame" and not displayMenu then
+        gameInputHandler.keyreleased(key, isRepeat)
+    end
+    
 end
 
 
 function love.mousepressed(x, y, button)
-    gameInputHandler.mousepressed(x, y, button)
+    
+    if state == "menu" then
+        menuInputHandler.mousepressed(x, y, button)
+    end
+    
+    if state == "ingame" then
+        gameInputHandler.mousepressed(x, y, button)
+    end
+    
 end
 
 
 function love.mousereleased(x, y, button)
-    gameInputHandler.mousereleased(x, y, button)
+    
+    if state == "menu" then
+        menuInputHandler.mousereleased(x, y, button)
+    end
+    
+    if state == "ingame" then
+        gameInputHandler.mousereleased(x, y, button)
+    end
+    
 end

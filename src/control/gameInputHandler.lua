@@ -30,7 +30,7 @@ function gameInputHandler.keypressed(key, isRepeat)
     if key == "down" and not isRepeat then cameraHandler.keyShiftCamera(0, 1) end
     if key == "left" and not isRepeat then cameraHandler.keyShiftCamera(-1, 0) end
     if key == "right" and not isRepeat then cameraHandler.keyShiftCamera(1, 0) end
-    if key == "escape" then love.event.push("quit") end
+    if key == "escape" then displayMenu = not displayMenu end
     if key == "f1" then console = not console end
 end
 
