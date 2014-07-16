@@ -7,7 +7,7 @@ local builditems = {}
 logicHandler = {}
 
 function logicHandler.init()
-    table.insert(builditems, Farm:new(0, 0))
+    --table.insert(builditems, Farm:new(0, 0))
     --table.insert(builditems, Smith:new(0, 0))
     table.insert(builditems, Field:new(0, 0))
     table.insert(builditems, Carpenter:new(0, 0))

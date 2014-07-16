@@ -108,6 +108,8 @@ function drawHandler.drawTerrain()
             
             if obj.char and obj.char.visible then
                 if anim_quad[obj.char:getAnimation()] then
+                    love.graphics.setFont(nameFont)
+                    love.graphics.print(obj.char.name, obj.char.x * tilesize, obj.char.y * tilesize, 0, 1, 1, nameFont:getWidth(obj.char.name) / 2, 64)
                     love.graphics.draw(charset, anim_quad[obj.char:getAnimation()], obj.char.x * tilesize, obj.char.y * tilesize, 0, 1, 1, 32, 58)
                 else
                     print("Missing char anim for", obj.char:getAnimation())
