@@ -7,38 +7,15 @@
 
 hudHandler = {}
 
-local active = false -- if not active, sidebar is deactivaed
-local sidebarCanvas = nil -- the canvas containing the sidebar bkg
-local sidebarslidespeed = 200
-local sideshift = 0 -- current sidebar shift
-local width = 0 -- max sidebar width
 local cursor = nil -- current cursor icon
 local cursor_color = {255, 255, 255, 255}
+local buildcontainer = nil
 
 function hudHandler.init()
     
-    active = false
-    width = tilesize * 2
-    sideshift = 0
+    local scrolls = { Scroll:new(), Scroll:new() }
     
-    local th = math.floor(love.graphics.getHeight() / tilesize + 1)
-    sidebarCanvas = love.graphics.newCanvas(tilesize * 3, th * tilesize)
-    love.graphics.setCanvas(sidebarCanvas)
-    for i=0,3 do
-        for j=0,th-1 do
-            local rand = math.random(1, 15)
-            if rand > 4 then rand = 1 end
-            love.graphics.draw(terrain["stone"..rand], 
-                (0.5 + i) * tilesize, j * tilesize)
-        end
-    end
-    for j=0,th-1 do
-        love.graphics.draw(terrain["col_mid1"], 0, j * tilesize)
-    end
-    love.graphics.draw(terrain["col_mid2"], 0, 7 * tilesize)
-    love.graphics.draw(terrain["col_mid3"], 0, 8 * tilesize)
-    love.graphics.draw(terrain["col_mid4"], 0, (th-4) * tilesize)
-    love.graphics.setCanvas()
+    buildcontainer = Container:new( scrolls )
 end
 
 -- make hud visible again
@@ -49,20 +26,8 @@ end
 
 function hudHandler.update(dt)
     
-    if active and sideshift < width then
-        sideshift = math.min(sideshift + dt * sidebarslidespeed, width)
-    end
-    
-    if not active and sideshift > 0 then
-        sideshift = math.max(sideshift - dt * sidebarslidespeed, 0)
-    end
-    
-    local x = love.mouse.getX()
-    if logicHandler.isInFreeMode() and x > love.graphics.getWidth() - (sideshift + tilesize) then
-        active = true
-    else
-        active = false
-    end
+    -- update ui elements
+    buildcontainer:update(dt)
     
     -- if in placemode check if placable
     if logicHandler.getMouseState() == "build" or logicHandler.getMouseState() == "buildfarm1" then
@@ -93,6 +58,8 @@ end
 
 -- returns true if the mouse is hovering over hud items
 function hudHandler.catchMouseClick(x, y)
+    
+    --[[
     if active and x > love.graphics.getWidth() - (sideshift + tilesize) then
         if x > love.graphics.getWidth() - sideshift then
             
@@ -126,6 +93,7 @@ function hudHandler.catchMouseClick(x, y)
         return true
     end
     return false
+    ]]--
 end
 
 function hudHandler.getCursor()
@@ -139,33 +107,7 @@ end
 function hudHandler.draw()
     love.graphics.origin()
     
-    local xpos = love.graphics.getWidth() - sideshift
     love.graphics.setColor(255, 255, 255, 255)
-    
-    -- draw sidebar
-    love.graphics.draw(sidebarCanvas, love.graphics.getWidth() - tilesize - sideshift)
-    
-    -- draw mouse build icon
-    local mx, my = love.mouse.getPosition()
-    local scale = cameraHandler.getZoom()
-    
-    -- draw buildables    
-    local builditems = logicHandler.getBuildItems()
-    local yshift = 5
-    for i,item in ipairs(builditems) do
-        
-        local image = objects[item.image]
-        
-        local scale = (tilesize * 2) / image:getWidth()
-        
-        if mx > xpos and my > yshift and my < yshift + image:getHeight() * scale then
-            love.graphics.setColor(230, 150, 150, 255)
-        else
-            love.graphics.setColor(255, 255, 255, 255)
-        end
-        
-        love.graphics.draw(image, xpos, yshift, 0, scale, scale)
-        yshift = yshift + 5 + image:getHeight() * scale
-    end
+    buildcontainer:draw()
     
 end

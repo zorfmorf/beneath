@@ -4,6 +4,7 @@
 class = require 'lib/30logclean'
 require 'lib/misc'
 
+require 'control/gameCreator'
 require 'control/gameInputHandler'
 require 'control/logicHandler'
 require 'control/ressourceHandler'
@@ -23,12 +24,14 @@ require 'view/cameraHandler'
 require 'view/consoleHandler'
 require 'view/drawHandler'
 require 'view/hudHandler'
+require 'view/elements/clickable'
+require 'view/elements/container'
+require 'view/elements/scroll'
 
 --- menu includes
 
 require 'menu/mainMenu'
 require 'menu/menuInputHandler'
-require 'menu/gameCreator'
 
 function love.load()
     
@@ -47,7 +50,7 @@ function love.update(dt)
     
     if state == "ingame" then
         world.update(dt)
-        hudHandler.update(dt)
+        if not displayMenu then hudHandler.update(dt) end
         gameInputHandler.update(dt)
         client.service()
     end

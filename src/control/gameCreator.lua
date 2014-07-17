@@ -1,6 +1,6 @@
 --[[
     
-    Handles creation of singleplayer game.
+    Handles creation of singleplayer games.
     
     Will be later used to load scenarios and campaigns
     
