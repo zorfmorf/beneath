@@ -18,7 +18,8 @@ mainMenu = {}
 local scrollUpper = nil
 local scrollMiddle = nil
 local scrollLower = nil
-local menuFont = love.graphics.newFont("ressource/ui/alagard.ttf", 45)
+local menuFont = love.graphics.newFont("ressource/ui/alagard.ttf", 40)
+local titleFont = love.graphics.newFont("ressource/ui/romulus.ttf", 100)
 local dtacc = 0
 
 function mainMenu.init()
@@ -63,6 +64,14 @@ end
 
 function mainMenu.draw()
     
+    -- benath title
+    local title = love.window.getTitle()
+    love.graphics.setFont(titleFont)
+    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.print(title, love.graphics:getWidth() / 2, titleFont:getHeight(), 0, 1, 1, titleFont:getWidth(title) / 2, titleFont:getHeight() / 2 )
+    
+    
+    -- menu scroll
     local size = #items + 2
     local xshift = 75
     

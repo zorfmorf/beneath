@@ -76,9 +76,10 @@ function love.keypressed(key, isRepeat)
     
     if state == "menu" or displayMenu then
         menuInputHandler.keypressed(key, isRepeat)
+        return
     end
     
-    if state == "ingame" and not displayMenu then
+    if state == "ingame" then
         gameInputHandler.keypressed(key, isRepeat)
     end
     
@@ -89,9 +90,10 @@ function love.keyreleased(key, isRepeat)
     
     if state == "menu" or displayMenu then
         menuInputHandler.keyreleased(key, isRepeat)
+        return
     end
     
-    if state == "ingame" and not displayMenu then
+    if state == "ingame" then
         gameInputHandler.keyreleased(key, isRepeat)
     end
     
@@ -100,8 +102,9 @@ end
 
 function love.mousepressed(x, y, button)
     
-    if state == "menu" then
+    if state == "menu" or displayMenu then
         menuInputHandler.mousepressed(x, y, button)
+        return
     end
     
     if state == "ingame" then
@@ -113,8 +116,9 @@ end
 
 function love.mousereleased(x, y, button)
     
-    if state == "menu" then
+    if state == "menu" or displayMenu then
         menuInputHandler.mousereleased(x, y, button)
+        return
     end
     
     if state == "ingame" then
