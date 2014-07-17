@@ -13,7 +13,15 @@ local buildcontainer = nil
 
 function hudHandler.init()
     
-    local scrolls = { Scroll:new(), Scroll:new() }
+    local iconCarpenter = love.graphics.newImage( "ressource/icons/carpenter.png" )
+    
+    local panels = {}
+    panels[1] = {}
+    panels[1].icon = iconCarpenter
+    panels[1].x = 0
+    panels[1].y = 0
+    panels[1].name = Carpenter.__name
+    local scrolls = { Scroll:new( {} ), Scroll:new( panels ) }
     
     buildcontainer = Container:new( scrolls )
 end
@@ -56,48 +64,18 @@ function hudHandler.update(dt)
     
 end
 
--- returns true if the mouse is hovering over hud items
+-- returns true if the mouse is hovering over hud items,
+-- if true handles mouse click event as wel
 function hudHandler.catchMouseClick(x, y)
-    
-    --[[
-    if active and x > love.graphics.getWidth() - (sideshift + tilesize) then
-        if x > love.graphics.getWidth() - sideshift then
-            
-            local builditems = logicHandler.getBuildItems()
-            local yshift = 5
-            for i,builditem in pairs(builditems) do
-                
-                local item = objects[builditem.image]
-                local scale = (tilesize * 2) / item:getWidth()
-                
-                if y > yshift and y < yshift + item:getHeight() * scale then
-                    love.mouse.setVisible(false)
-                    
-                    local object = Object:new()
-                    
-                    if builditem.__name == "tree_small" then object = Tree:new() end
-                    if builditem.__name == "tent" then object = Tent:new() end
-                    if builditem.__name == "farm" then object = Farm:new() end
-                    if builditem.__name == "field" then object = Field:new() end
-                    if builditem.__name == "smith" then object = Smith:new() end
-                    if builditem.__name == "warehouse" then object = Warehouse:new() end
-                    if builditem.__name == "carpenter" then object = Carpenter:new() end
-                    cursor = object
-                    logicHandler.switchToBuildMode(object)
-                    
-                    return true
-                end
-                yshift = yshift + 5 + item:getHeight()  * scale 
-            end
-        end
-        return true
-    end
-    return false
-    ]]--
+    return buildcontainer:catchMouseClick(x, y)
 end
 
 function hudHandler.getCursor()
     return cursor
+end
+
+function hudHandler.setCursor(newc)
+    cursor = newc
 end
 
 function hudHandler.getCursorColor()

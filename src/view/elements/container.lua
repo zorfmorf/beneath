@@ -13,7 +13,7 @@ Container.__name = "container"
 function Container:__init(items)
     self.items = items
     self.padding = 10 -- padding between items
-    self.pad = 50 -- padding to the side (before items)
+    self.pad = 5 -- padding to the side (before items)
     self:refresh()
 end
 
@@ -27,7 +27,6 @@ function Container:refresh()
 end
 
 function Container:draw()
-    local wacc = 0 -- width accumulator
     for i,element in ipairs(self.items) do
         element:draw()
     end
@@ -37,4 +36,13 @@ function Container:update(dt)
     for i,element in ipairs(self.items) do
         element:update(dt)
     end
+end
+
+-- returns true if the mouse hovers over a container item
+-- if true executes mouse click as well
+function Container:catchMouseClick(x, y)
+    for i,element in ipairs(self.items) do
+        if element:catchMouseClick(x, y) then return true end
+    end
+    return false
 end

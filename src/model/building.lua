@@ -124,7 +124,6 @@ function Warehouse:__init(x, y)
 end
 
 -- Carpenter
-
 Carpenter = Building:extends()
 
 function Carpenter:__init(x, y)

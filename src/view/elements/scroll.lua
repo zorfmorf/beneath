@@ -7,7 +7,7 @@
     
 ]]--
 
-local scrollspeed = 3
+local scrollspeed = 5
 
 -- image ressource
 local tiles = {}
@@ -52,35 +52,96 @@ end
 Scroll = class()
 Scroll.__name = "scroll"
 
-function Scroll:__init()
-    self.canvas = generateCanvas(3, 6)
+
+function Scroll:__init( items )
+    local w = 2
+    local h = 2
+    self.items = items
+    for i,item in ipairs(self.items) do
+        w = math.max(w, 1 + math.floor(item.icon:getWidth() / tilesize) )
+        h = h + math.floor(item.icon:getHeight() / tilesize)
+    end
+    self.canvas = generateCanvas(w, h)
     self.shift = 0
     self.mouseover = false
     self.x = 0
     self.y = 0
 end
 
+
+function Scroll:generateY()
+    return self.y - (self.canvas:getHeight() - tilesize * 2 ) * self.shift - tilesize
+end
+
+
+-- unravel or close scroll depending on mouse position
 function Scroll:update(dt)
-    local x, y = love.mouse.getPosition()
     
-    self.mouseover = x >= self.x and x < self.x + self.canvas:getWidth() and y > self.y - (self.canvas:getHeight() - tilesize * 2) * self.shift - tilesize
+    local x, y = love.mouse.getPosition()
+
+    self.mouseover = x >= self.x and x < self.x + self.canvas:getWidth() and y > self:generateY()
     
     if self.mouseover then
         self.shift = math.min(1, self.shift + dt * scrollspeed)
     else
         self.shift = math.max(0, self.shift - dt * scrollspeed)
     end
+    
+    local yacc = tilesize
+    for i,item in ipairs(self.items) do
+        item.x = self.x + tilesize * 0.45
+        item.y = self:generateY() + yacc
+        yacc = yacc + item.icon:getHeight()
+    end
+    
 end
 
+
+-- draws scroll canvas and then all items in the scroll
 function Scroll:draw()
-    love.graphics.draw(self.canvas, self.x, self.y - (self.canvas:getHeight() - tilesize * 2 ) * self.shift - tilesize)
+    love.graphics.draw(self.canvas, self.x, self:generateY() )
+    for i,item in ipairs(self.items) do
+        love.graphics.draw(item.icon, item.x, item.y)
+    end
 end
+
 
 function Scroll:getWidth()
     return self.canvas:getWidth()
 end
 
+
+-- used by container to rearrange items
 function Scroll:setPos(x, y)
     self.x = x
     self.y = y
+end
+
+
+-- return true if mouse hovers over scroll
+-- if true check if the mouse click is on any item
+function Scroll:catchMouseClick(x, y) 
+    if x >= self.x and x <= self.x + self:getWidth() and y >= self:generateY() then
+        for i,item in ipairs(self.items) do
+            if x >= item.x and x <= item.x + item.icon:getWidth() and y >= item.y and y <= item.y + item.icon:getHeight() then
+                
+                love.mouse.setVisible(false)
+                
+                local object = Object:new()
+                if item.__name == "tree_small" then object = Tree:new() end
+                if item.__name == "tent" then object = Tent:new() end
+                if item.__name == "farm" then object = Farm:new() end
+                if item.__name == "field" then object = Field:new() end
+                if item.__name == "smith" then object = Smith:new() end
+                if item.__name == "warehouse" then object = Warehouse:new() end
+                if item.name == Carpenter.__name then object = Carpenter:new() end
+                
+                hudHandler.setCursor( object )
+                logicHandler.switchToBuildMode(object)
+                return true
+            end
+        end
+        return true
+    end
+    return false
 end
