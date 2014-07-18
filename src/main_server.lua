@@ -35,6 +35,12 @@ require "socket" -- for time measuring purposes
 
 logfile:write("Loaded requires \n")
 
+SERVER_TYPE = "offline"
+
+local params = { ... }
+if params and params[1] then SERVER_TYPE = params[1] end
+
+
 -- equivalent for love.update(dt)
 local function update(dt)
     world.update(dt)
@@ -42,21 +48,39 @@ local function update(dt)
     server.service()
 end
 
-function main()
-    
-    logfile:write( "Activating server\n" )
-    
-    local server_active = true
-    
-    math.randomseed(os.time())
-    
+local function createSinglePlayer()
+    state = "ingame"
     ressourceHandler.init()
     logicHandler.init()
     taskHandler.init()
     world.init()
     world.generate()
-    server.init()
+end
 
+local function createOnlineGame()
+    state = "lobby"
+    --ressourceHandler.init()
+    --logicHandler.init()
+    --taskHandler.init()
+    --world.init()
+    --world.generate()
+end
+
+function main()
+    
+    logfile:write( "Activating server\n" )
+    
+    local server_active = true
+    math.randomseed(os.time())
+    state = "off"
+    
+    if SERVER_TYPE == "offline" then 
+        createSinglePlayer()
+    else
+        createOnlineGame()
+    end
+    server.init()
+    
     logfile:write( "Ready for incoming connections\n" )
 
     local time = socket.gettime()

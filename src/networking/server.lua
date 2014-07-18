@@ -25,18 +25,21 @@ function server.service()
         
         if event.type == "connect" then
             logfile:write( "Client connected:", event.peer:index(), event.peer:connect_id(), "\n" )
-            server.sendGameState(event.peer)
+            if state == "ingame" then server.sendGameState(event.peer) end
+            if state == "lobby" then server.sendLobbyInformation(event.peer) end
         end
         
         if event.type == "receive" then
             logfile:write( "Client ", event.peer:index(), ": ", event.data, "\n" )
             
-            if event.data:sub(1, 6) == "build " then
-                server.parseBuild( event.data:sub(7) )
-            end
-            
-            if event.data:sub(1, 6) == "taskw " then
-                server.parseTask( event.data:sub(7) )
+            if state == "ingame" then
+                if event.data:sub(1, 6) == "build " then
+                    server.parseBuild( event.data:sub(7) )
+                end
+                
+                if event.data:sub(1, 6) == "taskw " then
+                    server.parseTask( event.data:sub(7) )
+                end
             end
             
         end
@@ -123,6 +126,12 @@ function server.sendGameState(peer)
     server.sendTiles(peer)
     server.sendObjects(peer)
     server.sendChars(peer)
+end
+
+
+-- send the current state of the lobby to the client
+function server.sendLobbyInformation(peer)
+    -- TODO: implement
 end
 
 

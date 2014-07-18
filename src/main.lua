@@ -30,6 +30,7 @@ require 'view/elements/scroll'
 
 --- menu includes
 
+require 'menu/lobby'
 require 'menu/mainMenu'
 require 'menu/menuInputHandler'
 
@@ -55,6 +56,10 @@ function love.update(dt)
         client.service()
     end
     
+    if state == "lobby" then
+        lobby.update(dt)
+    end
+    
 end
 
 
@@ -70,6 +75,10 @@ function love.draw()
     
     if state == "menu" or displayMenu then
         mainMenu.draw()
+    end
+    
+    if state == "lobby" then
+        lobby.draw()
     end
     
 end

@@ -49,9 +49,13 @@ function mainMenu.goUp()
 end
 
 function mainMenu.fire()
-    if cursor == 1 and not (state == "ingame") then
+    if cursor == 1 and not (state == "ingame" ) then
         gameCreator.createDefaultLocalGame()
         state = "ingame"
+    end
+    if cursor == 2 and not (state == "ingame" ) then
+        gameCreator.createOnlineGame()
+        state = "lobby"
     end
     if cursor == 4 then love.event.push("quit") end
 end
