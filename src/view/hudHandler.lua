@@ -14,6 +14,7 @@ local buildcontainer = nil
 function hudHandler.init()
     
     local iconCarpenter = love.graphics.newImage( "ressource/icons/carpenter.png" )
+    local iconWarehouse = love.graphics.newImage( "ressource/icons/warehouse.png" )
     
     local panels = {}
     panels[1] = {}
@@ -21,7 +22,7 @@ function hudHandler.init()
     panels[1].x = 0
     panels[1].y = 0
     panels[1].name = Carpenter.__name
-    local scrolls = { Scroll:new( {} ), Scroll:new( panels ) }
+    local scrolls = { Scroll:new( { { icon=iconWarehouse, x=0, y=0, name=Warehouse.__name } } ), Scroll:new( panels ) }
     
     buildcontainer = Container:new( scrolls )
 end

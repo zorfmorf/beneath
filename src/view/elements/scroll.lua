@@ -128,12 +128,13 @@ function Scroll:catchMouseClick(x, y)
                 love.mouse.setVisible(false)
                 
                 local object = Object:new()
-                if item.__name == "tree_small" then object = Tree:new() end
-                if item.__name == "tent" then object = Tent:new() end
-                if item.__name == "farm" then object = Farm:new() end
-                if item.__name == "field" then object = Field:new() end
-                if item.__name == "smith" then object = Smith:new() end
-                if item.__name == "warehouse" then object = Warehouse:new() end
+                print( "Item: " ,item.name)
+                if item.name == Tree.__name then object = Tree:new() end
+                if item.name == Tent.__name then object = Tent:new() end
+                if item.name == Farm.__name then object = Farm:new() end
+                if item.name == Field.__name then object = Field:new() end
+                if item.name == Smith.__name then object = Smith:new() end
+                if item.name == Warehouse.__name then object = Warehouse:new() end
                 if item.name == Carpenter.__name then object = Carpenter:new() end
                 
                 hudHandler.setCursor( object )

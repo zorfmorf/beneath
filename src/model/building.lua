@@ -50,10 +50,10 @@ end
 ----------- TENT
 
 Tent = Building:extends()
+Tent.__name = "tent"
 
 function Tent:__init(x, y)
     Tent.super.__init(self, x, y)
-    self.__name = "tent"
     self.image = "tent"
     self.xsize = 4
     self.ysize = 3
@@ -67,10 +67,10 @@ end
 ----------- SMITH
 
 Smith = Building:extends()
+Smith.__name = "smith"
 
 function Smith:__init(x, y)
     Smith.super.__init(self, x, y)
-    self.__name = "smith"
     self.image = "smith"
     self.xsize = 4
     self.ysize = 3
@@ -85,10 +85,10 @@ end
 ----------- Farm
 
 Farm = Building:extends()
+Farm.__name = "farm"
 
 function Farm:__init(x, y)
     Farm.super.__init(self, x, y)
-    self.__name = "farm"
     self.image = "farm"
     self.xsize = 4
     self.ysize = 3
@@ -103,10 +103,10 @@ end
 -- Warehouse
 
 Warehouse = Building:extends()
+Warehouse.__name = "warehouse"
 
 function Warehouse:__init(x, y)
     Warehouse.super.__init(self, x, y)
-    self.__name = "warehouse"
     self.image = "warehouse"
     self.xsize = 4
     self.ysize = 3
@@ -125,10 +125,10 @@ end
 
 -- Carpenter
 Carpenter = Building:extends()
+Carpenter.__name = "carpenter"
 
 function Carpenter:__init(x, y)
     Carpenter.super.__init(self, x, y)
-    self.__name = "carpenter"
     self.image = "carpenter"
     self.xsize = 4
     self.ysize = 3
