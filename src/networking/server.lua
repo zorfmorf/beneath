@@ -17,6 +17,22 @@ function server.init()
     logfile:write( "host: state", tostring(host), "\n" )
 end
 
+function server.createSinglePlayer()
+    ressourceHandler.init()
+    logicHandler.init()
+    taskHandler.init()
+    world.init()
+    world.generate()
+end
+
+function server.createOnlineGame()
+    --ressourceHandler.init()
+    --logicHandler.init()
+    --taskHandler.init()
+    --world.init()
+    --world.generate()
+end
+
 
 -- check for and handle incoming messages
 function server.service()
@@ -25,8 +41,20 @@ function server.service()
         
         if event.type == "connect" then
             logfile:write( "Client connected:", event.peer:index(), event.peer:connect_id(), "\n" )
-            if state == "ingame" then server.sendGameState(event.peer) end
-            if state == "lobby" then server.sendLobbyInformation(event.peer) end
+            
+            if state == "ingame" then 
+                 -- TODO: disconnect / send 
+            end
+            if state == "lobby" then
+                if SERVER_TYPE == "offline" then
+                    state = "ingame"
+                    server.createSinglePlayer()
+                    server.sendGameState(event.peer)
+                end
+                if SERVER_TYPE == "online" then
+                    server.sendLobbyInformation(event.peer)
+                end
+            end
         end
         
         if event.type == "receive" then

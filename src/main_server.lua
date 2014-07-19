@@ -43,27 +43,11 @@ if params and params[1] then SERVER_TYPE = params[1] end
 
 -- equivalent for love.update(dt)
 local function update(dt)
-    world.update(dt)
-    taskHandler.update(dt)
+    if state == "ingame" then
+        world.update(dt)
+        taskHandler.update(dt)
+    end
     server.service()
-end
-
-local function createSinglePlayer()
-    state = "ingame"
-    ressourceHandler.init()
-    logicHandler.init()
-    taskHandler.init()
-    world.init()
-    world.generate()
-end
-
-local function createOnlineGame()
-    state = "lobby"
-    --ressourceHandler.init()
-    --logicHandler.init()
-    --taskHandler.init()
-    --world.init()
-    --world.generate()
 end
 
 function main()
@@ -72,15 +56,9 @@ function main()
     
     local server_active = true
     math.randomseed(os.time())
-    state = "off"
+    state = "lobby" -- all servers start in lobby
     
-    if SERVER_TYPE == "offline" then 
-        createSinglePlayer()
-    else
-        createOnlineGame()
-    end
     server.init()
-    
     logfile:write( "Ready for incoming connections\n" )
 
     local time = socket.gettime()
