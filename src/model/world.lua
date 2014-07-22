@@ -1,3 +1,9 @@
+--[[
+    
+    
+    
+]]--
+
 world = {}
 
 local MAX_OBJECT_SIZE = 5 --needed to correctly select objects on click

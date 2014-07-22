@@ -328,5 +328,3 @@ function Tree:work(dt)
     
     self.workleft = wnew
 end
-
-

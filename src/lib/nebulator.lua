@@ -132,6 +132,3 @@ end
 --imgData:encode(file)
 
 output:push(imgData)
-
-
-

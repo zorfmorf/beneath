@@ -6,8 +6,6 @@
 
 drawHandler = {}
 
-sheark = -0.3
-
 local nameFont = nil
 local worldCanvas = nil -- the terrain without objects
 
