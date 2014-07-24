@@ -7,7 +7,7 @@
 world = {}
 
 local MAX_OBJECT_SIZE = 5 --needed to correctly select objects on click
-local WORLD_SIZE = 30
+local WORLD_SIZE = 5 -- size 1 is one 16x16 grid
 
 local tiles = nil -- the floor
 local objects = nil -- objects can be placed on tiles
@@ -19,7 +19,7 @@ local worldCanvas = nil
 
 function world.init()
     
-    tiles = {}
+    chunks = {}
     
     objects = {}
     objectDrawOrder = {}
@@ -34,37 +34,36 @@ end
 function world.generate()
     
     for i=1,WORLD_SIZE do
-        tiles[i] = {}
+        chunks[i] = {}
         for j=1,WORLD_SIZE do
-            tiles[i][j] = { texture = "g"..math.random(1,3), overlays = nil, object = nil }
-            if math.random(1, 14) == 10 then tiles[i][j].texture = "g"..math.random(4,6) end
+            chunks[i][j] = Chunk:new()
         end
     end
     
-    --world.addObject(Ressource:new(15, 15, {planks=6}))
-    --world.addObject(Ressource:new(15, 16, {planks=6}))
-    world.addObject(Ressource:new(16, 15, {stone=6}))
-    world.addObject(Ressource:new(16, 16, {stone=6}))
+    --world.addObject(Ressource:new(1, 15, 15, {planks=6}))
+    --world.addObject(Ressource:new(1, 15, 16, {planks=6}))
+    world.addObject(Ressource:new(1, 16, 15, {stone=6}))
+    world.addObject(Ressource:new(1, 16, 16, {stone=6}))
     
     for i=1,20 do
         local x = math.random() * (WORLD_SIZE + 1)
         local y = math.random() * (WORLD_SIZE + 1)
-        world.addObject(Tree:new(x, y))
+        world.addObject(Tree:new(1, x, y))
     end
     
     for i=1,3 do
         local x = math.random() * (WORLD_SIZE - 5) + 1
         local y = math.random() * (WORLD_SIZE - 5) + 1
-        local tile = world.getTile(x, y)
+        local tile = world.getTile(1, x, y)
         if tile then
-            local char = Char:new(x, y)
+            local char = Char:new(1, x, y)
             world.addChar(char)
         end
     end
 end
 
 -- TODO: clean up and move string parsing to parser
-function world.updateTiles(newTiles)
+function world.updateChunk(newChunkTiles)
     tiles = {}
     for row in string.gmatch(newTiles, '[^;]+') do
         tiles[#tiles + 1] = {}
@@ -77,8 +76,11 @@ end
 
 
 -- returns all tiles
-function world.getTiles()
-    return tiles
+function world.getChunk(x, y)
+    if chunks[y] and chunks[y][x] then 
+        return chunks[y][x]
+    end
+    return nil
 end
 
 
@@ -126,7 +128,7 @@ function world.isPlacable(object)
     -- first validate that object can be placed
     for i=x, x + xmod do
         for j=y, y - (object.ysize - 1),-1 do
-            local tile = world.getTile(i, j)
+            local tile = world.getTile(object.l, i, j)
             if tile == nil or tile.object ~= nil then
                 return nil
             else
@@ -144,11 +146,10 @@ function world.markTiles(tileselection, object)
         tile.object = object.id
     end
     
-    -- todo find solution to easily identify buildings
-    if object:is(Warehouse) or object:is(Carpenter) then
+    if object:is(Building) then
         for l=1,object.xsize+2 do
             for m=1,object.ysize do
-                local tile = world.getTile(object.x + l - 2, object.y - m + 1)
+                local tile = world.getTile(object.l, object.x + l - 2, object.y - m + 1)
                 
                 local toadd = nil
                 
@@ -290,7 +291,7 @@ end
 
 
 -- Get object based on clicked tile
-function world.getClickedObject(x, y)
+function world.getClickedObject(l, x, y)
     
     local candidate = nil
     
@@ -299,10 +300,11 @@ function world.getClickedObject(x, y)
             
             local xc = math.floor(x-j)
             local yc = math.floor(y+i)
+            local tile = world.getTile(l, xc, yc)
             
-            if tiles[yc] and tiles[yc][xc] and tiles[yc][xc].object then
+            if tile.object then
                 
-                local object = objects[tiles[yc][xc].object]
+                local object = objects[tile.object]
                 
                 if object and
                    object.x + object.xsize >= x and
@@ -320,14 +322,17 @@ function world.getClickedObject(x, y)
 end
 
 
--- return tile at given position or nil
-function world.getTile(tx, ty)
+-- return tile at given layer and position
+-- automatically handles chunks so that we never have to worry about them
+function world.getTile(tl, tx, ty)
     
-    local x = math.floor(tx)
-    local y = math.floor(ty)
+    local chunkx = math.floor(tx / CHUNK_WIDTH)
+    local chunky = math.floor(ty / CHUNK_WIDTH)
     
-    if tiles[y] ~= nil and tiles[y][x] ~= nil then
-        return tiles[y][x]
+    if chunks[chunkx] and chunks[chunkx][chunky] then
+        local x = math.floor(tx) % CHUNK_WIDTH
+        local y = math.floor(ty) % CHUNK_WIDTH
+        return chunks[chunkx][chunky]:getTile(tl, x, y)
     end
     return nil
     

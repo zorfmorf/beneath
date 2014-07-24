@@ -65,7 +65,7 @@ function logicHandler.tileClick(x, y)
     else
         
         if mouseState == "build" then
-            local tile = world.getTile(x, y)
+            local tile = world.getTile(1, x, y)
             
             if tile then
                 buildCandidate.x = x
@@ -90,7 +90,7 @@ function logicHandler.tileClick(x, y)
             end
             
             if mouseState == "buildfarm1" then
-                local tile = world.getTile(x, y)
+                local tile = world.getTile(1, x, y)
                 
                 if tile then
                     buildCandidate.x = math.floor(x)

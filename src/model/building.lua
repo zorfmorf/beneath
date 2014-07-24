@@ -8,8 +8,8 @@
 Building = Object:extends()
 Building.__name = "building"
 
-function Building:__init(x, y)
-    Building.super.__init(self, x, y)
+function Building:__init(l, x, y)
+    Building.super.__init(self, l, x, y)
     self.char = nil
     self.charrequested = true -- don't request chars by default
 end
@@ -52,8 +52,8 @@ end
 Tent = Building:extends()
 Tent.__name = "tent"
 
-function Tent:__init(x, y)
-    Tent.super.__init(self, x, y)
+function Tent:__init(l, x, y)
+    Tent.super.__init(self, l, x, y)
     self.image = "tent"
     self.xsize = 4
     self.ysize = 3
@@ -69,8 +69,8 @@ end
 Smith = Building:extends()
 Smith.__name = "smith"
 
-function Smith:__init(x, y)
-    Smith.super.__init(self, x, y)
+function Smith:__init(l, x, y)
+    Smith.super.__init(self, l, x, y)
     self.image = "smith"
     self.xsize = 4
     self.ysize = 3
@@ -87,8 +87,8 @@ end
 Farm = Building:extends()
 Farm.__name = "farm"
 
-function Farm:__init(x, y)
-    Farm.super.__init(self, x, y)
+function Farm:__init(l, x, y)
+    Farm.super.__init(self, l, x, y)
     self.image = "farm"
     self.xsize = 4
     self.ysize = 3
@@ -105,8 +105,8 @@ end
 Warehouse = Building:extends()
 Warehouse.__name = "warehouse"
 
-function Warehouse:__init(x, y)
-    Warehouse.super.__init(self, x, y)
+function Warehouse:__init(l, x, y)
+    Warehouse.super.__init(self, l, x, y)
     self.image = "warehouse"
     self.xsize = 4
     self.ysize = 3
@@ -127,8 +127,8 @@ end
 Carpenter = Building:extends()
 Carpenter.__name = "carpenter"
 
-function Carpenter:__init(x, y)
-    Carpenter.super.__init(self, x, y)
+function Carpenter:__init(l, x, y)
+    Carpenter.super.__init(self, l, x, y)
     self.image = "carpenter"
     self.xsize = 4
     self.ysize = 3

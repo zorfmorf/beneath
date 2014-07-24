@@ -12,6 +12,7 @@ local WALK_SPEED = 1.5
 Profession = Char:extends()
 
 function Profession:__init(char)
+    self.l = char.l
     self.x = char.x
     self.y = char.y
     self.state = char.state

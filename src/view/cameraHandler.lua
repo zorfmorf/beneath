@@ -1,6 +1,6 @@
 
-local xshift = -love.graphics.getWidth() / 2
-local yshift = -love.graphics.getHeight() / 2
+local xshift = love.graphics.getWidth() / 2
+local yshift = love.graphics.getHeight() / 2
 
 local scaleValues = { 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 }
 local scale = 6
@@ -37,8 +37,8 @@ end
 
 -- shift camera by fixed value (keypress)
 function cameraHandler.keyShiftCamera(xv, yv)
-    if xv then xshift = xshift - (cameraShiftValue / scaleValues[scale]) * xv end
-    if yv then yshift = yshift - (cameraShiftValue / scaleValues[scale]) * yv end
+    if xv then xshift = xshift + (cameraShiftValue / scaleValues[scale]) * xv end
+    if yv then yshift = yshift + (cameraShiftValue / scaleValues[scale]) * yv end
 end
 
 -- shift camera by relative value (mouse drag)
@@ -49,13 +49,13 @@ end
 
 -- returns world coordinates
 function cameraHandler.convertScreenCoordinates(x, y)
-    local xt = ((x - love.graphics.getWidth() / 2) / scaleValues[scale] - xshift)
-    local yt = ((y - love.graphics.getHeight() / 2) / scaleValues[scale] - yshift)
+    local xt = ((x - love.graphics.getWidth() / 2) / scaleValues[scale] + xshift)
+    local yt = ((y - love.graphics.getHeight() / 2) / scaleValues[scale] + yshift)
     return xt / tilesize , yt / tilesize
 end
 
 function cameraHandler.convertWorldCoordinates(x, y)
-    local xt = ((x + love.graphics.getWidth() / 2) * scaleValues[scale] + xshift)
-    local yt = ((y + love.graphics.getHeight() / 2) * scaleValues[scale] + yshift)
+    local xt = ((x + love.graphics.getWidth() / 2) * scaleValues[scale] - xshift)
+    local yt = ((y + love.graphics.getHeight() / 2) * scaleValues[scale] - yshift)
     return xt * tilesize , yt * tilesize
 end

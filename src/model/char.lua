@@ -13,7 +13,8 @@ Char = class()
 
 Char.__name = "char"
 
-function Char:__init(x, y)
+function Char:__init(l, x, y)
+    self.l = l
     self.x = x
     self.y = y
     self.state = "idle"
@@ -123,13 +124,13 @@ function Char:update(dt)
         
         -- check if we need to recalculate paths
         if #self.path > 0 then
-            if world.getTile(target.x, target.y).object then
+            if world.getTile(self.l, target.x, target.y).object then
                 self.path = nil
-                if world.getTile(self.x, self.y).object and
-                   world.getTile(self.x + 1, self.y).object and
-                   world.getTile(self.x - 1, self.y).object and
-                   world.getTile(self.x, self.y + 1).object and
-                   world.getTile(self.x, self.y - 1).object then
+                if world.getTile(self.l, self.x, self.y).object and
+                   world.getTile(self.l, self.x + 1, self.y).object and
+                   world.getTile(self.l, self.x - 1, self.y).object and
+                   world.getTile(self.l, self.x, self.y + 1).object and
+                   world.getTile(self.l, self.x, self.y - 1).object then
                     self.state = "blocked"
                 end
                 return
@@ -155,7 +156,7 @@ function Char:update(dt)
                 )
             if self.path then
                 if self.path[1] then
-                    if world.getTile(self.path[1].x, self.path[1].y).object then
+                    if world.getTile(self.l, self.path[1].x, self.path[1].y).object then
                         table.remove(self.path, 1)
                     end
                     

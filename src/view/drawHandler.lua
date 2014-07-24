@@ -1,43 +1,16 @@
 --[[
     
-    Draws everything game world - related
+    Draws everything game world related
     
 ]]--
 
 drawHandler = {}
 
 local nameFont = nil
-local worldCanvas = nil -- the terrain without objects
 
 function drawHandler.init()
     nameFont = love.graphics.newFont(14)
-        
-    worldCanvas = love.graphics.newCanvas(tilesize, tilesize)
-    love.graphics.setCanvas(worldCanvas)
-    love.graphics.setColor(200,100,100,255)
-    love.graphics.rectangle("fill", 0, 0, tilesize, tilesize)
-    love.graphics.setCanvas()
 end
-
-
--- should be called whenever the terrain changes
-function drawHandler.updateCanvas()
-    local tiles = world.getTiles()
-    worldCanvas = love.graphics.newCanvas(#tiles[1] * tilesize, #tiles * tilesize)
-    love.graphics.setCanvas(worldCanvas)
-    for y,row in pairs(tiles) do
-        for x,tile in pairs(row) do
-            love.graphics.draw(terrain[tile.texture], (x - 1) * tilesize, (y - 1) * tilesize)
-            if tile.overlays then
-                for i,texture in ipairs(tile.overlays) do
-                    love.graphics.draw(terrain[texture], (x - 1) * tilesize, (y - 1) * tilesize)
-                end
-            end
-        end
-    end
-    love.graphics.setCanvas()
-end
-
 
 
 function drawHandler.drawTerrain()
@@ -47,19 +20,37 @@ function drawHandler.drawTerrain()
     love.graphics.scale(scale, scale)
     love.graphics.translate( cameraHandler.getShifts() )
     
-    love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.draw(worldCanvas, tilesize, tilesize)
     
-    love.graphics.setColor(100, 0, 0, 100)
-    for y,row in pairs(world.getTiles()) do
-        for x,tile in pairs(row) do
+    -- draw visible chunks only
+    love.graphics.setColor(255, 255, 255, 255)
+    local startx, starty = cameraHandler.convertScreenCoordinates(0, 0)
+    local endx, endy = cameraHandler.convertScreenCoordinates(love.graphics.getWidth(), love.graphics.getHeight())
+    local layer = 1
+    
+    for x=math.floor(startx / CHUNK_WIDTH),math.floor(endx / CHUNK_WIDTH) do
+        for y=math.floor(starty / CHUNK_WIDTH),math.floor(endy / CHUNK_WIDTH) do
             
-            if tile.object ~= nil and console then
-                love.graphics.rectangle("fill", x * tilesize, y * tilesize, tilesize, tilesize)
+            local chunk = world.getChunk(x, y)
+            
+            if chunk then
+            
+                -- draw terrain canvas
+                love.graphics.draw(chunk:getCanvas(layer), (x-1) * CHUNK_WIDTH, (y-1) * CHUNK_WIDTH)
+                
+                -- draw tile highlighting
+                for yt,row in pais(chunk:getTiles(layer)) do
+                    for xt,tile in pairs(row) do
+                        if tile.object ~= nil and console then
+                            love.graphics.rectangle("fill", (x-1) * CHUNK_WIDTH + xt * tilesize, 
+                                                            (y-1) * CHUNK_WIDTH + yt * tilesize, 
+                                                            tilesize, tilesize)
+                        end
+                    end
+                end
+                
             end
             
         end
-        
     end
     
     

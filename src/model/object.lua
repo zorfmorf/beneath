@@ -50,7 +50,8 @@ Object = class()
 
 Object.__name = "object"
 
-function Object:__init(x, y)
+function Object:__init(l, x, y)
+    self.l = l
     self.x = x
     self.y = y
     self.image = "default"
@@ -136,8 +137,8 @@ end
 
 Ressource = Object:extends()
 
-function Ressource:__init(x, y, restable)
-    Ressource.super.__init(self, x, y)
+function Ressource:__init(l, x, y, restable)
+    Ressource.super.__init(self, l, x, y)
     self.__name = "ressource"
     self.ressources = restable
     self.image = nil
@@ -151,8 +152,8 @@ end
 -- a lonely barrel 
 Chest = Object:extends()
 
-function Chest:__init(x, y, bounty)
-    Chest.super.__init(self, x, y)
+function Chest:__init(l, x, y, bounty)
+    Chest.super.__init(self, l, x, y)
     self.__name = "chest"
     self.bounty = bounty
     self.image = nil
@@ -163,8 +164,8 @@ end
 -- field
 Field = Object:extends()
 
-function Field:__init(x, y)
-    Field.super.__init(self, x, y)
+function Field:__init(l, x, y)
+    Field.super.__init(self, l, x, y)
     self.__name = "field"
     self.image = "field"
     self.xsize = 3
@@ -233,7 +234,7 @@ function Field:generateImage()
                     if j == self.ysize then nextImage = "fur" end
                 end
                 
-                local tile = world.getTile(self.x + (i - 1), self.y - (j - 1))
+                local tile = world.getTile(self.l, self.x + (i - 1), self.y - (j - 1))
                 if not tile.overlays then tile.overlays = {} end
                 table.insert(tile.overlays, nextImage)
             end
@@ -248,8 +249,8 @@ Tree = Object:extends()
 
 Tree.__name = "tree"
 
-function Tree:__init(x, y, tree_type)
-    Tree.super.__init(self, x, y)
+function Tree:__init(l, x, y, tree_type)
+    Tree.super.__init(self, l, x, y)
     self.selectable = true
     
     if not tree_type then tree_type = math.random(1, 3) end
