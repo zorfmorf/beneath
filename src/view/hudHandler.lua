@@ -94,3 +94,9 @@ function hudHandler.draw()
     buildcontainer:draw()
     
 end
+
+function hudHandler.dim()
+    love.graphics.origin()
+    love.graphics.setColor(0, 0, 0, 100)
+    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+end

@@ -69,7 +69,11 @@ function love.draw()
     if state == "ingame" then
     
         drawHandler.drawTerrain()
-        hudHandler.draw()
+        if displayMenu then
+            hudHandler.dim()
+        else
+            hudHandler.draw() 
+        end
         
         if console then consoleHandler.draw() end
     end

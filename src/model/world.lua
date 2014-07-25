@@ -71,7 +71,7 @@ function world.generate()
     world.addObject(Ressource:new(CHUNK_HEIGHT, 16, 15, {stone=6}))
     world.addObject(Ressource:new(CHUNK_HEIGHT, 16, 16, {stone=6}))
     
-    for i=1,500 do
+    for i=1,1500 do
         local x = math.random() * (WORLD_SIZE * CHUNK_WIDTH)
         local y = math.random() * (WORLD_SIZE * CHUNK_WIDTH)
         world.addObject(Tree:new(CHUNK_HEIGHT, x, y))
