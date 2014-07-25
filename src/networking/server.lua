@@ -188,7 +188,7 @@ end
 function server.sendChars(peer)
     local charstr = "chars "
     for i,char in pairs(world.getChars()) do
-        charstr = charstr..char.name..","..char.id..","..char.x..","..char.y..";"
+        charstr = charstr..char.name..","..char.id..","..char.l..","..char.x..","..char.y..";"
     end
     peer:send(charstr)
 end

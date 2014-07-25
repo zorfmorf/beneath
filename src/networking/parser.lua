@@ -106,8 +106,9 @@ function parser.parseChars(string)
         for value in string.gmatch(char, '[^,]+') do
             if i == 1 then newchar.name = value end
             if i == 2 then newchar.id = tonumber(value) end
-            if i == 3 then newchar.x = tonumber(value) end
-            if i == 4 then newchar.y = tonumber(value) end
+            if i == 3 then newchar.l = tonumber(value) end
+            if i == 4 then newchar.x = tonumber(value) end
+            if i == 5 then newchar.y = tonumber(value) end
             i = i + 1
         end
         table.insert(chars, newchar)
@@ -154,12 +155,12 @@ end
 -- chunk parsing
 function parser.parseChunkToString(x, y, chunk)
     
-    local string = x..","..y.."#"
+    local string = x..","..y..","..chunk.id.."#"
     
     for i=1,chunk:getHeight() do
         string = string..i..":"
-        for y,row in ipairs(chunk:getTiles(i)) do
-            for x,tile in ipairs(row) do
+        for y,row in pairs(chunk:getTiles(i)) do
+            for x,tile in pairs(row) do
                 string = string..tile.texture
                 if x < #row then string = string .. "," end
             end
@@ -186,8 +187,10 @@ function parser.parseChunk(string)
             for number in string.gmatch(substring, '[^,]+') do
                 if not x then 
                     x = tonumber(number)
-                else
+                elseif not y then
                     y = tonumber(number)
+                else
+                    chunk.id = tonumber(number)
                 end
             end
         else
@@ -196,12 +199,17 @@ function parser.parseChunk(string)
                 
                 local layerindex = tonumber(layer:sub(1, 1))
                 local tiles = {}
+                local y = 0
+                local x = 0
                 
                 for row in string.gmatch(layer:sub(3), '[^;]+') do
-                    tiles[#tiles + 1] = {}
+                    tiles[y] = {}
                     for tile in string.gmatch(row, '[^,]+') do
-                        tiles[#tiles][#tiles[#tiles] + 1] = { texture = tile, overlays = nil, object = nil }
+                        tiles[y][x] = { texture = tile, overlays = nil, object = nil }
+                        x = x + 1
                     end
+                    x = 0
+                    y = y + 1
                 end
                 
                 chunk:setTiles(layerindex, tiles)

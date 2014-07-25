@@ -129,13 +129,13 @@ function Scroll:catchMouseClick(x, y)
                 
                 local object = Object:new()
                 print( "Item: " ,item.name)
-                if item.name == Tree.__name then object = Tree:new() end
-                if item.name == Tent.__name then object = Tent:new() end
-                if item.name == Farm.__name then object = Farm:new() end
-                if item.name == Field.__name then object = Field:new() end
-                if item.name == Smith.__name then object = Smith:new() end
-                if item.name == Warehouse.__name then object = Warehouse:new() end
-                if item.name == Carpenter.__name then object = Carpenter:new() end
+                if item.name == Tree.__name then object = Tree:new(1, 0, 0) end
+                if item.name == Tent.__name then object = Tent:new(1, 0, 0) end
+                if item.name == Farm.__name then object = Farm:new(1, 0, 0) end
+                if item.name == Field.__name then object = Field:new(1, 0, 0) end
+                if item.name == Smith.__name then object = Smith:new(1, 0, 0) end
+                if item.name == Warehouse.__name then object = Warehouse:new(1, 0, 0) end
+                if item.name == Carpenter.__name then object = Carpenter:new(1, 0, 0) end
                 
                 hudHandler.setCursor( object )
                 logicHandler.switchToBuildMode(object)

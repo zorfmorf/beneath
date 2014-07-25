@@ -291,7 +291,7 @@ function Tree:work(dt)
         self.image = nil
         if server then
             world.removeObject(self.id)
-            world.addObject(Ressource:new(self.x, self.y, { wood=2 }))
+            world.addObject(Ressource:new(self.l, self.x, self.y, { wood=2 }))
         end
     end
     
@@ -321,7 +321,7 @@ function Tree:work(dt)
             self.image = nil
             if server then
                 world.removeObject(self.id)
-                world.addObject(Ressource:new(self.x, self.y, {wood=6}))
+                world.addObject(Ressource:new(self.l, self.x, self.y, {wood=6}))
             end
         end
         

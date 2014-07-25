@@ -11,8 +11,8 @@
 Task = class()
 Task.__name = "abstracttask"
 
-function Task:__init(x, y)
-    self.target = { x=x, y=y } -- target is an object id
+function Task:__init(l, x, y)
+    self.target = { l=l, x=x, y=y } -- target is an object id
 end
 
 -- So the villager can check if there is something left to do
@@ -49,7 +49,7 @@ WorkTask.__name = "worktask"
 
 function WorkTask:__init(target)
     self.object = world.getObject(target)
-    self.target = { x=self.object.x, y=self.object.y }
+    self.target = { l=self.object.l, x=self.object.x, y=self.object.y }
     if not self.object then
         print( "WorkTask: Got empty target" )
     end

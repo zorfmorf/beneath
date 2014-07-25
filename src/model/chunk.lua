@@ -6,6 +6,7 @@
 
 CHUNK_WIDTH = 16 -- tile width of the rectangular area
 CHUNK_HEIGHT = 1 -- the amount of possible layers for each chunk
+CHUNK_ID = 1 -- unique for every chunk
 
 Chunk = class()
 Chunk.__name = "chunk"
@@ -14,6 +15,8 @@ function Chunk:__init()
     
     self.canvas = {}
     self.layers = {}
+    self.id = CHUNK_ID
+    CHUNK_ID = CHUNK_ID + 1
     
     for i=1,CHUNK_HEIGHT do
         self.layers[i] = {}
@@ -41,11 +44,11 @@ function Chunk:update(layer)
             
             for x,tile in pairs(row) do
                 
-                love.graphics.draw(terrain[tile.texture], (x - 1) * tilesize, (y - 1) * tilesize)
+                love.graphics.draw(terrain[tile.texture], x * tilesize, y * tilesize)
                 
                 if tile.overlays then
                     for i,texture in ipairs(tile.overlays) do
-                        love.graphics.draw(terrain[texture], (x - 1) * tilesize, (y - 1) * tilesize)
+                        love.graphics.draw(terrain[texture], x * tilesize, y * tilesize)
                     end
                 end
                 

@@ -94,7 +94,7 @@ function Char:update(dt)
     if self.state == "walk" then
         
         if self.path == nil then
-            self.state = "idle"
+            self:generatePath()
             return
         end
         
@@ -147,54 +147,69 @@ function Char:update(dt)
     
     if self.state == "idle" then
         
-        if self.task then
-            local target = self.task:getTarget()
-            self.path = astar.calculate(
-                    world.getTiles(), 
-                    { x=math.floor(self.x), y=math.floor(self.y) }, 
-                    { x=math.floor(target.x), y=math.floor(target.y)}
-                )
-            if self.path then
-                if self.path[1] then
-                    if world.getTile(self.l, self.path[1].x, self.path[1].y).object then
-                        table.remove(self.path, 1)
-                    end
-                    
-                    -- fix villager "spazzing" on start
-                    if #self.path >= 2 then
-                        local a = self.path[1]
-                        local b = self.path[2]
-                        if a.y == b.y and 
-                            a.x < self.x and self.x < b.x or
-                            b.x < self.x and self.x < b.x then 
-                            table.remove(self.path, 1)
-                        end
-                        if a.x == b.x and
-                            a.y < self.y and self.y < b.y or
-                            b.y < self.y and self.y < b.y then 
-                            table.remove(self.path, 1)
-                        end 
-                    end
-                end
-                self.state = "walk"
-            else
-                print( "Path not createable" )
-                if server then taskHandler.giveBackTask(self.task) end
-                self.idletime = math.random() * 5
-            end
-        else
-            if server then
-                self.idletime = self.idletime - dt
-                if self.idletime <= 0 then
-                    self.task = taskHandler.getTask() 
-                    if self.task then
-                        server.sendNewCharTask(self)
-                    else
-                        self.idletime = 2
-                    end
+        if self.task then self.state = "walk" return end
+        
+        if server then
+            self.idletime = self.idletime - dt
+            if self.idletime <= 0 then
+                self.task = taskHandler.getTask() 
+                if not self.task then
+                    self.idletime = 2
                 end
             end
         end
+        
+        if self.task then
+            
+            self:generatePath()
+            if self.path then 
+                if server then server.sendNewCharTask(self) end
+            else
+                if server then 
+                    taskHandler.giveBackTask(self.task)
+                    self.idletime = math.random() * 5
+                end
+                self.task = nil
+            end
+            
+        end
+    end
+end
+
+function Char:generatePath()
+    local target = self.task:getTarget()
+    self.path = astar.calculate(
+            { l=self.l, x=math.floor(self.x), y=math.floor(self.y) }, 
+            { l=target.l, x=math.floor(target.x), y=math.floor(target.y)}
+        )
+    if self.path then
+        if self.path[1] then
+            
+            local tile = world.getTile(self.l, self.path[1].x, self.path[1].y)
+            if not tile then print("Invalid path tile:", self.l, self.path[1].x, self.path[1].y) end
+            if tile.object then
+                table.remove(self.path, 1)
+            end
+            
+            -- fix villager "spazzing" on start
+            if #self.path >= 2 then
+                local a = self.path[1]
+                local b = self.path[2]
+                if a.y == b.y and 
+                    a.x < self.x and self.x < b.x or
+                    b.x < self.x and self.x < b.x then 
+                    table.remove(self.path, 1)
+                end
+                if a.x == b.x and
+                    a.y < self.y and self.y < b.y or
+                    b.y < self.y and self.y < b.y then 
+                    table.remove(self.path, 1)
+                end 
+            end
+        end
+        self.state = "walk"
+    else
+        print( "Path not createable", target.l, target.x, target.y )
     end
 end
 

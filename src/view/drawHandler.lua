@@ -45,9 +45,9 @@ function drawHandler.drawTerrain()
                 -- draw tile highlighting
                 for yt,row in pairs(chunk:getTiles(layer)) do
                     for xt,tile in pairs(row) do
-                        if tile.object ~= nil and console then
-                            love.graphics.rectangle("fill", (x-1) * CHUNK_WIDTH + xt * tilesize, 
-                                                            (y-1) * CHUNK_WIDTH + yt * tilesize, 
+                        if tile.object and console then
+                            love.graphics.rectangle("fill", (x-1) * CHUNK_WIDTH * tilesize + xt * tilesize, 
+                                                            (y-1) * CHUNK_WIDTH * tilesize + yt * tilesize, 
                                                             tilesize, tilesize)
                         end
                     end
@@ -78,48 +78,53 @@ function drawHandler.drawTerrain()
         
         if char == nil or (obj ~= nil and char.y > obj.y) then
             
-            -- draw object
+            local objh = 1
+            if obj.mesh then objh = obj.mesh:getImage():getHeight() end
+            if obj.image and objects[obj.image] then objh = objects[obj.image]:getHeight() end
             
-            love.graphics.setColor(255, 255, 255, 255)
-            
-            if obj.mesh then
-                love.graphics.draw(obj.mesh, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, obj.xshift * tilesize, obj.mesh:getImage():getHeight() - tilesize * (1 - obj.yshift))
-            else if obj.image then
-                    local image = nil
-                    if obj:is(Field) then image = obj.image else image = objects[obj.image] end
-                    love.graphics.draw(image, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, obj.xshift * tilesize, image:getHeight() - tilesize * (1 - obj.yshift))
+            -- draw object if on screen
+            if obj.x + obj.xsize >= startx and obj.x <= endx and obj.y + 1 >= starty and obj.y - math.floor(objh / tilesize + 1) <= endy then
+                love.graphics.setColor(255, 255, 255, 255)
+                
+                if obj.mesh then
+                    love.graphics.draw(obj.mesh, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, obj.xshift * tilesize, objh - tilesize * (1 - obj.yshift))
+                else if obj.image then
+                        local image = nil
+                        if obj:is(Field) then image = obj.image else image = objects[obj.image] end
+                        love.graphics.draw(image, obj.x * tilesize, obj.y * tilesize, 0, 1, 1, obj.xshift * tilesize, objh - tilesize * (1 - obj.yshift))
+                    end
                 end
-            end
-            
-            if obj.ressources then
-                for res,amount in pairs(obj.ressources) do
-                    if not objects[res..amount] then print("Missing ressource texture:", res..amount) end
-                    local resShift = 0
-                    if obj.resShift[res] then resShift = obj.resShift[res] end
-                    love.graphics.draw(objects[res..amount], obj.x * tilesize, obj.y * tilesize, 0, 1, 1, -resShift * tilesize, objects[res..amount]:getHeight() - 32)
+                
+                if obj.ressources then
+                    for res,amount in pairs(obj.ressources) do
+                        if not objects[res..amount] then print("Missing ressource texture:", res..amount) end
+                        local resShift = 0
+                        if obj.resShift[res] then resShift = obj.resShift[res] end
+                        love.graphics.draw(objects[res..amount], obj.x * tilesize, obj.y * tilesize, 0, 1, 1, -resShift * tilesize, objects[res..amount]:getHeight() - 32)
+                    end
                 end
-            end
-            
-            if obj.char and obj.char.visible then
-                if anim_quad[obj.char:getAnimation()] then
-                    love.graphics.setFont(nameFont)
-                    love.graphics.print(obj.char.name, obj.char.x * tilesize, obj.char.y * tilesize, 0, 1, 1, nameFont:getWidth(obj.char.name) / 2, 64)
-                    love.graphics.draw(charset, anim_quad[obj.char:getAnimation()], obj.char.x * tilesize, obj.char.y * tilesize, 0, 1, 1, 32, 58)
-                else
-                    print("Missing char anim for", obj.char:getAnimation())
+                
+                if obj.char and obj.char.visible then
+                    if anim_quad[obj.char:getAnimation()] then
+                        love.graphics.setFont(nameFont)
+                        love.graphics.print(obj.char.name, obj.char.x * tilesize, obj.char.y * tilesize, 0, 1, 1, nameFont:getWidth(obj.char.name) / 2, 64)
+                        love.graphics.draw(charset, anim_quad[obj.char:getAnimation()], obj.char.x * tilesize, obj.char.y * tilesize, 0, 1, 1, 32, 58)
+                    else
+                        print("Missing char anim for", obj.char:getAnimation())
+                    end
                 end
+                
+                if obj.selected then 
+                    love.graphics.draw(icons[obj.selected], obj.x * tilesize, obj.y * tilesize, 0, 1, 1, -obj.xsize * tilesize / 2 + tilesize / 2, tilesize * 2) 
+                end
+                
+                if console then love.graphics.rectangle("line", obj.x * tilesize, obj.y * tilesize, tilesize, tilesize) end
             end
-            
-            if obj.selected then 
-                love.graphics.draw(icons[obj.selected], obj.x * tilesize, obj.y * tilesize, 0, 1, 1, -obj.xsize * tilesize / 2 + tilesize / 2, tilesize * 2) 
-            end
-            
-            if console then love.graphics.rectangle("line", obj.x * tilesize, obj.y * tilesize, tilesize, tilesize) end
             i = i + 1
         else
-            -- draw char
-            love.graphics.setColor(255, 255, 255, 255)
-            if char.visible then
+            -- draw char if on screen
+            if char.x + 1 >= startx and char.x - 1 <= endx and char.y + 1 >= starty and char.y - 2 <= endy and char.visible then
+                love.graphics.setColor(255, 255, 255, 255)
                 love.graphics.setFont(nameFont)
                 love.graphics.print(char.name, char.x * tilesize, char.y * tilesize, 0, 1, 1, nameFont:getWidth(char.name) / 2, 64)
                 if anim_quad[char:getAnimation()] then

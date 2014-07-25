@@ -28,19 +28,27 @@ end
 
 
 -- Returns a path or nil if none exists
-function astar.calculate(map, start, goal)
+function astar.calculate(start, goal)
     
-    if not map or not start or not goal then return nil end
+    if not start or not goal then return nil end
+    
+    start.walkable = true
     
     local openset = {}
     local nodes = {}
     local path = {}
     
     -- close neighbors
-    for y,row in pairs(map) do
+    local width = WORLD_SIZE * CHUNK_WIDTH
+    for y=0,width-1 do
         nodes[y] = {}
-        for x,entry in pairs(row) do
-            nodes[y][x] = { visited=false, x=x, y=y, walkable=(map[y][x].object == nil)  }
+        for x=0,width-1 do
+            local tile = world.getTile(1, x, y)
+            if tile then
+                nodes[y][x] = { visited=false, x=x, y=y, walkable=(not tile.object)  }
+            else
+                print("Astar: tile does not exist", 1, x, y)
+            end
         end
     end
     
@@ -64,21 +72,22 @@ function astar.calculate(map, start, goal)
         
         for k = -1,1 do
             for l = -1,1 do
+                
                 if not (k == l) -- sady there is no xor in lua
                    and (k == 0 or l == 0)
                    and nodes[current.y + k]
                    and nodes[current.y + k][current.x + l]
                    and not nodes[current.y + k][current.x + l].visited then
-                    
+
                     local node = nodes[current.y + k][current.x + l]
+                    node.visited = true
                     
                     if node.x == goal.x and node.y == goal.y then
-                        node.visited = true
                         return retracePath(path, current)
                     end
                     
+                    -- the target itself may not be walkable so we cant check it earlier
                     if node.walkable then
-                        node.visited = true
                         node.parent = current
                         node.gcost = current.gcost + 1
                         node.fcost = node.gcost + cost_estimate(node, goal)

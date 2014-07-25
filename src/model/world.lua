@@ -7,7 +7,7 @@
 world = {}
 
 local MAX_OBJECT_SIZE = 5 --needed to correctly select objects on click
-local WORLD_SIZE = 5 -- size 1 is one 16x16 grid
+WORLD_SIZE = 10 -- size 1 is one 16x16 grid
 
 local tiles = nil -- the floor
 local objects = nil -- objects can be placed on tiles
@@ -33,21 +33,22 @@ end
 -- generates a new world. should be done on server
 function world.generate()
     
-    --generate default 16x16 tiles
-    local tiles = {}
-    for j=0,CHUNK_WIDTH - 1 do   
-        tiles[j] = {}
-        for k=0,CHUNK_WIDTH - 1 do
-            tiles[j][k] = { texture = "g"..math.random(1,3), overlays = nil, object = nil }
-            if math.random(1, 14) == 10 then tiles[j][k].texture = "g"..math.random(4,6) end
-        end   
-    end
-    
     -- generate chunks
     for i=1,WORLD_SIZE do
         chunks[i] = {}
         for j=1,WORLD_SIZE do
             chunks[i][j] = Chunk:new()
+            
+             --generate default 16x16 tiles
+            local tiles = {}
+            for k=0,CHUNK_WIDTH - 1 do   
+                tiles[k] = {}
+                for l=0,CHUNK_WIDTH - 1 do
+                    tiles[k][l] = { texture = "g"..math.random(1,3), overlays = nil, object = nil }
+                    if math.random(1, 14) == 10 then tiles[k][l].texture = "g"..math.random(4,6) end
+                end   
+            end
+            
             chunks[i][j]:setTiles(1, tiles)
         end
     end
@@ -57,15 +58,15 @@ function world.generate()
     world.addObject(Ressource:new(1, 16, 15, {stone=6}))
     world.addObject(Ressource:new(1, 16, 16, {stone=6}))
     
-    for i=1,20 do
-        local x = math.random() * (WORLD_SIZE + 1)
-        local y = math.random() * (WORLD_SIZE + 1)
+    for i=1,2000 do
+        local x = math.random() * (WORLD_SIZE * CHUNK_WIDTH)
+        local y = math.random() * (WORLD_SIZE * CHUNK_WIDTH)
         world.addObject(Tree:new(1, x, y))
     end
     
-    for i=1,3 do
-        local x = math.random() * (WORLD_SIZE - 5) + 1
-        local y = math.random() * (WORLD_SIZE - 5) + 1
+    for i=1,5 do
+        local x = 50 + math.random() * CHUNK_WIDTH
+        local y = 50 + math.random() * CHUNK_WIDTH
         local tile = world.getTile(1, x, y)
         if tile then
             local char = Char:new(1, x, y)
@@ -89,6 +90,15 @@ function world.getChunk(x, y)
     if chunks[y] and chunks[y][x] then 
         return chunks[y][x]
     end
+    return nil
+end
+
+
+-- converts coordinates to chunk coordinates
+function world.getChunkByCoordinates(x, y)
+    local cx = math.floor(x / CHUNK_WIDTH) + 1
+    local cy = math.floor(y / CHUNK_WIDTH) + 1
+    if chunks[cy] and chunks[cy][cx] then return chunks[cy][cx] end
     return nil
 end
 
@@ -158,6 +168,8 @@ function world.markTiles(tileselection, object)
         tile.object = object.id
     end
     
+    local chunksToUpdate = {}
+    
     if object:is(Building) then
         for l=1,object.xsize+2 do
             for m=1,object.ysize do
@@ -186,11 +198,18 @@ function world.markTiles(tileselection, object)
                 if toadd then
                     if not tile.overlays then tile.overlays = { } end
                     table.insert(tile.overlays, toadd)
+                    
+                    local chunk = world.getChunkByCoordinates(object.x + l - 2, object.y - m + 1)
+                    if chunk then chunksToUpdate[chunk.id] = chunk end
                 end
-
+                
             end
         end
-        if not server then drawHandler.updateCanvas() end
+    end
+    
+    -- update chunks
+    for i,chunk in pairs(chunksToUpdate) do
+        chunk:update(object.l)
     end
 end
 
@@ -208,7 +227,7 @@ function world.addObject(object)
     if tileselection == nil then 
         if not server then 
             -- server objects should always be placable!
-            
+            print("Recieved unplacable object!", object.__name, object.l, object.x, object.y)
         end
         return false 
     end
@@ -280,10 +299,13 @@ end
 function world.removeObject(id)
     if objects[id] then
         
+        local obj = objects[id]
+        
         -- free up tiles so that other things can be placed there
-        for y,row in pairs(tiles) do
-            for x,tile in pairs(row) do
-                if tile.object == id then tile.object = nil end
+        for y=obj.y,obj.y+obj.ysize do
+            for x=obj.x,obj.x+obj.xsize do
+                local tile = world.getTile(obj.l, x, y)
+                if tile then tile.object = nil end
             end
         end
         
@@ -350,7 +372,7 @@ function world.getTile(tl, tx, ty)
     if chunks[chunky + 1] and chunks[chunky + 1][chunkx + 1] then
         local x = math.floor(tx) - chunkx * CHUNK_WIDTH
         local y = math.floor(ty) - chunky * CHUNK_WIDTH
-        return chunks[chunkx + 1][chunky + 1]:getTile(tl, x, y)
+        return chunks[chunky + 1][chunkx + 1]:getTile(tl, x, y)
     end
     return nil
     

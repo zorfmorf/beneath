@@ -82,7 +82,7 @@ end
 
 -- send build wish
 function client.sendBuild(build)
-    server:send("build "..build.__name..","..(-1)..","..build.x..","..build.y..","..build.xsize..","..build.ysize)
+    server:send("build "..build.__name..","..(-1)..","..build.l..","..build.x..","..build.y..","..build.xsize..","..build.ysize)
 end
 
 
