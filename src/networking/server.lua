@@ -14,6 +14,7 @@ local host = nil
 -- bind to port and be ready to recieve connections
 function server.init()
     host = enet.host_create("localhost:44631")
+    --host:compress_with_range_coder() -- better compression
     logfile:write( "host: state", tostring(host), "\n" )
 end
 
@@ -47,9 +48,9 @@ function server.service()
             end
             if state == "lobby" then
                 if SERVER_TYPE == "offline" then
-                    state = "ingame"
                     server.createSinglePlayer()
                     server.sendGameState(event.peer)
+                    state = "ingame"
                 end
                 if SERVER_TYPE == "online" then
                     server.sendLobbyInformation(event.peer)
@@ -104,7 +105,7 @@ end
 function server.sendToPeers(message)
     -- if host is not set we are in startup phase and there are no
     -- clients to send things to
-    if host then
+    if host and state == "ingame" then
         for i=1,host:peer_count() do
             local peer = host:get_peer(i)
             if peer:state() == "connected" then
@@ -151,7 +152,7 @@ end
 
 -- send the whole game state
 function server.sendGameState(peer)
-    server.sendTiles(peer)
+    server.sendChunks(peer)
     server.sendObjects(peer)
     server.sendChars(peer)
 end
@@ -163,17 +164,17 @@ function server.sendLobbyInformation(peer)
 end
 
 
--- send all tiles
-function server.sendTiles(peer)
-    local tiles = "tiles "
-    for i,row in pairs(world.getTiles()) do
-        for j,tile in pairs(row) do
-            tiles = tiles..tile.texture
-            if j < #row then tiles = tiles .. "," end
+-- send all chunks
+function server.sendChunks(peer)
+    
+    for y,row in pairs(world.getChunks()) do
+        for x,chunk in pairs(row) do
+            
+            peer:send("chunk " .. parser.parseChunkToString(x, y, chunk))
+            
         end
-        tiles = tiles..";"
     end
-    peer:send(tiles)
+    
 end
 
 

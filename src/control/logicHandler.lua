@@ -55,7 +55,7 @@ function logicHandler.tileClick(x, y)
     
     if mouseState == "free" then
         
-        local object = world.getClickedObject(x, y)
+        local object = world.getClickedObject(1, x, y)
         
         if object and object.selectable and object.workleft >= 0 then
             object.selected = "axe"

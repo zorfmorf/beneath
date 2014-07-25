@@ -11,29 +11,21 @@ Chunk = class()
 Chunk.__name = "chunk"
 
 function Chunk:__init()
+    
     self.canvas = {}
     self.layers = {}
+    
     for i=1,CHUNK_HEIGHT do
-        
         self.layers[i] = {}
-        self.layers[i].tiles = {}
-        
-        for j=1,CHUNK_WIDTH do
-            
-            self.layers[i].tiles[j] = {}
-            
-            for k=1,CHUNK_WIDTH do
-                
-                self.layers[i].tiles[j][k] = { texture = "g"..math.random(1,3), overlays = nil, object = nil }
-                if math.random(1, 14) == 10 then self.layers[i].tiles[i][j].texture = "g"..math.random(4,6) end
-                
-            end
-            
-        end
-        
-        self:update(i)
-        
+        self.layers[i].tiles = nil
     end
+    
+end
+
+function Chunk:setTiles(layer, tiles)
+    if layer > 9 then print("Error: Invalid layer height: ", layer) end
+    self.layers[layer].tiles = tiles
+    self:update(layer)
 end
 
 
@@ -75,10 +67,10 @@ end
 
 
 function Chunk:getTile(l, x, y)
-    if self.layers[layer] and self.layers[layer].tiles 
-                          and self.layers[layer].tiles[y]
-                          and self.layers[layer].tiles[y][x] then
-        return self.layers[layer].tiles[y][x]
+    if self.layers[l] and self.layers[l].tiles 
+                          and self.layers[l].tiles[y]
+                          and self.layers[l].tiles[y][x] then
+        return self.layers[l].tiles[y][x]
     end
     return nil
 end
@@ -89,6 +81,11 @@ function Chunk:getTiles(layer)
         return self.layers[layer].tiles
     end
     return nil
+end
+
+
+function Chunk:getHeight()
+    return #self.layers
 end
 
 

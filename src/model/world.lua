@@ -33,10 +33,22 @@ end
 -- generates a new world. should be done on server
 function world.generate()
     
+    --generate default 16x16 tiles
+    local tiles = {}
+    for j=0,CHUNK_WIDTH - 1 do   
+        tiles[j] = {}
+        for k=0,CHUNK_WIDTH - 1 do
+            tiles[j][k] = { texture = "g"..math.random(1,3), overlays = nil, object = nil }
+            if math.random(1, 14) == 10 then tiles[j][k].texture = "g"..math.random(4,6) end
+        end   
+    end
+    
+    -- generate chunks
     for i=1,WORLD_SIZE do
         chunks[i] = {}
         for j=1,WORLD_SIZE do
             chunks[i][j] = Chunk:new()
+            chunks[i][j]:setTiles(1, tiles)
         end
     end
     
@@ -62,25 +74,28 @@ function world.generate()
     end
 end
 
--- TODO: clean up and move string parsing to parser
-function world.updateChunk(newChunkTiles)
-    tiles = {}
-    for row in string.gmatch(newTiles, '[^;]+') do
-        tiles[#tiles + 1] = {}
-        for tile in string.gmatch(row, '[^,]+') do
-            tiles[#tiles][#tiles[#tiles] + 1] = { texture = tile, overlays = nil, object = nil }
-        end
-    end
-    drawHandler.updateCanvas()
+
+function world.updateChunk(x, y, chunk)
+    
+    if not chunks[y] then chunks[y] = {} end
+    
+    chunks[y][x] = chunk
+    
 end
 
 
--- returns all tiles
+-- returns a specfic chunk or nil if not existent
 function world.getChunk(x, y)
     if chunks[y] and chunks[y][x] then 
         return chunks[y][x]
     end
     return nil
+end
+
+
+-- returns all existing chunks
+function world.getChunks()
+    return chunks
 end
 
 
@@ -129,11 +144,8 @@ function world.isPlacable(object)
     for i=x, x + xmod do
         for j=y, y - (object.ysize - 1),-1 do
             local tile = world.getTile(object.l, i, j)
-            if tile == nil or tile.object ~= nil then
-                return nil
-            else
-                table.insert(tileselection, tile)
-            end
+            if tile == nil or tile.object then return nil end
+            table.insert(tileselection, tile)
         end
     end
     return tileselection
@@ -193,7 +205,13 @@ function world.addObject(object)
     
     local tileselection = world.isPlacable(object)
     
-    if tileselection == nil then return false end
+    if tileselection == nil then 
+        if not server then 
+            -- server objects should always be placable!
+            
+        end
+        return false 
+    end
     
     object.x = math.floor(object.x)
     object.y = math.floor(object.y)
@@ -302,7 +320,7 @@ function world.getClickedObject(l, x, y)
             local yc = math.floor(y+i)
             local tile = world.getTile(l, xc, yc)
             
-            if tile.object then
+            if tile and tile.object then
                 
                 local object = objects[tile.object]
                 
@@ -329,10 +347,10 @@ function world.getTile(tl, tx, ty)
     local chunkx = math.floor(tx / CHUNK_WIDTH)
     local chunky = math.floor(ty / CHUNK_WIDTH)
     
-    if chunks[chunkx] and chunks[chunkx][chunky] then
-        local x = math.floor(tx) % CHUNK_WIDTH
-        local y = math.floor(ty) % CHUNK_WIDTH
-        return chunks[chunkx][chunky]:getTile(tl, x, y)
+    if chunks[chunky + 1] and chunks[chunky + 1][chunkx + 1] then
+        local x = math.floor(tx) - chunkx * CHUNK_WIDTH
+        local y = math.floor(ty) - chunky * CHUNK_WIDTH
+        return chunks[chunkx + 1][chunky + 1]:getTile(tl, x, y)
     end
     return nil
     

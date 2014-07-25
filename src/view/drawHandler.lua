@@ -27,18 +27,23 @@ function drawHandler.drawTerrain()
     local endx, endy = cameraHandler.convertScreenCoordinates(love.graphics.getWidth(), love.graphics.getHeight())
     local layer = 1
     
-    for x=math.floor(startx / CHUNK_WIDTH),math.floor(endx / CHUNK_WIDTH) do
-        for y=math.floor(starty / CHUNK_WIDTH),math.floor(endy / CHUNK_WIDTH) do
+    local fromx = math.floor(startx / CHUNK_WIDTH)
+    local tox = math.floor(endx / CHUNK_WIDTH) + 1
+    local fromy = math.floor(starty / CHUNK_WIDTH)
+    local toy = math.floor(endy / CHUNK_WIDTH) + 1
+    
+    for x=fromx,tox do
+        for y=fromy,toy do
             
             local chunk = world.getChunk(x, y)
             
             if chunk then
             
                 -- draw terrain canvas
-                love.graphics.draw(chunk:getCanvas(layer), (x-1) * CHUNK_WIDTH, (y-1) * CHUNK_WIDTH)
+                love.graphics.draw(chunk:getCanvas(layer), (x-1) * CHUNK_WIDTH * tilesize, (y-1) * CHUNK_WIDTH * tilesize)
                 
                 -- draw tile highlighting
-                for yt,row in pais(chunk:getTiles(layer)) do
+                for yt,row in pairs(chunk:getTiles(layer)) do
                     for xt,tile in pairs(row) do
                         if tile.object ~= nil and console then
                             love.graphics.rectangle("fill", (x-1) * CHUNK_WIDTH + xt * tilesize, 

@@ -31,10 +31,10 @@ function client.service()
             
         elseif event.type == "receive" then
             
-            if event.data:sub(1, 6) == "tiles " then
+            if event.data:sub(1, 6) == "chunk " then
                 
-                print( "Received tile data" )
-                world.updateTiles( event.data:sub(7) )
+                print( "Received chunk data" )
+                client.parseChunk( event.data:sub(7) )
                 
             elseif event.data:sub(1, 6) == "plobj " then
                 
@@ -135,10 +135,16 @@ end
 -- Parse all received objects. TODO: catch errors
 function client.parseObjects(string)
     for i,object in pairs(parser.parseObjects(string)) do
-        world.addObject(object)
-        if object:is(Field) then 
-            object.placed = true
-            object:generateImage() 
+        local result = world.addObject(object)
+        
+        if result then 
+        
+            if object:is(Field) then 
+                object.placed = true
+                object:generateImage() 
+            end
+        else
+            print ( "Could not place parsed object", object.__name, object.id, object.l, object.x, object.y)
         end
     end
 end
@@ -167,4 +173,9 @@ function client.disconnect()
     server = nil
     host = nil
     print(" Client shut down" )
+end
+
+
+function client.parseChunk(string)
+    world.updateChunk(parser.parseChunk(string))
 end

@@ -13,7 +13,7 @@ function parser.parseObjectsToString(objectlist)
     local string = ""
     for i,object in pairs(objectlist) do
         local id = object.id
-        string = string..object.__name..","..object.id..","..object.x..","..object.y..","..object.xsize..","..object.ysize
+        string = string..object.__name..","..object.id..","..object.l..","..object.x..","..object.y..","..object.xsize..","..object.ysize
         if object.ressources then
             for res,amount in pairs(object.ressources) do
                 string = string..","..res.."="..amount
@@ -37,27 +37,28 @@ function parser.parseObjects(string)
         for value in string.gmatch(object, '[^,]+') do
             
             if i == 1 then 
-                if value == "tent" then newobj = Tent:new(0, 0) end
-                if value == "farm" then newobj = Farm:new(0, 0) end
-                if value == "smith" then newobj = Smith:new(0, 0) end
-                if value == "warehouse" then newobj = Warehouse:new(0, 0) end
-                if value == "field" then newobj = Field:new(0, 0) end
-                if value == "carpenter" then newobj = Carpenter:new(0, 0) end
-                if value == "object" then newobj = Object:new(0, 0) end
-                if value == "ressource" then newobj = Ressource:new(0, 0) end
-                if value == "tree_small" then newobj = Tree:new(0, 0, 3) end
-                if value == "tree_leaf" then newobj = Tree:new(0, 0, 2) end
-                if value == "tree_needle" then newobj = Tree:new(0, 0, 1) end
+                if value == "tent" then newobj = Tent:new(0, 0, 0) end
+                if value == "farm" then newobj = Farm:new(0, 0, 0) end
+                if value == "smith" then newobj = Smith:new(0, 0, 0) end
+                if value == "warehouse" then newobj = Warehouse:new(0, 0, 0) end
+                if value == "field" then newobj = Field:new(0, 0, 0) end
+                if value == "carpenter" then newobj = Carpenter:new(0, 0, 0) end
+                if value == "object" then newobj = Object:new(0, 0, 0) end
+                if value == "ressource" then newobj = Ressource:new(0, 0, 0) end
+                if value == "tree_small" then newobj = Tree:new(0, 0, 0, 3) end
+                if value == "tree_leaf" then newobj = Tree:new(0, 0, 0, 2) end
+                if value == "tree_needle" then newobj = Tree:new(0, 0, 0, 1) end
             end
             
             if i == 2 and not server then newobj.id = tonumber(value) end
-            if i == 3 then newobj.x = tonumber(value) end
-            if i == 4 then newobj.y = tonumber(value) end
-            if i == 5 then newobj.xsize = tonumber(value) end
-            if i == 6 then newobj.ysize = tonumber(value) end
+            if i == 3 then newobj.l = tonumber(value) end
+            if i == 4 then newobj.x = tonumber(value) end
+            if i == 5 then newobj.y = tonumber(value) end
+            if i == 6 then newobj.xsize = tonumber(value) end
+            if i == 7 then newobj.ysize = tonumber(value) end
             
             -- rest of the string should be ressources
-            if i >= 7 then 
+            if i >= 8 then 
                 local res,amount = parser.parseRessource(value)
                 if res and amount then
                     if not newobj.ressources then 
@@ -147,4 +148,65 @@ function parser.parseTask(string)
     end
     
     return charid, task
+end
+
+
+-- chunk parsing
+function parser.parseChunkToString(x, y, chunk)
+    
+    local string = x..","..y.."#"
+    
+    for i=1,chunk:getHeight() do
+        string = string..i..":"
+        for y,row in ipairs(chunk:getTiles(i)) do
+            for x,tile in ipairs(row) do
+                string = string..tile.texture
+                if x < #row then string = string .. "," end
+            end
+            string = string..";"
+        end
+        string = string.." "
+    end
+    
+    return string
+end
+
+function parser.parseChunk(string)
+    
+    local chunk = Chunk:new()
+    local x = nil
+    local y = nil
+    
+    local i = 1
+    for substring in string.gmatch(string, '[^#]+') do
+        
+        if i == 1 then
+            i = i + 1
+            
+            for number in string.gmatch(substring, '[^,]+') do
+                if not x then 
+                    x = tonumber(number)
+                else
+                    y = tonumber(number)
+                end
+            end
+        else
+        
+            for layer in string.gmatch(substring, '[^ ]+') do
+                
+                local layerindex = tonumber(layer:sub(1, 1))
+                local tiles = {}
+                
+                for row in string.gmatch(layer:sub(3), '[^;]+') do
+                    tiles[#tiles + 1] = {}
+                    for tile in string.gmatch(row, '[^,]+') do
+                        tiles[#tiles][#tiles[#tiles] + 1] = { texture = tile, overlays = nil, object = nil }
+                    end
+                end
+                
+                chunk:setTiles(layerindex, tiles)
+            end
+        end
+    end
+    return x, y, chunk
 end
