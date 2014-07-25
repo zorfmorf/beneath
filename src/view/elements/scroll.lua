@@ -136,6 +136,7 @@ function Scroll:catchMouseClick(x, y)
                 if item.name == Smith.__name then object = Smith:new(1, 0, 0) end
                 if item.name == Warehouse.__name then object = Warehouse:new(1, 0, 0) end
                 if item.name == Carpenter.__name then object = Carpenter:new(1, 0, 0) end
+                if item.name == Hole.__name then object = Hole:new(1, 0, 0) end
                 
                 hudHandler.setCursor( object )
                 logicHandler.switchToBuildMode(object)

@@ -26,10 +26,8 @@ end
 
 
 function gameInputHandler.keypressed(key, isRepeat)
-    if key == "up" and not isRepeat then cameraHandler.keyShiftCamera(0, -1) end
-    if key == "down" and not isRepeat then cameraHandler.keyShiftCamera(0, 1) end
-    if key == "left" and not isRepeat then cameraHandler.keyShiftCamera(-1, 0) end
-    if key == "right" and not isRepeat then cameraHandler.keyShiftCamera(1, 0) end
+    if key == "up" and not isRepeat then cameraHandler.layerUp() end
+    if key == "down" and not isRepeat then cameraHandler.layerDown() end
     if key == "escape" then displayMenu = not displayMenu end
     if key == "f1" then console = not console end
 end

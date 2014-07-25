@@ -4,6 +4,7 @@ local yshift = -love.graphics.getHeight() / 2
 
 local scaleValues = { 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 }
 local scale = 6
+local layer = 1
 
 local cameraShiftValue = 50
 
@@ -16,11 +17,23 @@ end
 cameraHandler = {}
 
 function cameraHandler.init()
-
+    layer = CHUNK_HEIGHT
 end
 
 function cameraHandler.getShifts()
     return xshift, yshift
+end
+
+function cameraHandler.getLayer()
+    return layer
+end
+
+function cameraHandler.layerUp()
+    if layer < CHUNK_HEIGHT then layer = layer + 1 end
+end
+
+function cameraHandler.layerDown()
+    if layer > 1 then layer = layer - 1 end
 end
 
 function cameraHandler.getZoom()

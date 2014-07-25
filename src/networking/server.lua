@@ -180,15 +180,25 @@ end
 
 -- send all objects
 function server.sendObjects(peer)
-    peer:send( "plobj "..parser.parseObjectsToString( world.getObjects() ) )
+    for layer=1,CHUNK_HEIGHT do
+        local objects = world.getObjects(layer)
+        if objects and #objects > 0 then
+            peer:send( "plobj "..parser.parseObjectsToString( objects ) )
+        end
+    end
 end
 
 
 -- send all chars
 function server.sendChars(peer)
-    local charstr = "chars "
-    for i,char in pairs(world.getChars()) do
-        charstr = charstr..char.name..","..char.id..","..char.l..","..char.x..","..char.y..";"
+    for layer=1,CHUNK_HEIGHT do
+        local chars = world.getChars(layer)
+        if chars and #chars > 0 then
+            local charstr = "chars "
+            for i,char in pairs(chars) do
+                charstr = charstr..char.name..","..char.id..","..char.l..","..char.x..","..char.y..";"
+            end
+            peer:send(charstr)
+        end
     end
-    peer:send(charstr)
 end

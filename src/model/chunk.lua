@@ -5,7 +5,7 @@
 ]]--
 
 CHUNK_WIDTH = 16 -- tile width of the rectangular area
-CHUNK_HEIGHT = 1 -- the amount of possible layers for each chunk
+CHUNK_HEIGHT = 9 -- the amount of possible layers for each chunk
 CHUNK_ID = 1 -- unique for every chunk
 
 Chunk = class()

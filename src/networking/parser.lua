@@ -33,7 +33,7 @@ function parser.parseObjects(string)
     
     for object in string.gmatch(string, '[^;]+') do
         local i = 1
-        local newobj = nil
+        local newobj = Object:new(0, 0, 0)
         for value in string.gmatch(object, '[^,]+') do
             
             if i == 1 then 
@@ -43,7 +43,7 @@ function parser.parseObjects(string)
                 if value == "warehouse" then newobj = Warehouse:new(0, 0, 0) end
                 if value == "field" then newobj = Field:new(0, 0, 0) end
                 if value == "carpenter" then newobj = Carpenter:new(0, 0, 0) end
-                if value == "object" then newobj = Object:new(0, 0, 0) end
+                if value == "hole" then newobj = Hole:new(0, 0, 0) end
                 if value == "ressource" then newobj = Ressource:new(0, 0, 0) end
                 if value == "tree_small" then newobj = Tree:new(0, 0, 0, 3) end
                 if value == "tree_leaf" then newobj = Tree:new(0, 0, 0, 2) end

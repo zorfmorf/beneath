@@ -25,7 +25,7 @@ function drawHandler.drawTerrain()
     love.graphics.setColor(255, 255, 255, 255)
     local startx, starty = cameraHandler.convertScreenCoordinates(0, 0)
     local endx, endy = cameraHandler.convertScreenCoordinates(love.graphics.getWidth(), love.graphics.getHeight())
-    local layer = 1
+    local layer = cameraHandler.getLayer()
     
     local fromx = math.floor(startx / CHUNK_WIDTH)
     local tox = math.floor(endx / CHUNK_WIDTH) + 1
@@ -68,7 +68,7 @@ function drawHandler.drawTerrain()
         end
     end
     
-    local objOrder, charOrder = world.getDrawOrders()
+    local objOrder, charOrder = world.getDrawOrders(layer)
     local i = 1
     local j = 1
     while objOrder[i] ~= nil or charOrder[j] ~= nil do

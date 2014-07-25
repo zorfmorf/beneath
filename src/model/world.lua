@@ -7,7 +7,7 @@
 world = {}
 
 local MAX_OBJECT_SIZE = 5 --needed to correctly select objects on click
-WORLD_SIZE = 10 -- size 1 is one 16x16 grid
+WORLD_SIZE = 5 -- size 1 is one 16x16 grid
 
 local tiles = nil -- the floor
 local objects = nil -- objects can be placed on tiles
@@ -27,6 +27,13 @@ function world.init()
     characters = {}
     charDrawOrder = {}
     
+    for i=1,CHUNK_HEIGHT do
+        objects[i] = {}
+        objectDrawOrder[i] = {}
+        characters[i] = {}
+        charDrawOrder[i] = {}
+    end
+
 end
 
 
@@ -40,36 +47,42 @@ function world.generate()
             chunks[i][j] = Chunk:new()
             
              --generate default 16x16 tiles
-            local tiles = {}
-            for k=0,CHUNK_WIDTH - 1 do   
-                tiles[k] = {}
-                for l=0,CHUNK_WIDTH - 1 do
-                    tiles[k][l] = { texture = "g"..math.random(1,3), overlays = nil, object = nil }
-                    if math.random(1, 14) == 10 then tiles[k][l].texture = "g"..math.random(4,6) end
-                end   
+            for layer = 1,CHUNK_HEIGHT do
+                local tiles = {}
+                for k=0,CHUNK_WIDTH - 1 do   
+                    tiles[k] = {}
+                    for l=0,CHUNK_WIDTH - 1 do
+                        if layer == CHUNK_HEIGHT then
+                            tiles[k][l] = { texture = "g"..math.random(1,3), overlays = nil, object = nil }
+                            if math.random(1, 14) == 10 then tiles[k][l].texture = "g"..math.random(4,6) end
+                        else
+                            tiles[k][l] = { texture = "dm", overlays = nil, object = nil }
+                        end
+                    end   
+                end
+                
+                chunks[i][j]:setTiles(layer, tiles)
             end
-            
-            chunks[i][j]:setTiles(1, tiles)
         end
     end
     
     --world.addObject(Ressource:new(1, 15, 15, {planks=6}))
     --world.addObject(Ressource:new(1, 15, 16, {planks=6}))
-    world.addObject(Ressource:new(1, 16, 15, {stone=6}))
-    world.addObject(Ressource:new(1, 16, 16, {stone=6}))
+    world.addObject(Ressource:new(CHUNK_HEIGHT, 16, 15, {stone=6}))
+    world.addObject(Ressource:new(CHUNK_HEIGHT, 16, 16, {stone=6}))
     
-    for i=1,2000 do
+    for i=1,500 do
         local x = math.random() * (WORLD_SIZE * CHUNK_WIDTH)
         local y = math.random() * (WORLD_SIZE * CHUNK_WIDTH)
-        world.addObject(Tree:new(1, x, y))
+        world.addObject(Tree:new(CHUNK_HEIGHT, x, y))
     end
     
     for i=1,5 do
-        local x = 50 + math.random() * CHUNK_WIDTH
-        local y = 50 + math.random() * CHUNK_WIDTH
-        local tile = world.getTile(1, x, y)
+        local x = 20 + math.random() * CHUNK_WIDTH
+        local y = 20 + math.random() * CHUNK_WIDTH
+        local tile = world.getTile(CHUNK_HEIGHT, x, y)
         if tile then
-            local char = Char:new(1, x, y)
+            local char = Char:new(CHUNK_HEIGHT, x, y)
             world.addChar(char)
         end
     end
@@ -79,7 +92,6 @@ end
 function world.updateChunk(x, y, chunk)
     
     if not chunks[y] then chunks[y] = {} end
-    
     chunks[y][x] = chunk
     
 end
@@ -109,32 +121,32 @@ function world.getChunks()
 end
 
 
--- returns all chars
-function world.getChars()
-    return characters
+-- returns all chars for given layer only
+function world.getChars(layer)
+    return characters[layer]
 end
 
 
 -- returns list of ids for chars and objects in the order they need to be drawn
-function world.getDrawOrders()
-    return objectDrawOrder, charDrawOrder
+function world.getDrawOrders(layer)
+    return objectDrawOrder[layer], charDrawOrder[layer]
 end
 
 
 -- add char to char list and update draw order
 function world.addChar(char)
-    characters[char.id] = char
-    table.insert(charDrawOrder, char.id)
+    characters[char.l][char.id] = char
+    table.insert(charDrawOrder[char.l], char.id)
 end
 
 
 -- chars need to be removed when dying or when taking up a profession
 function world.removeChar(char)
-    characters[char.id] = nil
+    characters[char.l][char.id] = nil
     local i = #charDrawOrder
     while i > 0 do
-        if charDrawOrder[i] == char.id then
-            table.remove(charDrawOrder, i)
+        if charDrawOrder[char.l][i] == char.id then
+            table.remove(charDrawOrder[char.l], i)
         end
         i = i - 1
     end
@@ -170,7 +182,7 @@ function world.markTiles(tileselection, object)
     
     local chunksToUpdate = {}
     
-    if object:is(Building) then
+    if object:is(Building) and not object:is(Hole) then
         for l=1,object.xsize+2 do
             for m=1,object.ysize do
                 local tile = world.getTile(object.l, object.x + l - 2, object.y - m + 1)
@@ -217,7 +229,7 @@ end
 -- add object to world. marks tiles as built and calculates draw order
 function world.addObject(object)
     
-    if objects[object.id] then
+    if objects[object.l][object.id] then
         print( "Error: duplicate object id: ", object.id, object.__name)
         return false
     end
@@ -235,16 +247,16 @@ function world.addObject(object)
     object.x = math.floor(object.x)
     object.y = math.floor(object.y)
     
-    objects[object.id] = object
+    objects[object.l][object.id] = object
     
     -- mark tiles as used so that no other building can be placed there
     world.markTiles(tileselection, object)
     
     -- add object to draw order
     if not server then
-        table.insert(objectDrawOrder, object.id)
-        table.sort(objectDrawOrder, 
-            function(a, b) return objects[a].y < objects[b].y end )
+        table.insert(objectDrawOrder[object.l], object.id)
+        table.sort(objectDrawOrder[object.l], 
+            function(a, b) return objects[object.l][a].y < objects[object.l][b].y end )
     end
         
     -- if we are server, track ressources and inform clients
@@ -259,47 +271,60 @@ end
 
 -- update elements in world
 function world.update(dt)
-    for i,char in pairs(characters) do
-        char:update(dt)
-    end
     
-    for i,object in pairs(objects) do
-        if object.workleft < 0 and object:is(Building) then
-            if server then object:serverupdate(dt) end
-            if not server then object:clientupdate(dt) end
+    for layer=1,CHUNK_HEIGHT do
+    
+        for i,char in pairs(characters[layer]) do
+            char:update(dt)
         end
-    end
-    
-    if not server then
-        table.sort(charDrawOrder, 
-            function(a, b) return characters[a].y < characters[b].y end )
+        
+        for i,object in pairs(objects[layer]) do
+            if object.workleft < 0 and object:is(Building) then
+                if server then object:serverupdate(dt) end
+                if not server then object:clientupdate(dt) end
+            end
+        end
+        
+        if not server then
+            table.sort(charDrawOrder[layer], 
+                function(a, b) return characters[layer][a].y < characters[layer][b].y end )
+        end
     end
 end
 
 
 -- returns object with given id
 function world.getObject(id)
-    if id == nil then return nil end
-    return objects[id]
+    for layer=1,CHUNK_HEIGHT do
+        if objects[layer][id] then
+            return objects[layer][id]
+        end
+    end
+    return nil
 end
 
 
 -- returns all objects. used for networking
-function world.getObjects()
-    return objects
+function world.getObjects(layer)
+    return objects[layer]
 end
 
 
 -- returns char with given id
 function world.getChar(id)
-    if id == nil then return nil end
-    return characters[id]
+    for layer=1,CHUNK_HEIGHT do
+        if characters[layer][id] then
+            return characters[layer][id]
+        end
+    end
+    return nil
 end
 
 function world.removeObject(id)
-    if objects[id] then
-        
-        local obj = objects[id]
+    
+    local obj = world.getObject(id)
+    
+    if obj then
         
         -- free up tiles so that other things can be placed there
         for y=obj.y,obj.y+obj.ysize do
@@ -310,19 +335,19 @@ function world.removeObject(id)
         end
         
         -- remove object from draworder
-        local i = #objectDrawOrder
+        local i = #objectDrawOrder[obj.l]
         while i > 0 do
-            if objectDrawOrder[i] == id then
-                table.remove(objectDrawOrder, i)
+            if objectDrawOrder[obj.l][i] == id then
+                table.remove(objectDrawOrder[obj.l], i)
             end
             i = i - 1
         end
         
         -- make sure that no chars keep on working on this
-        objects[id].workleft = -1
+        objects[obj.l][id].workleft = -1
         
         -- actually delete object
-        objects[id] = nil
+        objects[obj.l][id] = nil
         if server then server.sendRemoveObject(id) end
         return true
     end
@@ -344,7 +369,7 @@ function world.getClickedObject(l, x, y)
             
             if tile and tile.object then
                 
-                local object = objects[tile.object]
+                local object = objects[l][tile.object]
                 
                 if object and
                    object.x + object.xsize >= x and

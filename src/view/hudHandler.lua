@@ -15,6 +15,7 @@ function hudHandler.init()
     
     local iconCarpenter = love.graphics.newImage( "ressource/icons/carpenter.png" )
     local iconWarehouse = love.graphics.newImage( "ressource/icons/warehouse.png" )
+    local iconHole = love.graphics.newImage( "ressource/icons/hole.png" )
     
     local panels = {}
     panels[1] = {}
@@ -22,7 +23,9 @@ function hudHandler.init()
     panels[1].x = 0
     panels[1].y = 0
     panels[1].name = Carpenter.__name
-    local scrolls = { Scroll:new( { { icon=iconWarehouse, x=0, y=0, name=Warehouse.__name } } ), Scroll:new( panels ) }
+    local scrolls = { Scroll:new( { { icon=iconHole, x=0, y=0, name=Hole.__name } } ), 
+                      Scroll:new( { { icon=iconWarehouse, x=0, y=0, name=Warehouse.__name } } ), 
+                      Scroll:new( panels ) }
     
     buildcontainer = Container:new( scrolls )
 end
@@ -43,6 +46,7 @@ function hudHandler.update(dt)
         local x, y = cameraHandler.convertScreenCoordinates( love.mouse.getPosition() )
         cursor.x = x
         cursor.y = y
+        cursor.l = cameraHandler.getLayer()
         if world.isPlacable(cursor) then
             cursor_color = {120, 255, 120, 255}
         else

@@ -100,6 +100,28 @@ function Farm:__init(l, x, y)
     end
 end
 
+------------ Hole
+
+Hole = Building:extends()
+Hole.__name = "hole"
+
+function Hole:__init(l, x, y)
+    Hole.super.__init(self, l, x, y)
+    self.image = "hole"
+    self.xsize = 3
+    self.ysize = 3
+    self.workMax = 10
+    self.workleft = self.workMax
+    self.buildable = true
+    self.cost = nil -- will cost tools laters
+    self.costleft = nil
+    self.resUsage = 0
+    self.resUsageDt = 0 -- timer value
+    if love.graphics then
+       self.mesh = generateMesh(objects[self.image]) 
+    end
+end
+
 -- Warehouse
 
 Warehouse = Building:extends()

@@ -55,7 +55,7 @@ function logicHandler.tileClick(x, y)
     
     if mouseState == "free" then
         
-        local object = world.getClickedObject(1, x, y)
+        local object = world.getClickedObject(cameraHandler.getLayer(), x, y)
         
         if object and object.selectable and object.workleft >= 0 then
             object.selected = "axe"
@@ -90,7 +90,7 @@ function logicHandler.tileClick(x, y)
             end
             
             if mouseState == "buildfarm1" then
-                local tile = world.getTile(1, x, y)
+                local tile = world.getTile(cameraHandler.getLayer(), x, y)
                 
                 if tile then
                     buildCandidate.x = math.floor(x)
