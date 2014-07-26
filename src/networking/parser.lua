@@ -162,6 +162,7 @@ function parser.parseChunkToString(x, y, chunk)
         for y,row in pairs(chunk:getTiles(i)) do
             for x,tile in pairs(row) do
                 string = string..tile.texture
+                if tile.clear then string = string..".1" end
                 if x < #row then string = string .. "," end
             end
             string = string..";"
@@ -205,7 +206,14 @@ function parser.parseChunk(string)
                 for row in string.gmatch(layer:sub(3), '[^;]+') do
                     tiles[y] = {}
                     for tile in string.gmatch(row, '[^,]+') do
-                        tiles[y][x] = { texture = tile, overlays = nil, object = nil }
+                        tiles[y][x] = { texture = nil, overlays = nil, object = nil, clear=false }
+                        for texture in string.gmatch(tile, '[^.]+') do
+                            if tiles[y][x].texture then
+                                tiles[y][x].clear = true
+                            else
+                                tiles[y][x].texture = texture
+                            end
+                        end
                         x = x + 1
                     end
                     x = 0

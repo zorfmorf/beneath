@@ -53,10 +53,10 @@ function world.generate()
                     tiles[k] = {}
                     for l=0,CHUNK_WIDTH - 1 do
                         if layer == CHUNK_HEIGHT then
-                            tiles[k][l] = { texture = "g"..math.random(1,3), overlays = nil, object = nil }
+                            tiles[k][l] = { texture = "g"..math.random(1,3), overlays = nil, object = nil, clear=true }
                             if math.random(1, 14) == 10 then tiles[k][l].texture = "g"..math.random(4,6) end
                         else
-                            tiles[k][l] = { texture = "dm", overlays = nil, object = nil }
+                            tiles[k][l] = { texture = "dm", overlays = {}, object = nil, clear=false }
                         end
                     end   
                 end

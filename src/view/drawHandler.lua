@@ -29,8 +29,8 @@ function drawHandler.drawTerrain()
     
     local fromx = math.floor(startx / CHUNK_WIDTH)
     local tox = math.floor(endx / CHUNK_WIDTH) + 1
-    local fromy = math.floor(starty / CHUNK_WIDTH)
-    local toy = math.floor(endy / CHUNK_WIDTH) + 1
+    local fromy = math.floor((starty-2) / CHUNK_WIDTH)
+    local toy = math.floor((endy+2) / CHUNK_WIDTH) + 1
     
     for x=fromx,tox do
         for y=fromy,toy do
@@ -40,7 +40,7 @@ function drawHandler.drawTerrain()
             if chunk then
             
                 -- draw terrain canvas
-                love.graphics.draw(chunk:getCanvas(layer), (x-1) * CHUNK_WIDTH * tilesize, (y-1) * CHUNK_WIDTH * tilesize)
+                love.graphics.draw(chunk:getCanvas(layer), (x-1) * CHUNK_WIDTH * tilesize, ((y-1) * CHUNK_WIDTH - 2) * tilesize)
                 
                 -- draw tile highlighting
                 for yt,row in pairs(chunk:getTiles(layer)) do

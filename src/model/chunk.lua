@@ -37,23 +37,40 @@ function Chunk:update(layer)
     
     if not server then
         
-        local canvas = love.graphics.newCanvas(CHUNK_WIDTH * tilesize, CHUNK_WIDTH * tilesize)
+        local canvas = love.graphics.newCanvas(CHUNK_WIDTH * tilesize, (CHUNK_WIDTH + 2) * tilesize)
         love.graphics.setCanvas(canvas)
         
+        -- first pass: draw tiles
         for y,row in pairs(self.layers[layer].tiles) do
             
             for x,tile in pairs(row) do
                 
-                love.graphics.draw(terrain[tile.texture], x * tilesize, y * tilesize)
+                love.graphics.draw(terrain[tile.texture], x * tilesize, (y+2) * tilesize)
                 
                 if tile.overlays then
                     for i,texture in ipairs(tile.overlays) do
-                        love.graphics.draw(terrain[texture], x * tilesize, y * tilesize)
+                        love.graphics.draw(terrain[texture], x * tilesize, (y+2) * tilesize)
                     end
                 end
                 
             end
             
+        end
+        
+        -- second pass: draw stone overlay for lower levels
+        if layer < CHUNK_HEIGHT then
+            for y=0,CHUNK_WIDTH-1 do
+            
+                for x=0,CHUNK_WIDTH-1 do
+                    
+                    if not self.layers[layer].tiles[y][x].clear then
+                        local texture = "o"
+                        love.graphics.draw(terrain[texture], x * tilesize, y * tilesize)
+                    end
+                    
+                end
+                
+            end
         end
         
         love.graphics.setCanvas()
