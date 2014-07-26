@@ -183,14 +183,14 @@ function Carpenter:cycle(dt)
         if result then self.woodslots = self.woodslots - 1 end
     end
     
-    if self:getRessourceAmount("wood") > 0 and self:getRessourceAmount("planks") < 6 then
+    if self:getRessourceAmount("wood") >= 2 and self:getRessourceAmount("planks") < 6 then
         self.dt = self.dt + dt
         if self.dt >= self.transmutetime then
             self.dt = 0
-            self:removeRessource("wood")
+            self:removeRessource("wood", 2)
             self:addRessource("planks")
             ressourceHandler.addSingleRessource(self.id, "planks")
-            self.woodslots = self.woodslots + 1
+            self.woodslots = self.woodslots + 2
             server.updateObject(self)
         end
     else
@@ -200,7 +200,7 @@ end
 
 
 function Carpenter:clientcycle(dt)
-    if self:getRessourceAmount("wood") > 0 and self:getRessourceAmount("planks") < 6 then
+    if self:getRessourceAmount("wood") >= 2 and self:getRessourceAmount("planks") < 6 then
         self.char:gotoWork( { x = self.x + self.workpos.x, y = self.y - self.workpos.y }, dt)
     else
         self.char:goHome( { x = self.x + self.entrance.x, y = self.y - self.entrance.y }, dt)

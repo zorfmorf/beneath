@@ -77,7 +77,7 @@ function world.generate()
         world.addObject(Tree:new(CHUNK_HEIGHT, x, y))
     end
     
-    for i=1,5 do
+    for i=1,2 do
         local x = 20 + math.random() * CHUNK_WIDTH
         local y = 20 + math.random() * CHUNK_WIDTH
         local tile = world.getTile(CHUNK_HEIGHT, x, y)
@@ -327,10 +327,10 @@ function world.removeObject(id)
     if obj then
         
         -- free up tiles so that other things can be placed there
-        for y=obj.y,obj.y+obj.ysize do
-            for x=obj.x,obj.x+obj.xsize do
+        for y=obj.y,obj.y-(obj.ysize-1),-1 do
+            for x=obj.x,obj.x+(obj.xsize-1) do
                 local tile = world.getTile(obj.l, x, y)
-                if tile then tile.object = nil end
+                if tile and tile.object == obj.id then tile.object = nil end
             end
         end
         

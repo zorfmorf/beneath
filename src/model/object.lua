@@ -104,9 +104,13 @@ function Object:work(dt)
     end
 end
 
-function Object:removeRessource(res)
+function Object:removeRessource(res, amount)
     if self.ressources and self.ressources[res] then
-        self.ressources[res] = self.ressources[res] - 1
+        if amount and self.ressources[res] >= amount then
+            self.ressources[res] = self.ressources[res] - amount
+        else
+            self.ressources[res] = self.ressources[res] - 1
+        end
         if self.ressources[res] <= 0 then
             self.ressources[res] = nil
             if not (self.ressources.wood or self.ressources.stone or self.ressources.planks) then 

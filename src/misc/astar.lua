@@ -43,7 +43,7 @@ function astar.calculate(start, goal)
     for y=0,width-1 do
         nodes[y] = {}
         for x=0,width-1 do
-            local tile = world.getTile(1, x, y)
+            local tile = world.getTile(start.l, x, y)
             if tile then
                 nodes[y][x] = { visited=false, x=x, y=y, walkable=(not tile.object)  }
             else
