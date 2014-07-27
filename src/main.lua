@@ -55,6 +55,7 @@ function love.update(dt)
         if not displayMenu then hudHandler.update(dt) end
         gameInputHandler.update(dt)
         client.service()
+        if console then consoleHandler.update(dt) end
     end
     
     if state == "lobby" then

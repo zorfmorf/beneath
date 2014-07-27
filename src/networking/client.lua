@@ -21,6 +21,15 @@ function client.init()
     server = host:connect(host_id)
 end
 
+
+function client.getRTT()
+    if server then 
+        return server:round_trip_time()
+    end
+    return "n/a"
+end
+
+
 function client.service()
     local event = host:service(0)
     while event do

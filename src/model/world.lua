@@ -182,7 +182,7 @@ function world.markTiles(tileselection, object)
     
     local chunksToUpdate = {}
     
-    if object:is(Building) and not object:is(Hole) then
+    if object:is(Building) then
         for l=1,object.xsize+2 do
             for m=1,object.ysize do
                 local tile = world.getTile(object.l, object.x + l - 2, object.y - m + 1)
@@ -222,6 +222,26 @@ function world.markTiles(tileselection, object)
     -- update chunks
     for i,chunk in pairs(chunksToUpdate) do
         chunk:update(object.l)
+    end
+    
+    chunksToUpdate = {}
+    
+    -- if its a hole we need to free up tiles on a lower level
+    if object:is(Hole) and object.l > 1 then
+        for y=object.y,object.y-(object.ysize-1),-1 do
+            for x=object.x,object.x+object.xsize-1 do
+                local tile = world.getTile(object.l-1, x, y)
+                if tile then 
+                    tile.clear = true
+                    local chunk = world.getChunkByCoordinates(y, x)
+                    chunksToUpdate[chunk.id] = chunk
+                end
+            end
+        end
+        
+        for i,chunk in pairs(chunksToUpdate) do
+            chunk:update(object.l - 1)
+        end
     end
 end
 
