@@ -32,6 +32,36 @@ function Chunk:setTiles(layer, tiles)
 end
 
 
+local function generateBorderTexture(l, x, y)
+    
+    local tile = world.getTile(l, x, y+1)
+    if tile and tile.clear then return "o_u" end
+    
+    tile = world.getTile(l, x+1, y+1)
+    if tile and tile.clear then return "o_ul" end
+    
+    tile = world.getTile(l, x-1, y+1)
+    if tile and tile.clear then return "o_ur" end
+    
+    tile = world.getTile(l, x-1, y)
+    if tile and tile.clear then return "o_l" end
+    
+    tile = world.getTile(l, x+1, y)
+    if tile and tile.clear then return "o_r" end
+    
+    tile = world.getTile(l, x, y-1)
+    if tile and tile.clear then return "o_d" end
+    
+    tile = world.getTile(l, x+1, y-1)
+    if tile and tile.clear then return "o_dl" end
+    
+    tile = world.getTile(l, x-1, y-1)
+    if tile and tile.clear then return "o_dr" end
+        
+    return nil
+end
+
+
 -- generate canvas for specified layer
 function Chunk:update(layer)
     
@@ -42,7 +72,6 @@ function Chunk:update(layer)
         
         -- first pass: draw tiles
         for y,row in pairs(self.layers[layer].tiles) do
-            
             for x,tile in pairs(row) do
                 
                 love.graphics.draw(terrain[tile.texture], x * tilesize, (y+2) * tilesize)
@@ -54,7 +83,6 @@ function Chunk:update(layer)
                 end
                 
             end
-            
         end
         
         -- second pass: draw stone overlay for lower levels
@@ -70,19 +98,21 @@ function Chunk:update(layer)
                         
                         if self.layers[layer].tiles[y][x].clear then 
                             texture = nil
-                        end
-                        
-                        
-                        
-                        
-                        local tileu = world.getTile(layer, cx, cy-1)
-                        if tileu and not tile.clear
-                            texture = "ou"
-                            local tilel = world.getTile(layer, cx-1, cy)
-                            local tiler = world.getTile(layer, cx+1, cy)
-                            if tilel and not tilel.clear then
-                                texture = 
+                            
+                            local tile = world.getTile(layer, cx, cy-1)
+                            if tile then
+                                if not tile.clear then
+                                    texture = "o_bkg_mid"
+                                else
+                                    tile = world.getTile(layer, cx, cy-2)
+                                    if tile and not tile.clear then
+                                        texture = "o_bkg_low"
+                                    end
+                                end
                             end
+                        else
+                            local result = generateBorderTexture(layer, cx, cy)
+                            if result then texture = result end
                         end
                         
                     end

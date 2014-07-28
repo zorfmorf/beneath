@@ -98,23 +98,16 @@ function Object:work(dt)
             self.ressources = nil
             if server then 
                 server.sendBuildFinished(self)
-            else
-                -- if its a hole we need to free up tiles on a lower level
-                if self:is(Hole) and self.l > 1 then
-                    local chunksToUpdate = {}
-                    for y=self.y,self.y-(self.ysize-1),-1 do
-                        for x=self.x,self.x+self.xsize-1 do
-                            local tile = world.getTile(self.l-1, x, y)
-                            if tile then 
-                                tile.clear = true
-                                local chunk = world.getChunkByCoordinates(y, x)
-                                chunksToUpdate[chunk.id] = chunk
-                            end
-                        end
-                    end
-                        
-                    for i,chunk in pairs(chunksToUpdate) do
-                        chunk:update(self.l - 1)
+            end
+            
+            -- if its a hole we need to free up tiles on a lower level
+            if self:is(Hole) and self.l > 1 then
+                
+                local tile = world.getTile(self.l-1, self.x+1, self.y-1)
+                if tile then
+                    tile.clear = true
+                    if not server then
+                        world.getChunkByCoordinates(self.x, self.y):update(self.l - 1)
                     end
                 end
             end
