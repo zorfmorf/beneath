@@ -60,16 +60,35 @@ function Chunk:update(layer)
         -- second pass: draw stone overlay for lower levels
         if layer < CHUNK_HEIGHT then
             for y=0,CHUNK_WIDTH-1 do
-            
                 for x=0,CHUNK_WIDTH-1 do
+                    local texture = "o"
                     
-                    if not self.layers[layer].tiles[y][x].clear then
-                        local texture = "o"
-                        love.graphics.draw(terrain[texture], x * tilesize, y * tilesize)
+                    if self.x and self.y then
+                        
+                        local cx = (self.x - 1) * CHUNK_WIDTH + x
+                        local cy = (self.y - 1) * CHUNK_WIDTH + y
+                        
+                        if self.layers[layer].tiles[y][x].clear then 
+                            texture = nil
+                        end
+                        
+                        
+                        
+                        
+                        local tileu = world.getTile(layer, cx, cy-1)
+                        if tileu and not tile.clear
+                            texture = "ou"
+                            local tilel = world.getTile(layer, cx-1, cy)
+                            local tiler = world.getTile(layer, cx+1, cy)
+                            if tilel and not tilel.clear then
+                                texture = 
+                            end
+                        end
+                        
                     end
                     
+                    if texture then love.graphics.draw(terrain[texture], x * tilesize, y * tilesize) end
                 end
-                
             end
         end
         

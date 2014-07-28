@@ -36,7 +36,9 @@ function tilesetParser.loadTerrain()
     
     -- stone overlay textures
     terrain["o"] = parseTile(source, 1, 1)
-    terrain["ol"] = parseTile(source, 0, 1)
+    terrain["ou"] = parseTile(source, 1, 2)
+    terrain["oul"] = parseTile(source, 4, 1)
+    terrain["our"] = parseTile(source, 3, 1)
     
     -- field textures
     terrain["ful"] = parseTile(source, 5, 17)

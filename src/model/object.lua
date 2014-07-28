@@ -96,7 +96,28 @@ function Object:work(dt)
         
         if self.workleft < 0  then
             self.ressources = nil
-            if server then server.sendBuildFinished(self) end
+            if server then 
+                server.sendBuildFinished(self)
+            else
+                -- if its a hole we need to free up tiles on a lower level
+                if self:is(Hole) and self.l > 1 then
+                    local chunksToUpdate = {}
+                    for y=self.y,self.y-(self.ysize-1),-1 do
+                        for x=self.x,self.x+self.xsize-1 do
+                            local tile = world.getTile(self.l-1, x, y)
+                            if tile then 
+                                tile.clear = true
+                                local chunk = world.getChunkByCoordinates(y, x)
+                                chunksToUpdate[chunk.id] = chunk
+                            end
+                        end
+                    end
+                        
+                    for i,chunk in pairs(chunksToUpdate) do
+                        chunk:update(self.l - 1)
+                    end
+                end
+            end
         end
         if love.graphics then
             updateMesh(self.mesh, math.max(0, self.workleft / self.workMax) )

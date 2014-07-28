@@ -45,7 +45,7 @@ function astar.calculate(start, goal)
         for x=0,width-1 do
             local tile = world.getTile(start.l, x, y)
             if tile then
-                nodes[y][x] = { visited=false, x=x, y=y, walkable=(not tile.object)  }
+                nodes[y][x] = { visited=false, x=x, y=y, walkable=(not tile.object and tile.clear)  }
             else
                 print("Astar: tile does not exist", 1, x, y)
             end

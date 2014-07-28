@@ -92,6 +92,8 @@ end
 function world.updateChunk(x, y, chunk)
     
     if not chunks[y] then chunks[y] = {} end
+    chunk.x = x
+    chunk.y = y
     chunks[y][x] = chunk
     
 end
@@ -180,68 +182,51 @@ function world.markTiles(tileselection, object)
         tile.object = object.id
     end
     
-    local chunksToUpdate = {}
+    if not server then
     
-    if object:is(Building) then
-        for l=1,object.xsize+2 do
-            for m=1,object.ysize do
-                local tile = world.getTile(object.l, object.x + l - 2, object.y - m + 1)
-                
-                local toadd = nil
-                
-                if l == 1 then
-                    if m == 1 then toadd = "ddl" end
-                    if m > 1 and m < object.ysize then toadd = "dml" end
-                    if m == object.ysize then toadd = "dul" end
-                end
-                
-                if l > 1 and l < object.xsize+2 then
-                    if m == 1 then toadd = "dd" end
-                    if m > 1 and m < object.ysize then toadd = "dm" end
-                    if m == object.ysize then toadd = "du" end
-                end
-                
-                if l == object.xsize+2 then
-                    if m == 1 then toadd = "ddr" end
-                    if m > 1 and m < object.ysize then toadd = "dmr" end
-                    if m == object.ysize then toadd = "dur" end
-                end
-                
-                if toadd then
-                    if not tile.overlays then tile.overlays = { } end
-                    table.insert(tile.overlays, toadd)
+        -- draw dirt on ground around new buildings
+        if object:is(Building) then
+            local chunksToUpdate = {}
+            for l=1,object.xsize+2 do
+                for m=1,object.ysize do
+                    local tile = world.getTile(object.l, object.x + l - 2, object.y - m + 1)
                     
-                    local chunk = world.getChunkByCoordinates(object.x + l - 2, object.y - m + 1)
-                    if chunk then chunksToUpdate[chunk.id] = chunk end
+                    local toadd = nil
+                    
+                    if l == 1 then
+                        if m == 1 then toadd = "ddl" end
+                        if m > 1 and m < object.ysize then toadd = "dml" end
+                        if m == object.ysize then toadd = "dul" end
+                    end
+                    
+                    if l > 1 and l < object.xsize+2 then
+                        if m == 1 then toadd = "dd" end
+                        if m > 1 and m < object.ysize then toadd = "dm" end
+                        if m == object.ysize then toadd = "du" end
+                    end
+                    
+                    if l == object.xsize+2 then
+                        if m == 1 then toadd = "ddr" end
+                        if m > 1 and m < object.ysize then toadd = "dmr" end
+                        if m == object.ysize then toadd = "dur" end
+                    end
+                    
+                    if toadd then
+                        if not tile.overlays then tile.overlays = { } end
+                        table.insert(tile.overlays, toadd)
+                        
+                        local chunk = world.getChunkByCoordinates(object.x + l - 2, object.y - m + 1)
+                        if chunk then chunksToUpdate[chunk.id] = chunk end
+                    end
+                    
                 end
-                
+            end
+            
+            for i,chunk in pairs(chunksToUpdate) do
+                chunk:update(object.l)
             end
         end
-    end
     
-    -- update chunks
-    for i,chunk in pairs(chunksToUpdate) do
-        chunk:update(object.l)
-    end
-    
-    chunksToUpdate = {}
-    
-    -- if its a hole we need to free up tiles on a lower level
-    if object:is(Hole) and object.l > 1 then
-        for y=object.y,object.y-(object.ysize-1),-1 do
-            for x=object.x,object.x+object.xsize-1 do
-                local tile = world.getTile(object.l-1, x, y)
-                if tile then 
-                    tile.clear = true
-                    local chunk = world.getChunkByCoordinates(y, x)
-                    chunksToUpdate[chunk.id] = chunk
-                end
-            end
-        end
-        
-        for i,chunk in pairs(chunksToUpdate) do
-            chunk:update(object.l - 1)
-        end
     end
 end
 
