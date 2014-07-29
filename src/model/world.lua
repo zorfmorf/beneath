@@ -186,45 +186,11 @@ function world.markTiles(tileselection, object)
     
         -- draw dirt on ground around new buildings
         if object:is(Building) then
-            local chunksToUpdate = {}
-            for l=1,object.xsize+2 do
-                for m=1,object.ysize do
-                    local tile = world.getTile(object.l, object.x + l - 2, object.y - m + 1)
-                    
-                    local toadd = nil
-                    
-                    if l == 1 then
-                        if m == 1 then toadd = "ddl" end
-                        if m > 1 and m < object.ysize then toadd = "dml" end
-                        if m == object.ysize then toadd = "dul" end
-                    end
-                    
-                    if l > 1 and l < object.xsize+2 then
-                        if m == 1 then toadd = "dd" end
-                        if m > 1 and m < object.ysize then toadd = "dm" end
-                        if m == object.ysize then toadd = "du" end
-                    end
-                    
-                    if l == object.xsize+2 then
-                        if m == 1 then toadd = "ddr" end
-                        if m > 1 and m < object.ysize then toadd = "dmr" end
-                        if m == object.ysize then toadd = "dur" end
-                    end
-                    
-                    if toadd then
-                        if not tile.overlays then tile.overlays = { } end
-                        table.insert(tile.overlays, toadd)
-                        
-                        local chunk = world.getChunkByCoordinates(object.x + l - 2, object.y - m + 1)
-                        if chunk then chunksToUpdate[chunk.id] = chunk end
-                    end
-                    
-                end
-            end
+            local chunksToUpdate = overlayGenerator.generateDirt(object)
             
             for i,chunk in pairs(chunksToUpdate) do
                 chunk:update(object.l)
-            end
+            end 
         end
     
     end

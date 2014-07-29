@@ -60,12 +60,31 @@ function logicHandler.tileClick(x, y)
         if object and object.selectable and object.workleft >= 0 then
             object.selected = "axe"
             client.sendTask(object)
+            return
+        end
+        
+        -- placeholder testing code TODO remove
+        if cameraHandler.getLayer() < CHUNK_HEIGHT then
+            local tile = world.getTile(cameraHandler.getLayer(), x, y+2)
+            if tile then
+                tile.clear = not tile.clear
+                local chunks = {}
+                for i=-1,1 do
+                    for j=-1,1 do
+                        local chunk = world.getChunkByCoordinates(x+j, y+2+i)
+                        if chunk then chunks[chunk.id] = chunk end
+                    end
+                end
+                for i,chunk in pairs(chunks) do
+                    chunk:update(cameraHandler.getLayer())
+                end
+            end
         end
         
     else
         
         if mouseState == "build" then
-            local tile = world.getTile(1, x, y)
+            local tile = world.getTile(cameraHandler.getLayer(), x, y)
             
             if tile then
                 buildCandidate.x = x

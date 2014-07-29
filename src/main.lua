@@ -1,6 +1,3 @@
-
--- game includes
-
 class = require 'lib/30logclean'
 require 'lib/misc'
 
@@ -11,6 +8,7 @@ require 'control/ressourceHandler'
 require 'misc/astar'
 require 'misc/charsetParser'
 require 'misc/tilesetParser'
+require 'misc/overlayGenerator'
 require 'misc/printHelper'
 require 'model/char'
 require 'model/chunk'

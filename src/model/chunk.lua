@@ -11,6 +11,7 @@ CHUNK_ID = 1 -- unique for every chunk
 Chunk = class()
 Chunk.__name = "chunk"
 
+
 function Chunk:__init()
     
     self.canvas = {}
@@ -25,40 +26,11 @@ function Chunk:__init()
     
 end
 
+
 function Chunk:setTiles(layer, tiles)
     if layer > 9 then print("Error: Invalid layer height: ", layer) end
     self.layers[layer].tiles = tiles
     self:update(layer)
-end
-
-
-local function generateBorderTexture(l, x, y)
-    
-    local tile = world.getTile(l, x, y+1)
-    if tile and tile.clear then return "o_u" end
-    
-    tile = world.getTile(l, x+1, y+1)
-    if tile and tile.clear then return "o_ul" end
-    
-    tile = world.getTile(l, x-1, y+1)
-    if tile and tile.clear then return "o_ur" end
-    
-    tile = world.getTile(l, x-1, y)
-    if tile and tile.clear then return "o_l" end
-    
-    tile = world.getTile(l, x+1, y)
-    if tile and tile.clear then return "o_r" end
-    
-    tile = world.getTile(l, x, y-1)
-    if tile and tile.clear then return "o_d" end
-    
-    tile = world.getTile(l, x+1, y-1)
-    if tile and tile.clear then return "o_dl" end
-    
-    tile = world.getTile(l, x-1, y-1)
-    if tile and tile.clear then return "o_dr" end
-        
-    return nil
 end
 
 
@@ -67,10 +39,14 @@ function Chunk:update(layer)
     
     if not server then
         
+        overlayGenerator.generateOverlay(self, layer)
+        
         local canvas = love.graphics.newCanvas(CHUNK_WIDTH * tilesize, (CHUNK_WIDTH + 2) * tilesize)
         love.graphics.setCanvas(canvas)
         
-        -- first pass: draw tiles
+        local layermod = 1
+        if layer < CHUNK_HEIGHT then layermod = 0 end
+        
         for y,row in pairs(self.layers[layer].tiles) do
             for x,tile in pairs(row) do
                 
@@ -78,47 +54,10 @@ function Chunk:update(layer)
                 
                 if tile.overlays then
                     for i,texture in ipairs(tile.overlays) do
-                        love.graphics.draw(terrain[texture], x * tilesize, (y+2) * tilesize)
+                        love.graphics.draw(terrain[texture], x * tilesize, (y+2*layermod) * tilesize)
                     end
                 end
                 
-            end
-        end
-        
-        -- second pass: draw stone overlay for lower levels
-        if layer < CHUNK_HEIGHT then
-            for y=0,CHUNK_WIDTH-1 do
-                for x=0,CHUNK_WIDTH-1 do
-                    local texture = "o"
-                    
-                    if self.x and self.y then
-                        
-                        local cx = (self.x - 1) * CHUNK_WIDTH + x
-                        local cy = (self.y - 1) * CHUNK_WIDTH + y
-                        
-                        if self.layers[layer].tiles[y][x].clear then 
-                            texture = nil
-                            
-                            local tile = world.getTile(layer, cx, cy-1)
-                            if tile then
-                                if not tile.clear then
-                                    texture = "o_bkg_mid"
-                                else
-                                    tile = world.getTile(layer, cx, cy-2)
-                                    if tile and not tile.clear then
-                                        texture = "o_bkg_low"
-                                    end
-                                end
-                            end
-                        else
-                            local result = generateBorderTexture(layer, cx, cy)
-                            if result then texture = result end
-                        end
-                        
-                    end
-                    
-                    if texture then love.graphics.draw(terrain[texture], x * tilesize, y * tilesize) end
-                end
             end
         end
         

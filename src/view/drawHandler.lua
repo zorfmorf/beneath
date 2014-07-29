@@ -42,19 +42,24 @@ function drawHandler.drawTerrain()
                 -- draw terrain canvas
                 love.graphics.draw(chunk:getCanvas(layer), (x-1) * CHUNK_WIDTH * tilesize, ((y-1) * CHUNK_WIDTH - 2) * tilesize)
                 
-                -- draw tile highlighting
-                for yt,row in pairs(chunk:getTiles(layer)) do
-                    for xt,tile in pairs(row) do
-                        if tile.object and console then
-                            love.graphics.rectangle("fill", (x-1) * CHUNK_WIDTH * tilesize + xt * tilesize, 
-                                                            (y-1) * CHUNK_WIDTH * tilesize + yt * tilesize, 
-                                                            tilesize, tilesize)
+                if console then
+                    
+                    -- draw tile highlighting
+                    for yt,row in pairs(chunk:getTiles(layer)) do
+                        for xt,tile in pairs(row) do
+                            if tile.object then
+                                love.graphics.rectangle("fill", (x-1) * CHUNK_WIDTH * tilesize + xt * tilesize, 
+                                                                (y-1) * CHUNK_WIDTH * tilesize + yt * tilesize, 
+                                                                tilesize, tilesize)
+                            end
                         end
                     end
+                    
+                    love.graphics.rectangle("line", (x-1) * CHUNK_WIDTH * tilesize, 
+                                                    ((y-1) * CHUNK_WIDTH - 2) * tilesize, 
+                                                    CHUNK_WIDTH * tilesize, CHUNK_WIDTH * tilesize)
                 end
-                
             end
-            
         end
     end
     

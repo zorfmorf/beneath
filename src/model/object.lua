@@ -102,13 +102,19 @@ function Object:work(dt)
             
             -- if its a hole we need to free up tiles on a lower level
             if self:is(Hole) and self.l > 1 then
-                
-                local tile = world.getTile(self.l-1, self.x+1, self.y-1)
-                if tile then
-                    tile.clear = true
-                    if not server then
-                        world.getChunkByCoordinates(self.x, self.y):update(self.l - 1)
+                local chunks = {}
+                for i=-1,1 do
+                    for j=-1,1 do
+                        local tile = world.getTile(self.l-1, self.x+i, self.y+j)
+                        if tile and not tile.clear then
+                            tile.clear = true
+                            local chunk = world.getChunkByCoordinates(self.x+i, self.y+j)
+                            if chunk then chunks[chunk.id] = chunk end
+                        end
                     end
+                end
+                for i,chunk in pairs(chunks) do
+                    chunk:update(self.l - 1)
                 end
             end
         end
