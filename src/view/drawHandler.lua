@@ -40,7 +40,11 @@ function drawHandler.drawTerrain()
             if chunk then
             
                 -- draw terrain canvas
-                love.graphics.draw(chunk:getCanvas(layer), (x-1) * CHUNK_WIDTH * tilesize, ((y-1) * CHUNK_WIDTH - 2) * tilesize)
+                local terrain, overlay = chunk:getCanvas(layer)
+                love.graphics.draw(terrain, (x-1) * CHUNK_WIDTH * tilesize, (y-1) * CHUNK_WIDTH * tilesize)
+                local ymod = 0
+                if layer < CHUNK_HEIGHT then ymod = 1 end
+                love.graphics.draw(overlay, (x-1) * CHUNK_WIDTH * tilesize, ((y-1) * CHUNK_WIDTH - 2 * ymod) * tilesize)
                 
                 if console then
                     
@@ -56,7 +60,7 @@ function drawHandler.drawTerrain()
                     end
                     
                     love.graphics.rectangle("line", (x-1) * CHUNK_WIDTH * tilesize, 
-                                                    ((y-1) * CHUNK_WIDTH - 2) * tilesize, 
+                                                    ((y-1) * CHUNK_WIDTH) * tilesize, 
                                                     CHUNK_WIDTH * tilesize, CHUNK_WIDTH * tilesize)
                 end
             end

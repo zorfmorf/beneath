@@ -14,7 +14,8 @@ Chunk.__name = "chunk"
 
 function Chunk:__init()
     
-    self.canvas = {}
+    self.terrain = {} -- terrain canvas for different layers
+    self.overlay = {} -- overlay canvas for different layers
     self.layers = {}
     self.id = CHUNK_ID
     CHUNK_ID = CHUNK_ID + 1
@@ -41,20 +42,19 @@ function Chunk:update(layer)
         
         overlayGenerator.generateOverlay(self, layer)
         
-        local canvas = love.graphics.newCanvas(CHUNK_WIDTH * tilesize, (CHUNK_WIDTH + 2) * tilesize)
-        love.graphics.setCanvas(canvas)
-        
-        local layermod = 1
-        if layer < CHUNK_HEIGHT then layermod = 0 end
+        local terraintiles = love.graphics.newCanvas(CHUNK_WIDTH * tilesize, CHUNK_WIDTH * tilesize)
+        local overlay = love.graphics.newCanvas(CHUNK_WIDTH * tilesize, CHUNK_WIDTH * tilesize)
         
         for y,row in pairs(self.layers[layer].tiles) do
             for x,tile in pairs(row) do
                 
-                love.graphics.draw(terrain[tile.texture], x * tilesize, (y+2) * tilesize)
+                love.graphics.setCanvas(terraintiles)
+                love.graphics.draw(terrain[tile.texture], x * tilesize, y * tilesize)
                 
                 if tile.overlays then
                     for i,texture in ipairs(tile.overlays) do
-                        love.graphics.draw(terrain[texture], x * tilesize, (y+2*layermod) * tilesize)
+                        love.graphics.setCanvas(overlay)
+                        love.graphics.draw(terrain[texture], x * tilesize, y * tilesize)
                     end
                 end
                 
@@ -62,7 +62,8 @@ function Chunk:update(layer)
         end
         
         love.graphics.setCanvas()
-        self.canvas[layer] = canvas
+        self.terrain[layer] = terraintiles
+        self.overlay[layer] = overlay
         
     end
     
@@ -70,7 +71,7 @@ end
 
 
 function Chunk:getCanvas(layer)
-    return self.canvas[layer]
+    return self.terrain[layer], self.overlay[layer]
 end
 
 
