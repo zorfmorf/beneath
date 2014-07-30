@@ -4,14 +4,21 @@
     
 ]]--
 
-local items = { 
+local items_main = { 
                 "Local",
                 "Online",
                 "Options",
                 "Exit"
               }
 
+local items_lobby = {
+                "Create Game",
+                "Connect",
+                "Back"
+               }
+
 local cursor = 1
+local items = items_main
 
 mainMenu = {}
 
@@ -36,11 +43,13 @@ function mainMenu.init()
     scrollLower = love.graphics.newImage( imgData )
 end
 
+
 function mainMenu.goDown()
     dtacc = 0
     cursor = cursor + 1
     if cursor > #items then cursor = 1 end
 end
+
 
 function mainMenu.goUp()
     dtacc = 0
@@ -48,16 +57,39 @@ function mainMenu.goUp()
     if cursor < 1 then cursor = #items end
 end
 
+
 function mainMenu.fire()
-    if cursor == 1 and not (state == "ingame" ) then
-        gameCreator.createDefaultLocalGame()
-        state = "ingame"
+    
+    local item = items[cursor]
+    
+    if item then
+        
+        if not (state == "ingame") then
+        
+            if item == "Local" then
+                gameCreator.createDefaultLocalGame()
+                state = "ingame"
+            end
+            
+            if item == "Back" then
+                items = items_main
+            end
+            
+            if item == "Online" then
+                items = items_lobby
+                cursor = 1
+                return
+            end
+            
+            if item == "Create Game" then
+                gameCreator.createOnlineGame()
+                state = "lobby"
+            end
+        end
+        
+        if item == "Exit" then love.event.push("quit") end
+        
     end
-    if cursor == 2 and not (state == "ingame" ) then
-        gameCreator.createOnlineGame()
-        state = "lobby"
-    end
-    if cursor == 4 then love.event.push("quit") end
 end
 
 

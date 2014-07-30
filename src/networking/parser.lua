@@ -173,6 +173,16 @@ function parser.parseChunkToString(x, y, chunk)
     return string
 end
 
+
+function parser.parseLobbyInformation(string)
+    local players = {}
+    for value in string.gmatch(string, '[^,]+') do
+        table.insert(players, value) 
+    end
+    return players
+end
+
+
 function parser.parseChunk(string)
     
     local chunk = Chunk:new()

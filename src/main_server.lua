@@ -26,6 +26,7 @@ require 'model/char'
 require 'model/chunk'
 require 'model/object'
 require 'model/building'
+require 'model/player'
 require 'model/profession'
 require 'model/task'
 require 'model/world'
@@ -40,6 +41,8 @@ SERVER_TYPE = "offline"
 
 local params = { ... }
 if params and params[1] then SERVER_TYPE = params[1] end
+
+print( "Starting mode:", SERVER_TYPE )
 
 
 -- equivalent for love.update(dt)

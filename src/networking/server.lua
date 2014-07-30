@@ -7,7 +7,7 @@
 require "enet"
 
 server = {}
-
+player = nil
 local host = nil
 
 
@@ -16,6 +16,7 @@ function server.init()
     host = enet.host_create("localhost:44631")
     --host:compress_with_range_coder() -- better compression
     logfile:write( "host: state", tostring(host), "\n" )
+    players = {}
 end
 
 function server.createSinglePlayer()
@@ -27,11 +28,11 @@ function server.createSinglePlayer()
 end
 
 function server.createOnlineGame()
-    --ressourceHandler.init()
-    --logicHandler.init()
-    --taskHandler.init()
-    --world.init()
-    --world.generate()
+    ressourceHandler.init()
+    logicHandler.init()
+    taskHandler.init()
+    world.init()
+    world.generate()
 end
 
 
@@ -43,19 +44,24 @@ function server.service()
         if event.type == "connect" then
             logfile:write( "Client connected:", event.peer:index(), event.peer:connect_id(), "\n" )
             
-            if state == "ingame" then 
-                 -- TODO: disconnect / send 
+            if state == "ingame" then
+                event.peer:disconnect("Reason: Game is already running")
             end
+            
             if state == "lobby" then
                 if SERVER_TYPE == "offline" then
+                    players[1] = Player:new(event.peer:index())
                     server.createSinglePlayer()
                     server.sendGameState(event.peer)
                     state = "ingame"
-                end
-                if SERVER_TYPE == "online" then
-                    server.sendLobbyInformation(event.peer)
+                else
+                    print("Player", event.peer:index(), "connected")
+                    local player = Player:new(event.peer:index())
+                    table.insert(players, player)
+                    server.sendLobbyInformation(player)
                 end
             end
+            
         end
         
         if event.type == "receive" then
@@ -105,7 +111,7 @@ end
 function server.sendToPeers(message)
     -- if host is not set we are in startup phase and there are no
     -- clients to send things to
-    if host and state == "ingame" then
+    if host then
         for i=1,host:peer_count() do
             local peer = host:get_peer(i)
             if peer:state() == "connected" then
@@ -159,8 +165,12 @@ end
 
 
 -- send the current state of the lobby to the client
-function server.sendLobbyInformation(peer)
-    -- TODO: implement
+function server.sendLobbyInformation(player)
+    local string = "lobby "
+    for i,player in ipairs(players) do
+        string = string .. player.connection_id .. ","
+    end
+    server.sendToPeers(string)
 end
 
 

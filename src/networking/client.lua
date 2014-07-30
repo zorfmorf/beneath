@@ -10,15 +10,12 @@ client = {}
 
 local host = nil
 local server = nil
-local host_id = "localhost:44631"
 
-function client.init()
-    if ONLINE_GAME then
-        host_id = "192.168.178.50:44631"
-    end
+function client.connect(address)
     
     host = enet.host_create()
-    server = host:connect(host_id)
+    server = host:connect(address)
+    
 end
 
 
@@ -40,47 +37,61 @@ function client.service()
             
         elseif event.type == "receive" then
             
-            if event.data:sub(1, 6) == "chunk " then
+            if state == "lobby" then
                 
-                print( "Received chunk data" )
-                client.parseChunk( event.data:sub(7) )
-                
-            elseif event.data:sub(1, 6) == "plobj " then
-                
-                print( "Received object data" )
-                client.parseObjects( event.data:sub(7) )
-                
-            elseif event.data:sub(1, 6) == "chars " then
-                
-                print( "Received char data" )
-                client.parseChars( event.data:sub(7) )
-                
-            elseif event.data:sub(1, 6) == "taskc " then
-                
-                print( "Received new char task", event.data:sub(7) )
-                client.parseTask( event.data:sub(7) )
-                
-            elseif event.data:sub(1, 6) == "remob " then
-                
-                print( "Received remove object", event.data:sub(7) )
-                client.parseRemoveObject( event.data:sub(7) )
-                
-            elseif event.data:sub(1, 6) == "built " then
-                
-                print( "Received build finished object", event.data:sub(7)  )
-                client.parseFinishBuild( event.data:sub(7) )
-                
-            elseif event.data:sub(1, 6) == "objup " then
-                
-                print( "Received update on object", event.data:sub(7)  )
-                client.parseObjectUpdate( event.data:sub(7) )
+                if event.data:sub(1, 6) == "lobby " then
+                    
+                    players = parser.parseLobbyInformation( event.data:sub(7) )
+                    
+                end
                 
             else
-                
-                print("Got message: ", event.data, event.peer)
+            
+                if event.data:sub(1, 6) == "chunk " then
+                    
+                    print( "Received chunk data" )
+                    client.parseChunk( event.data:sub(7) )
+                    
+                elseif event.data:sub(1, 6) == "plobj " then
+                    
+                    print( "Received object data" )
+                    client.parseObjects( event.data:sub(7) )
+                    
+                elseif event.data:sub(1, 6) == "chars " then
+                    
+                    print( "Received char data" )
+                    client.parseChars( event.data:sub(7) )
+                    
+                elseif event.data:sub(1, 6) == "taskc " then
+                    
+                    print( "Received new char task", event.data:sub(7) )
+                    client.parseTask( event.data:sub(7) )
+                    
+                elseif event.data:sub(1, 6) == "remob " then
+                    
+                    print( "Received remove object", event.data:sub(7) )
+                    client.parseRemoveObject( event.data:sub(7) )
+                    
+                elseif event.data:sub(1, 6) == "built " then
+                    
+                    print( "Received build finished object", event.data:sub(7)  )
+                    client.parseFinishBuild( event.data:sub(7) )
+                    
+                elseif event.data:sub(1, 6) == "objup " then
+                    
+                    print( "Received update on object", event.data:sub(7)  )
+                    client.parseObjectUpdate( event.data:sub(7) )
+                    
+                else
+                    
+                    print("Got message:", event.data, event.peer)
+                    
+                end
                 
             end
             
+        elseif event.type == "disconnect" then
+            print("Disconnect:", event.data)
         end
         
         event = host:service(0)

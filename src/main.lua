@@ -14,6 +14,7 @@ require 'model/char'
 require 'model/chunk'
 require 'model/object'
 require 'model/building'
+require 'model/player'
 require 'model/profession'
 require 'model/task'
 require 'model/world'
@@ -58,6 +59,7 @@ function love.update(dt)
     
     if state == "lobby" then
         lobby.update(dt)
+        client.service()
     end
     
 end
@@ -89,6 +91,10 @@ end
 
 
 function love.keypressed(key, isRepeat)
+    
+    if state == "lobby" then
+        lobby.keypressed(key, isRepeat)
+    end
     
     if state == "menu" or displayMenu then
         menuInputHandler.keypressed(key, isRepeat)

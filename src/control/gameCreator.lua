@@ -28,7 +28,7 @@ function gameCreator.createDefaultLocalGame()
     drawHandler.init()
     world.init()
     
-    client.init()
+    client.connect("localhost:44631")
 end
 
 -- create a online game. should display as a lobby
@@ -50,5 +50,5 @@ function gameCreator.createOnlineGame()
     drawHandler.init()
     world.init()
     
-    client.init()
+    client.connect("localhost:44631")
 end
