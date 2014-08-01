@@ -31,22 +31,22 @@ require 'view/elements/scroll'
 --- menu includes
 
 require 'menu/lobby'
-require 'menu/mainMenu'
-require 'menu/menuInputHandler'
+require 'menu/menu'
+require 'menu/menuHandler'
 
 function love.load()
     
     state = "menu"
     displayMenu = false
     
-    mainMenu.init()
+    menuHandler.init()
 end
 
 
 function love.update(dt)
     
     if state == "menu" or displayMenu then
-        mainMenu.update(dt)
+        menuHandler.update(dt)
     end
     
     if state == "ingame" then
@@ -80,7 +80,7 @@ function love.draw()
     end
     
     if state == "menu" or displayMenu then
-        mainMenu.draw()
+        menuHandler.draw()
     end
     
     if state == "lobby" then
@@ -97,7 +97,7 @@ function love.keypressed(key, isRepeat)
     end
     
     if state == "menu" or displayMenu then
-        menuInputHandler.keypressed(key, isRepeat)
+        menuHandler.keypressed(key, isRepeat)
         return
     end
     
@@ -111,7 +111,7 @@ end
 function love.keyreleased(key, isRepeat)
     
     if state == "menu" or displayMenu then
-        menuInputHandler.keyreleased(key, isRepeat)
+        menuHandler.keyreleased(key, isRepeat)
         return
     end
     
@@ -125,7 +125,7 @@ end
 function love.mousepressed(x, y, button)
     
     if state == "menu" or displayMenu then
-        menuInputHandler.mousepressed(x, y, button)
+        menuHandler.mousepressed(x, y, button)
         return
     end
     
@@ -139,7 +139,7 @@ end
 function love.mousereleased(x, y, button)
     
     if state == "menu" or displayMenu then
-        menuInputHandler.mousereleased(x, y, button)
+        menuHandler.mousereleased(x, y, button)
         return
     end
     
