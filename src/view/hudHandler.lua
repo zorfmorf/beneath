@@ -11,11 +11,11 @@ local cursor = nil -- current cursor icon
 local cursor_color = {255, 255, 255, 255}
 local buildcontainer = nil
 
+local iconCarpenter = love.graphics.newImage( "ressource/icons/carpenter.png" )
+local iconWarehouse = love.graphics.newImage( "ressource/icons/warehouse.png" )
+local iconHole = love.graphics.newImage( "ressource/icons/hole.png" )
+
 function hudHandler.init()
-    
-    local iconCarpenter = love.graphics.newImage( "ressource/icons/carpenter.png" )
-    local iconWarehouse = love.graphics.newImage( "ressource/icons/warehouse.png" )
-    local iconHole = love.graphics.newImage( "ressource/icons/hole.png" )
     
     local panels = {}
     panels[1] = {}
@@ -86,6 +86,13 @@ end
 function hudHandler.getCursorColor()
     return cursor_color
 end
+
+
+-- When the build menu changes we should redraw all scrolls
+function hudHandler.redrawScrolls()
+    buildcontainer:redraw()
+end
+
 
 function hudHandler.draw()
     love.graphics.origin()

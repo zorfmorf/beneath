@@ -205,8 +205,8 @@ function world.addObject(object)
         return false
     end
     
+    -- check if placeable
     local tileselection = world.isPlacable(object)
-    
     if tileselection == nil then 
         if not server then 
             -- server objects should always be placable!
@@ -215,9 +215,14 @@ function world.addObject(object)
         return false 
     end
     
+    -- check and track holes. only one per layer
+    if object:is(Hole) and not logicHandler.buildHole(object.l) then
+        return false
+    end
+    
+    -- actually place object
     object.x = math.floor(object.x)
     object.y = math.floor(object.y)
-    
     objects[object.l][object.id] = object
     
     -- mark tiles as used so that no other building can be placed there

@@ -26,17 +26,45 @@ function Container:refresh()
     end
 end
 
+
+-- update canvases
+function Container:redraw()
+    for i,element in ipairs(self.items) do
+        element:redraw()
+    end
+end
+
+
+function Container:remove(i)
+    table.remove(self.items, i)
+end
+
+
+function Container:add(item, i)
+    table.insert(self.items, i, item)
+end
+
+
+function Container:get(i)
+    return self.items[i]
+end
+
+
+-- draw canvases to screen
 function Container:draw()
     for i,element in ipairs(self.items) do
         element:draw()
     end
 end
 
+
+-- updates positions. needed for movement on hover
 function Container:update(dt)
     for i,element in ipairs(self.items) do
         element:update(dt)
     end
 end
+
 
 -- returns true if the mouse hovers over a container item
 -- if true executes mouse click as well

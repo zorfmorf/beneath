@@ -48,24 +48,36 @@ local function generateCanvas(width, height)
     return canvas
 end
 
+local function calculateWidthAndHeight(itemlist)
+    local w = 2
+    local h = 2
+    for i,item in ipairs(itemlist) do
+        w = math.max(w, 1 + math.floor(item.icon:getWidth() / tilesize) )
+        h = h + math.floor(item.icon:getHeight() / tilesize)
+    end
+    return w,h
+end
+
+
 -- Actual Scroll implementation
 Scroll = class()
 Scroll.__name = "scroll"
 
 
 function Scroll:__init( items )
-    local w = 2
-    local h = 2
     self.items = items
-    for i,item in ipairs(self.items) do
-        w = math.max(w, 1 + math.floor(item.icon:getWidth() / tilesize) )
-        h = h + math.floor(item.icon:getHeight() / tilesize)
-    end
-    self.canvas = generateCanvas(w, h)
+    self.canvas = generateCanvas(calculateWidthAndHeight(self.items))
     self.shift = 0
     self.mouseover = false
     self.x = 0
     self.y = 0
+    self.enabled = true
+end
+
+
+-- When build items change, we need to update the canvas
+function Scroll:redraw()
+    self.canvas = generateCanvas(calculateWidthAndHeight(self.items))
 end
 
 
@@ -77,21 +89,29 @@ end
 -- unravel or close scroll depending on mouse position
 function Scroll:update(dt)
     
-    local x, y = love.mouse.getPosition()
-
-    self.mouseover = x >= self.x and x < self.x + self.canvas:getWidth() and y > self:generateY()
-    
-    if self.mouseover then
-        self.shift = math.min(1, self.shift + dt * scrollspeed)
+    if not logicHandler.canBuildHole(cameraHandler.getLayer()) and self.items[1] and self.items[1].name == "hole" then
+        self.enabled = false
+        self.shift = 0
     else
-        self.shift = math.max(0, self.shift - dt * scrollspeed)
-    end
+        
+        self.enabled = true
+        
+        local x, y = love.mouse.getPosition()
+        self.mouseover = x >= self.x and x < self.x + self.canvas:getWidth() and y > self:generateY()
+        
+        if self.mouseover then
+            self.shift = math.min(1, self.shift + dt * scrollspeed)
+        else
+            self.shift = math.max(0, self.shift - dt * scrollspeed)
+        end
+        
+        local yacc = tilesize
+        for i,item in ipairs(self.items) do
+            item.x = self.x + tilesize * 0.45
+            item.y = self:generateY() + yacc
+            yacc = yacc + item.icon:getHeight()
+        end
     
-    local yacc = tilesize
-    for i,item in ipairs(self.items) do
-        item.x = self.x + tilesize * 0.45
-        item.y = self:generateY() + yacc
-        yacc = yacc + item.icon:getHeight()
     end
     
 end
@@ -99,9 +119,11 @@ end
 
 -- draws scroll canvas and then all items in the scroll
 function Scroll:draw()
-    love.graphics.draw(self.canvas, self.x, self:generateY() )
-    for i,item in ipairs(self.items) do
-        love.graphics.draw(item.icon, item.x, item.y)
+    if self.enabled then
+        love.graphics.draw(self.canvas, self.x, self:generateY() )
+        for i,item in ipairs(self.items) do
+            love.graphics.draw(item.icon, item.x, item.y)
+        end
     end
 end
 

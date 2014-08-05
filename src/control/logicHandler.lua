@@ -2,20 +2,12 @@
 local mouseState = "free"
 local buildCandidate = nil
 
-local builditems = {}
+local playerLayer = {}
 
 logicHandler = {}
 
 function logicHandler.init()
-    --table.insert(builditems, Farm:new(0, 0))
-    --table.insert(builditems, Smith:new(0, 0))
-    table.insert(builditems, Field:new(1, 0, 0))
-    table.insert(builditems, Carpenter:new(1, 0, 0))
-    table.insert(builditems, Warehouse:new(1, 0, 0))
-end
-
-function logicHandler.getBuildItems()
-    return builditems
+    playerLayer = {}
 end
 
 function logicHandler.switchToBuildMode(object)
@@ -49,6 +41,18 @@ function logicHandler.recalculatePaths()
     for i,char in pairs(world.getChars()) do
         char.path = nil
     end
+end
+
+function logicHandler.canBuildHole(layer)
+    return not playerLayer[layer]
+end
+
+function logicHandler.buildHole(layer)
+    if logicHandler.canBuildHole(layer) then 
+        playerLayer[layer] = true
+        return true
+    end
+    return false
 end
 
 function logicHandler.tileClick(x, y)

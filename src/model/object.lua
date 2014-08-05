@@ -160,10 +160,10 @@ end
 ----------- Ressource
 
 Ressource = Object:extends()
+Ressource.__name = "ressource"
 
 function Ressource:__init(l, x, y, restable)
     Ressource.super.__init(self, l, x, y)
-    self.__name = "ressource"
     self.ressources = restable
     self.image = nil
     self.xsize = 1
