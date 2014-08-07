@@ -103,8 +103,8 @@ function Object:work(dt)
             -- if its a hole we need to free up tiles on a lower level
             if self:is(Hole) and self.l > 1 then
                 local chunks = {}
-                for i=-1,1 do
-                    for j=-1,1 do
+                for i=0,2 do
+                    for j=0,-2,-1 do
                         local tile = world.getTile(self.l-1, self.x+i, self.y+j)
                         if tile and not tile.clear then
                             tile.clear = true

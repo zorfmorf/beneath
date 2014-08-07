@@ -55,6 +55,25 @@ function logicHandler.buildHole(layer)
     return false
 end
 
+
+function logicHandler.freeTile(l, x, y)
+    local tile = world.getTile(l, x, y)
+    if tile then
+        tile.clear = not tile.clear
+        local chunks = {}
+        for i=-1,1 do
+            for j=-1,1 do
+                local chunk = world.getChunkByCoordinates(x+j, y+2+i)
+                if chunk then chunks[chunk.id] = chunk end
+            end
+        end
+        for i,chunk in pairs(chunks) do
+            chunk:update(cameraHandler.getLayer())
+        end
+    end
+end
+
+
 function logicHandler.tileClick(x, y)
     
     if mouseState == "free" then
@@ -69,20 +88,7 @@ function logicHandler.tileClick(x, y)
         
         -- placeholder testing code TODO remove
         if cameraHandler.getLayer() < CHUNK_HEIGHT then
-            local tile = world.getTile(cameraHandler.getLayer(), x, y+2)
-            if tile then
-                tile.clear = not tile.clear
-                local chunks = {}
-                for i=-1,1 do
-                    for j=-1,1 do
-                        local chunk = world.getChunkByCoordinates(x+j, y+2+i)
-                        if chunk then chunks[chunk.id] = chunk end
-                    end
-                end
-                for i,chunk in pairs(chunks) do
-                    chunk:update(cameraHandler.getLayer())
-                end
-            end
+            logicHandler.freeTile(cameraHandler.getLayer(), x, y+2)
         end
         
     else
