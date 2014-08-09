@@ -127,7 +127,6 @@ function MainMenu:handle(item)
                 menuHandler.switchToMenu("online")
             end
             
-            
         end
         
     if item == "Exit" then love.event.push("quit") end

@@ -28,75 +28,94 @@ end
 
 
 function client.service()
-    local event = host:service(0)
-    while event do
-        
-        if event.type == "connect" then
+    if host then
+        local event = host:service(0)
+        while event do
             
-            print("Connected to", event.peer)
-            
-        elseif event.type == "receive" then
-            
-            if state == "lobby" then
+            if event.type == "connect" then
                 
-                if event.data:sub(1, 6) == "lobby " then
-                    
-                    players = parser.parseLobbyInformation( event.data:sub(7) )
-                    
-                end
+                print("Connected to", event.peer)
+                client.sendName("zorfmorf")
                 
-            else
-            
-                if event.data:sub(1, 6) == "chunk " then
+            elseif event.type == "receive" then
+                
+                if state == "lobby" then
                     
-                    print( "Received chunk data" )
-                    client.parseChunk( event.data:sub(7) )
-                    
-                elseif event.data:sub(1, 6) == "plobj " then
-                    
-                    print( "Received object data" )
-                    client.parseObjects( event.data:sub(7) )
-                    
-                elseif event.data:sub(1, 6) == "chars " then
-                    
-                    print( "Received char data" )
-                    client.parseChars( event.data:sub(7) )
-                    
-                elseif event.data:sub(1, 6) == "taskc " then
-                    
-                    print( "Received new char task", event.data:sub(7) )
-                    client.parseTask( event.data:sub(7) )
-                    
-                elseif event.data:sub(1, 6) == "remob " then
-                    
-                    print( "Received remove object", event.data:sub(7) )
-                    client.parseRemoveObject( event.data:sub(7) )
-                    
-                elseif event.data:sub(1, 6) == "built " then
-                    
-                    print( "Received build finished object", event.data:sub(7)  )
-                    client.parseFinishBuild( event.data:sub(7) )
-                    
-                elseif event.data:sub(1, 6) == "objup " then
-                    
-                    print( "Received update on object", event.data:sub(7)  )
-                    client.parseObjectUpdate( event.data:sub(7) )
+                    if event.data:sub(1, 6) == "lobby " then
+                        
+                        players = parser.parseLobbyInformation( event.data:sub(7) )
+                        
+                    end
                     
                 else
+                
+                    if event.data:sub(1, 6) == "chunk " then
+                        
+                        print( "Received chunk data" )
+                        client.parseChunk( event.data:sub(7) )
+                        
+                    elseif event.data:sub(1, 6) == "plobj " then
+                        
+                        print( "Received object data" )
+                        client.parseObjects( event.data:sub(7) )
+                        
+                    elseif event.data:sub(1, 6) == "chars " then
+                        
+                        print( "Received char data" )
+                        client.parseChars( event.data:sub(7) )
+                        
+                    elseif event.data:sub(1, 6) == "taskc " then
+                        
+                        print( "Received new char task", event.data:sub(7) )
+                        client.parseTask( event.data:sub(7) )
+                        
+                    elseif event.data:sub(1, 6) == "remob " then
+                        
+                        print( "Received remove object", event.data:sub(7) )
+                        client.parseRemoveObject( event.data:sub(7) )
+                        
+                    elseif event.data:sub(1, 6) == "built " then
+                        
+                        print( "Received build finished object", event.data:sub(7)  )
+                        client.parseFinishBuild( event.data:sub(7) )
+                        
+                    elseif event.data:sub(1, 6) == "objup " then
+                        
+                        print( "Received update on object", event.data:sub(7)  )
+                        client.parseObjectUpdate( event.data:sub(7) )
                     
-                    print("Got message:", event.data, event.peer)
+                    elseif event.data:sub(1, 6) == "lobby " then
+                        
+                        players = parser.parseLobbyInformation( event.data:sub(7) )
+                        
+                    else
+                        
+                        print("Got message:", event.data, event.peer)
+                        
+                    end
                     
                 end
                 
+            elseif event.type == "disconnect" then
+                print("Disconnect:", event.data)
             end
             
-        elseif event.type == "disconnect" then
-            print("Disconnect:", event.data)
+            event = host:service(0)
+            
         end
-        
-        event = host:service(0)
-        
     end
+end
+
+
+function client.parsePlayerName( string )
+    local id, name = parser.parseName(string)
+    players[id].name = name
+    print( "Player has name:", id, name)
+end
+
+
+function client.sendName(newname)
+    server:send("setnm "..newname)
 end
 
 

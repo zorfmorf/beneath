@@ -30,7 +30,7 @@ function lobby.draw()
     love.graphics.print("Lobby", 10, 10)
     if players then
         for i,player in pairs(players) do
-            love.graphics.print(player, love.graphics.getWidth() / 2, 100 + i * font:getHeight() + 10)
+            love.graphics.print(player.name, love.graphics.getWidth() / 2, 100 + i * font:getHeight() + 10)
         end
     end
 end

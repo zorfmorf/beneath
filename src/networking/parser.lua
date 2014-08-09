@@ -177,9 +177,32 @@ end
 function parser.parseLobbyInformation(string)
     local players = {}
     for value in string.gmatch(string, '[^,]+') do
-        table.insert(players, value) 
+        if value:len() > 2 then
+            local i = 1
+            local id = -1
+            for chars in string.gmatch(value, '[^ ]+') do
+                if i == 1 then 
+                    id = tonumber(chars) 
+                    players[id] = Player:new(id) 
+                end 
+                if i == 2 then players[id].name = chars end
+                i = i + 1
+            end
+        end
     end
     return players
+end
+
+
+function parser.parseName(string)
+    local id = -1
+    local name = nil
+    for i,value in string.gmatch(string, '[^ ]+') do
+        if i == 1 then id = tonumber(value) end
+        if i == 2 then name = value end
+    end
+    print( "parser name:", string, id, name)
+    return id, name
 end
 
 
